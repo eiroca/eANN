@@ -747,12 +747,10 @@ end;
 procedure TLayer.Setup(npl: integer; Knd: TNeuronClass);
 var
   i: integer;
-  N: TNeuron;
-  nw: integer;
 begin
   if (npl < 1) then raise EANNGeneric.Create(errBadNetDef);
   for i:= 0 to npl-1 do begin
-    N:= Knd.Create(Self);
+    Knd.Create(Self);
   end;
 end;
 
@@ -919,7 +917,6 @@ var
   maxerr, err: double;
   i: integer;
   trained: boolean;
-
 begin
   if not Prepare(noTrain) then exit;
   mqe:= Parameters.tol;
@@ -947,7 +944,7 @@ begin
     end
   until (FEpochs > Max_it);
   SetNetInfos(NetInfos + [niTrained]);
-  if (FEpochs > Max_it) then begin
+  if not trained then begin
     raise EANNWarning.Create(wrnMaxIter);
   end
 end;

@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 @created 04/11/1996
 @lastmod 05/05/1999
 
-Artificial Radia Basis Neural Network @br
+Artificial Radial Basis Neural Network @br
 @br
 This is an implementation of Radial Basis neural network @br
 @br

@@ -435,19 +435,13 @@ begin
   end;
   inherited Create(AOwner);
   FullSave:= true;
-  if (aOwner<>nil) then begin
-    with TCustomMLPNetwork(AOwner) do begin
-      LC:= Parameters.LC;
-      MC:= Parameters.MC;
-      Norm:= Parameters.Normalize;
-    end;
-  end
-  else begin
+  if (aOwner=nil) then begin
     LC:= 0.5;
     MC:= 0;
     Norm:= false;
     Delta:= nil;
   end;
+  UpdateParam;
 end;
 
 procedure TLayer.SetupConnections(NeuronInPrevLayer: integer);
@@ -488,7 +482,7 @@ end;
 procedure TLayer.NeuronWeightCountChange(I: integer);
 begin
   if Delta <> nil then begin
-    Delta[ComponentIndex].Dim:= Neurons[i].NumWei;
+    Delta[i].Dim:= Neurons[i].NumWei;
   end;
 end;
 
@@ -596,6 +590,8 @@ var
   HasDelta : boolean;
   NeedDelta: boolean;
   i: integer;
+  W: TWeights;
+  NuWe: integer;
 begin
   if Owner <> nil then begin
     Net:= TCustomMLPNetwork(Owner);
@@ -607,10 +603,21 @@ begin
       Delta.Free;
       Delta:= nil;
     end;
-    if NeedDelta and not HasDelta then begin
-      Delta:= TWeights_List.Create;
+    if NeedDelta then begin
+      if not HasDelta then begin
+        Delta:= TWeights_List.Create;
+      end;
+      if (Delta.Count <> NumNeu) then begin
+        Delta.Count:= NumNeu;
+      end;
       for i:= 0 to NumNeu-1 do begin
-        Delta.Add(TWeights.Create(Neurons[i].NumWei));
+        W:= Delta[i];
+        NuWe:= Neurons[i].NumWei;
+        if (W = nil) then begin
+          W:= TWeights.Create(NuWe);
+          Delta[i]:= W;
+        end;
+        W.Dim:= NuWe;
       end;
     end;
     MC:= Net.Parameters.MC;

@@ -59,7 +59,7 @@ type
     procedure iRoOChange(Sender: TObject);
     procedure iWinChange(Sender: TObject);
     procedure iSprChange(Sender: TObject);
-  private
+  protected
     { Private declarations }
     procedure ShowEditor; override;
     procedure UpdateParam;

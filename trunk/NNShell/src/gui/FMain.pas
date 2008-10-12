@@ -35,12 +35,9 @@ type
     mnHelp: TMenuItem;
     miAbout: TMenuItem;
     miFileExit: TMenuItem;
-    miFiler3: TMenuItem;
-    miHelpANN: TMenuItem;
     fp: TFormPlacement;
     dlgCalc: TRxCalculator;
     miToolsCalcultator: TMenuItem;
-    miHelpShell: TMenuItem;
     AppEvents1: TAppEvents;
     sbStatus: TSpeedBar;
     lbStatus: TLabel;
@@ -73,10 +70,8 @@ type
     siCustomize: TSpeedItem;
     procedure FormCreate(Sender: TObject);
     procedure miAboutClick(Sender: TObject);
-    procedure miHelpANNClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure miToolsCalcultatorClick(Sender: TObject);
-    procedure miHelpShellClick(Sender: TObject);
     procedure AppEvents1Hint(Sender: TObject);
     procedure miFileExitClick(Sender: TObject);
     procedure sbStatusApplyAlign(Sender: TObject; Align: TAlign;
@@ -159,13 +154,6 @@ begin
   About('NNShell');
 end;
 
-procedure TfmMain.miHelpANNClick(Sender: TObject);
-const
-  Help: string = 'ANN.HLP'#0;
-begin
-  WinHelp(Handle, @Help[1], HELP_CONTENTS, 0);
-end;
-
 procedure TfmMain.FormResize(Sender: TObject);
 begin
   if Height < 112 then Height:= 112;
@@ -175,14 +163,6 @@ end;
 procedure TfmMain.miToolsCalcultatorClick(Sender: TObject);
 begin
   dlgCalc.Execute;
-end;
-
-procedure TfmMain.miHelpShellClick(Sender: TObject);
-var
-  Help: string;
-begin
-  Help:= Application.HelpFile+#0;
-  WinHelp(Handle, @Help[1], HELP_CONTENTS, 0);
 end;
 
 procedure TfmMain.AppEvents1Hint(Sender: TObject);

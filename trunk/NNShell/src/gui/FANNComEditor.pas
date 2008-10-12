@@ -37,7 +37,7 @@ type
     procedure pcEditorChange(Sender: TObject);
     procedure iEtaChange(Sender: TObject);
     procedure iNumNeuChange(Sender: TObject);
-  private
+  protected
     { Private declarations }
     procedure ShowEditor; override;
     procedure UpdateParam;

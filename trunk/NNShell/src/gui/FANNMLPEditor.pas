@@ -68,7 +68,7 @@ type
     procedure BitBtn2Click(Sender: TObject);
     procedure btModifyNetClick(Sender: TObject);
     procedure cbNormClick(Sender: TObject);
-  private
+  protected
     { Private declarations }
     NeuKind: TStrings;
     function GetText(Col, Row: Longint): string;

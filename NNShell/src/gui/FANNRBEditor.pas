@@ -62,7 +62,7 @@ type
     procedure iMaxErrChange(Sender: TObject);
     procedure iMaxNeuChange(Sender: TObject);
     procedure btRecalcAttClick(Sender: TObject);
-  private
+  protected
     { Private declarations }
     procedure ShowEditor; override;
     procedure UpdateParam;

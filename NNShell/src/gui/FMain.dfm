@@ -424,18 +424,6 @@ object fmMain: TfmMain
         Hint = 'Give an example of where NN are used'
         OnClick = miAboutClick
       end
-      object miFiler3: TMenuItem
-        Caption = '-'
-      end
-      object miHelpShell: TMenuItem
-        Caption = 'Help on Shell'
-        OnClick = miHelpShellClick
-      end
-      object miHelpANN: TMenuItem
-        Caption = 'Help on ANN Library'
-        Hint = 'Technical info on ANN Library'
-        OnClick = miHelpANNClick
-      end
     end
   end
   object fp: TFormPlacement

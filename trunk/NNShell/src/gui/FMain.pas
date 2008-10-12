@@ -26,7 +26,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes,
   eLibMath, eANN, eDataPick,
   Graphics, Controls, Forms, Dialogs, RxCalc, Menus, Gauges, StdCtrls, ExtCtrls,
-  rxAppEvent, rxPlacemnt, rxSpeedbar;
+  ImgList, StdActns, ActnList, rxAppEvent, rxPlacemnt, rxSpeedbar;
 
 type
   TfmMain = class(TForm)
@@ -42,9 +42,6 @@ type
     sbStatus: TSpeedBar;
     lbStatus: TLabel;
     Progress: TGauge;
-    Windows1: TMenuItem;
-    miWindowCascade: TMenuItem;
-    miWindowTile: TMenuItem;
     sbMain: TSpeedBar;
     ssFile: TSpeedbarSection;
     siLoad: TSpeedItem;
@@ -57,8 +54,6 @@ type
     miFileSaveAs: TMenuItem;
     N1: TMenuItem;
     miToolCalc: TMenuItem;
-    miWindowArrange: TMenuItem;
-    miWindowMinimize: TMenuItem;
     siExit: TSpeedItem;
     sdWorkspace: TSaveDialog;
     odWorkSpace: TOpenDialog;
@@ -68,19 +63,27 @@ type
     ssTools: TSpeedbarSection;
     siCalculator: TSpeedItem;
     siCustomize: TSpeedItem;
+    ActionList1: TActionList;
+    aFileExit: TFileExit;
+    aWindowCascade: TWindowCascade;
+    aWindowTileHorizontal: TWindowTileHorizontal;
+    aWindowTileVertical: TWindowTileVertical;
+    aWindowMinimizeAll: TWindowMinimizeAll;
+    aWindowArrangeAll: TWindowArrange;
+    ilMenu: TImageList;
+    Window1: TMenuItem;
+    ArrangeAll1: TMenuItem;
+    MinimizeAll1: TMenuItem;
+    ileVertically1: TMenuItem;
+    ileHorizontally1: TMenuItem;
+    Cascade1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure miAboutClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure miToolsCalcultatorClick(Sender: TObject);
-    procedure AppEvents1Hint(Sender: TObject);
-    procedure miFileExitClick(Sender: TObject);
     procedure sbStatusApplyAlign(Sender: TObject; Align: TAlign;
       var Apply: Boolean);
     procedure SetINIPath(Sender: TObject);
-    procedure miWindowCascadeClick(Sender: TObject);
-    procedure miWindowTileClick(Sender: TObject);
-    procedure miWindowArrangeClick(Sender: TObject);
-    procedure miWindowMinimizeClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure miFileCloseClick(Sender: TObject);
@@ -91,6 +94,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure miToolsToolbarClick(Sender: TObject);
     procedure siWSDeleteClick(Sender: TObject);
+    procedure AppEvents1Hint(Sender: TObject);
   private
     { Private declarations }
     procedure UpdateMenuItems(Sender: TObject);
@@ -141,17 +145,13 @@ begin
     miFileSave.Enabled:= flg;
     miFileSaveAs.Enabled:= flg;
     siSave.Enabled:= flg;
-    miWindowCascade.Enabled:= flg;
-    miWindowTile.Enabled:= flg;
-    miWindowArrange.Enabled:= flg;
-    miWindowMinimize.Enabled:= flg;
   flg:= (ActiveMDIChild <> nil) and (ActiveMDIChild is TfmWorkSpace);
     siWSDelete.Enabled:= flg;
 end;
 
 procedure TfmMain.miAboutClick(Sender: TObject);
 begin
-  About('NNShell');
+  About(Application.Title);
 end;
 
 procedure TfmMain.FormResize(Sender: TObject);
@@ -165,16 +165,6 @@ begin
   dlgCalc.Execute;
 end;
 
-procedure TfmMain.AppEvents1Hint(Sender: TObject);
-begin
-  lbStatus.Caption:= Application.Hint;
-end;
-
-procedure TfmMain.miFileExitClick(Sender: TObject);
-begin
-  Close;
-end;
-
 procedure TfmMain.sbStatusApplyAlign(Sender: TObject; Align: TAlign;
   var Apply: Boolean);
 begin
@@ -184,16 +174,6 @@ end;
 procedure TfmMain.SetINIPath(Sender: TObject);
 begin
   fp.INIFileName:= Opzioni.INIPath;
-end;
-
-procedure TfmMain.miWindowCascadeClick(Sender: TObject);
-begin
-  Cascade;
-end;
-
-procedure TfmMain.miWindowTileClick(Sender: TObject);
-begin
-  Tile;
 end;
 
 var
@@ -218,20 +198,6 @@ begin
       end;
     end;
   end;
-end;
-
-procedure TfmMain.miWindowArrangeClick(Sender: TObject);
-begin
-  ArrangeIcons;
-end;
-
-procedure TfmMain.miWindowMinimizeClick(Sender: TObject);
-var
-  I: integer;
-begin
-  { Must be done backwards through the MDIChildren array }
-  for I:= MDIChildCount - 1 downto 0 do
-    MDIChildren[I].WindowState:= wsMinimized;
 end;
 
 procedure TfmMain.FormDestroy(Sender: TObject);
@@ -265,6 +231,11 @@ begin
   if ActiveMDIChild <> nil then begin
     ActiveMDIChild.Close;
   end;
+end;
+
+procedure TfmMain.AppEvents1Hint(Sender: TObject);
+begin
+  lbStatus.Caption:= Application.Hint;
 end;
 
 function TfmMain.CreateWorkSpace(const Name: string): TfmWorkSpace;

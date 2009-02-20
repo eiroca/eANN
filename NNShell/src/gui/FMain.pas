@@ -113,7 +113,7 @@ implementation
 {$R *.DFM}
 
 uses
-  uOpzioni, eLib, FOutput, FAbout,
+  uOpzioni, eLib, FOutput, FAboutGPL,
   eANNPRB, eANNRB, eANNPLN, eANNMLP, eANNCom,
   FErrorSetEditor,
   FDataPatternEditor, FDataListEditor,
@@ -151,7 +151,7 @@ end;
 
 procedure TfmMain.miAboutClick(Sender: TObject);
 begin
-  About(Application.Title);
+  AboutGPL(Application.Title);
 end;
 
 procedure TfmMain.FormResize(Sender: TObject);

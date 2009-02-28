@@ -22,7 +22,7 @@ unit uWorkSpace;
 interface
 
 uses
-  eLibMath, eDataPick, SysUtils, Classes, Controls;
+  eLibMath, eLibStat, eDataPick, SysUtils, Classes, Controls;
 
 type
 

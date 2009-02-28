@@ -19,6 +19,9 @@ inherited fmANNRBEditor: TfmANNRBEditor
       ExplicitWidth = 458
       ExplicitHeight = 282
       inherited tsProp: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 24
+        ExplicitWidth = 450
         ExplicitHeight = 254
         inherited ScrollBox3: TScrollBox
           Width = 450

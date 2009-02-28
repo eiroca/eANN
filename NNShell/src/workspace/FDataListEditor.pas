@@ -22,9 +22,9 @@ unit FDataListEditor;
 interface
 
 uses
-  FEditor,
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, Grids, RXGrids, RXSpin, StdCtrls, Buttons, Mask;
+  ComCtrls, ExtCtrls, Grids, RXGrids, RXSpin, StdCtrls, Buttons, Mask,
+  FEditor;
 
 type
   TfmDataListEditor = class(TfmEditor)
@@ -277,5 +277,7 @@ begin
   end;
 end;
 
+initialization
+  Editors.RegisterEditor(TDataList, TfmDataListEditor);
 end.
 

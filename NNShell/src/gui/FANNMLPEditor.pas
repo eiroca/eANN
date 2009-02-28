@@ -23,8 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  FANNEditor, ExtCtrls, StdCtrls, Buttons, RXSpin, ComCtrls, eANN,
-  eANNMLP, Grids, RXGrids, Mask;
+  ExtCtrls, StdCtrls, Buttons, RXSpin, ComCtrls, Grids, RXGrids, Mask,
+  FEditor, eANN, FANNEditor, eANNMLP;
 
 type
   TfmANNMLPEditor = class(TfmANNEditor)
@@ -358,5 +358,7 @@ begin
   end;
 end;
 
+initialization
+  Editors.RegisterEditor(TMLPNetwork, TfmANNMLPEditor);
 end.
 

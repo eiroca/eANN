@@ -13,7 +13,8 @@ unit Demos;
 interface
 
 uses
-  TestFramework, Classes, SysUtils, eDataPick, eLibMath,
+  TestFramework, Classes, SysUtils,
+  eDataPick, eLibMath, eLibStat,
   eANNMsg, eANN, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB, eANNUtil;
 
 type

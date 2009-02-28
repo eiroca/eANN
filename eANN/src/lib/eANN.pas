@@ -58,7 +58,7 @@ interface
 uses
   SysUtils, Classes,
   eANNMsg,
-  eDataPick, eLibMath;
+  eDataPick, eLibMath, eLibStat;
 
 type
   //Base exception class

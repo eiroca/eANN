@@ -49,7 +49,7 @@ implementation
 {$R *.DFM}
 
 uses
-  FOutput, eLibMath;
+  FOutput, eLibMath, eLibStat;
   
 procedure TfmErrorSetEditor.iNameChange(Sender: TObject);
 begin
@@ -83,4 +83,6 @@ begin
   TErrorSet(Obj).Report(Output);
 end;
 
+initialization
+  Editors.RegisterEditor(TErrorSet, TfmErrorSetEditor);
 end.

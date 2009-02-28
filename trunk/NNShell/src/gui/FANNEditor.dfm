@@ -23,6 +23,10 @@ inherited fmANNEditor: TfmANNEditor
       TabOrder = 0
       object tsProp: TTabSheet
         Caption = 'Properties'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ScrollBox3: TScrollBox
           Left = 0
           Top = 0
@@ -203,7 +207,7 @@ inherited fmANNEditor: TfmANNEditor
             Width = 100
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             TabOrder = 4
             OnChange = cbDataInChange
           end
@@ -213,7 +217,7 @@ inherited fmANNEditor: TfmANNEditor
             Width = 100
             Height = 21
             Style = csDropDownList
-            ItemHeight = 13
+            ItemHeight = 0
             TabOrder = 5
             OnChange = cbDataOutChange
           end
@@ -260,6 +264,10 @@ inherited fmANNEditor: TfmANNEditor
       end
       object tsInfo: TTabSheet
         Caption = 'Informations'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ScrollBox2: TScrollBox
           Left = 0
           Top = 0
@@ -490,6 +498,10 @@ inherited fmANNEditor: TfmANNEditor
       end
       object tsActions: TTabSheet
         Caption = 'Actions'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ScrollBox1: TScrollBox
           Left = 0
           Top = 0

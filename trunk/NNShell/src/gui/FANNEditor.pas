@@ -127,7 +127,8 @@ implementation
 {$R *.DFM}
 
 uses
-  FOutput, eDataPick, eLibMath, eANN;
+  FOutput,
+  eDataPick, eLibMath, eLibStat, eANN;
 
 procedure TfmANNEditor.UpdateInfo;
 begin
@@ -376,5 +377,7 @@ begin
   UpdateDataPicker;
 end;
 
+initialization
+  Editors.RegisterEditor(TANN, TfmANNEditor);
 end.
 

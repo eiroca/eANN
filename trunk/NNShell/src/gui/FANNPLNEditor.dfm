@@ -3,7 +3,6 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
   Top = 181
   Caption = 'fmANNPLNEditor'
   ClientHeight = 302
-  ExplicitWidth = 320
   ExplicitHeight = 336
   PixelsPerInch = 96
   TextHeight = 13
@@ -16,6 +15,9 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
       OnChange = pcEditorChange
       ExplicitHeight = 302
       inherited tsProp: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 24
+        ExplicitWidth = 454
         ExplicitHeight = 274
         inherited ScrollBox3: TScrollBox
           Height = 274

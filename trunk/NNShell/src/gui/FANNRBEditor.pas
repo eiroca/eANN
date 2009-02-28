@@ -23,7 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  FANNEditor, ExtCtrls, StdCtrls, Buttons, RXSpin, ComCtrls, Mask;
+  ExtCtrls, StdCtrls, Buttons, RXSpin, ComCtrls, Mask,
+  FEditor, FANNEditor;
 
 type
   TfmANNRBEditor = class(TfmANNEditor)
@@ -172,5 +173,7 @@ begin
   MoreInfo;
 end;
 
+initialization
+  Editors.RegisterEditor(TRBNetwork, TfmANNRBEditor);
 end.
 

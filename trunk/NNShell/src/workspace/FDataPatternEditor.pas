@@ -23,8 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  FDataListEditor, Grids, RXGrids, RXSpin, StdCtrls, Buttons, Mask,
-  ComCtrls, ExtCtrls, rxToolEdit;
+  FEditor, FDataListEditor, rxToolEdit, StdCtrls, Grids, RXGrids, Mask, RXSpin,
+  Buttons, ComCtrls, ExtCtrls;
 
 type
   TfmDataPatternEditor = class(TfmDataListEditor)
@@ -107,5 +107,7 @@ begin
   UpdateParam;
 end;
 
+initialization
+  Editors.RegisterEditor(TDataPattern, TfmDataPatternEditor);
 end.
 

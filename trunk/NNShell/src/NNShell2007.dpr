@@ -21,7 +21,7 @@ program NNShell2007;
 
 uses
   Forms,
-  uWorkSpace in 'lib\uWorkSpace.pas',
+  uANNWorkSpace in 'lib\uANNWorkSpace.pas',
   uOpzioni in 'lib\uOpzioni.pas',
   FWorkSpace in 'gui\FWorkSpace.pas' {fmWorkSpace},
   FANNComEditor in 'gui\FANNComEditor.pas' {fmANNComEditor},
@@ -30,12 +30,13 @@ uses
   FANNPLNEditor in 'gui\FANNPLNEditor.pas' {fmANNPLNEditor},
   FANNPRBEditor in 'gui\FANNPRBEditor.pas' {fmANNPRBEditor},
   FANNRBEditor in 'gui\FANNRBEditor.pas' {fmANNRBEditor},
-  FDataListEditor in 'gui\FDataListEditor.pas' {fmDataListEditor},
-  FDataPatternEditor in 'gui\FDataPatternEditor.pas' {fmDataPatternEditor},
-  FEditor in 'gui\FEditor.pas' {fmEditor},
-  FErrorSetEditor in 'gui\FErrorSetEditor.pas' {fmErrorSetEditor},
+  FDataListEditor in 'workspace\FDataListEditor.pas' {fmDataListEditor},
+  FDataPatternEditor in 'workspace\FDataPatternEditor.pas' {fmDataPatternEditor},
+  FEditor in 'workspace\FEditor.pas' {fmEditor},
   FMain in 'gui\FMain.pas' {fmMain},
-  FOutput in 'gui\FOutput.pas' {fmOutput};
+  FOutput in 'workspace\FOutput.pas' {fmOutput},
+  uWorkSpace in 'workspace\uWorkSpace.pas',
+  FErrorSetEditor in 'workspace\FErrorSetEditor.pas' {fmErrorSetEditor};
 
 {$R *.res}
 
@@ -43,6 +44,5 @@ begin
   Application.Initialize;
   Application.Title := 'NNShell 2007';
   Application.CreateForm(TfmMain, fmMain);
-  Application.CreateForm(TfmDataPatternEditor, fmDataPatternEditor);
   Application.Run;
 end.

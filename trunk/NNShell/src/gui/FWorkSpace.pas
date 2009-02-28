@@ -23,7 +23,7 @@ interface
 
 uses
   FEditor, eANN, eDataPick, uWorkSpace, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, RXSplit, Menus, StdCtrls, ImgList;
+  ComCtrls, ExtCtrls, RXSplit, Menus, StdCtrls, ImgList, uANNWorkspace;
 
 type
   TfmWorkSpace = class(TForm)
@@ -71,7 +71,7 @@ type
   private
     { Private declarations }
     FPath: string;
-    FWorkSpace: TWorkSpace;
+    FWorkSpace: TANNWorkSpace;
     Root: TTreeNode;
     NetWorks: TTreeNode;
     Data: TTreeNode;
@@ -88,7 +88,7 @@ type
     procedure DeleteSelectedObject;
   public
     property Path: string read FPath write SetPath;
-    property WorkSpace: TWorkSpace read FWorkSpace;
+    property WorkSpace: TANNWorkSpace read FWorkSpace;
   end;
 
 implementation
@@ -120,7 +120,7 @@ var
   tn: TTreeNodes;
 begin
   Path:= '';
-  FWorkSpace:= TWorkSpace.Create(Self);
+  FWorkSpace:= TANNWorkSpace.Create(Self);
   WorkSpace.CreateListener.Add(CreateObjectProc);
   WorkSpace.FreeListener.Add(FreeObjectProc);
   WorkSpace.NameChangeListener.Add(NameChangeObjectProc);

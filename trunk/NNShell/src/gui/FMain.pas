@@ -114,7 +114,7 @@ implementation
 
 uses
   uOpzioni, eLib, FOutput, FAboutGPL,
-  eANNPRB, eANNRB, eANNPLN, eANNMLP, eANNCom,
+  eANNPRB, eANNRB, eANNPLN, eANNMLP, eANNCom, 
   FErrorSetEditor,
   FDataPatternEditor, FDataListEditor,
   FANNEditor, FANNMLPEditor, FANNComEditor, FANNPLNEditor, FANNPRBEditor, FANNRBEditor;
@@ -124,15 +124,6 @@ begin
   SetINIPath(nil);
   Caption:= Application.Title;
   lbStatus.Caption:= '';
-  Editors.RegisterEditor(TANN, TfmANNEditor);
-  Editors.RegisterEditor(TPRBNetwork, TfmANNPRBEditor);
-  Editors.RegisterEditor(TMLPNetwork, TfmANNMLPEditor);
-  Editors.RegisterEditor(TCompetitiveNetwork, TfmANNComEditor);
-  Editors.RegisterEditor(TPLNetwork, TfmANNPLNEditor);
-  Editors.RegisterEditor(TRBNetwork, TfmANNRBEditor);
-  Editors.RegisterEditor(TDataList, TfmDataListEditor);
-  Editors.RegisterEditor(TDataPattern, TfmDataPatternEditor);
-  Editors.RegisterEditor(TErrorSet, TfmErrorSetEditor);
   Screen.OnActiveFormChange := UpdateMenuItems;
 end;
 

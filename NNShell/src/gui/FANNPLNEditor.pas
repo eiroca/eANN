@@ -23,8 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, RXSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, eANN, eANNPLN;
+  ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
+  FEditor, FANNEditor, eANNCore, eANNPLN, JvExMask;
 
 type
   TfmANNPLNEditor = class(TfmANNEditor)
@@ -36,21 +36,21 @@ type
     Label22: TLabel;
     Label30: TLabel;
     Label15: TLabel;
-    iEps: TRxSpinEdit;
-    iEta: TRxSpinEdit;
-    iSpr: TRxSpinEdit;
+    iEps: TJvSpinEdit;
+    iEta: TJvSpinEdit;
+    iSpr: TJvSpinEdit;
     Bevel9: TBevel;
     Label23: TLabel;
     Label24: TLabel;
     Label25: TLabel;
     Label31: TLabel;
-    iLmd: TRxSpinEdit;
-    iRoI: TRxSpinEdit;
-    iRoO: TRxSpinEdit;
+    iLmd: TJvSpinEdit;
+    iRoI: TJvSpinEdit;
+    iRoO: TJvSpinEdit;
     Bevel10: TBevel;
     Label13: TLabel;
     Label14: TLabel;
-    iWin: TRxSpinEdit;
+    iWin: TJvSpinEdit;
     procedure pcEditorChange(Sender: TObject);
     procedure iEpsChange(Sender: TObject);
     procedure iEtaChange(Sender: TObject);

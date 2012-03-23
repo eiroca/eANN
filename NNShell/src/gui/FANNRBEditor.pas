@@ -23,8 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, RXSpin, ComCtrls, Mask,
-  FEditor, FANNEditor;
+  ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
+  FEditor, FANNEditor, JvExMask;
 
 type
   TfmANNRBEditor = class(TfmANNEditor)
@@ -53,9 +53,9 @@ type
     Label24: TLabel;
     Label30: TLabel;
     Label31: TLabel;
-    iMaxNeu: TRxSpinEdit;
-    iMaxErr: TRxSpinEdit;
-    iRo: TRxSpinEdit;
+    iMaxNeu: TJvSpinEdit;
+    iMaxErr: TJvSpinEdit;
+    iRo: TJvSpinEdit;
     cbMaxNeu: TCheckBox;
     procedure pcEditorChange(Sender: TObject);
     procedure cbMaxNeuClick(Sender: TObject);

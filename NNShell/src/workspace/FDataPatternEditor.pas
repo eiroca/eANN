@@ -23,15 +23,15 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  FEditor, FDataListEditor, rxToolEdit, StdCtrls, Grids, RXGrids, Mask, RXSpin,
-  Buttons, ComCtrls, ExtCtrls;
+  FEditor, FDataListEditor, JvToolEdit, StdCtrls, Grids, JvGrids, Mask, JvSpin,
+  Buttons, ComCtrls, ExtCtrls, JvExGrids, JvExMask;
 
 type
   TfmDataPatternEditor = class(TfmDataListEditor)
     Label3: TLabel;
     cbKind: TComboBox;
     cbAutoLoad: TCheckBox;
-    iFileName: TFilenameEdit;
+    iFileName: TJvFilenameEdit;
     Label2: TLabel;
     btLoadPattern: TBitBtn;
     lbDim: TLabel;

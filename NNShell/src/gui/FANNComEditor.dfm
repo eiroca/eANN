@@ -55,7 +55,7 @@ inherited fmANNComEditor: TfmANNComEditor
             Height = 13
             Caption = 'NumNeu'
           end
-          object iEta: TRxSpinEdit
+          object iEta: TJvSpinEdit
             Left = 175
             Top = 190
             Width = 76
@@ -67,7 +67,7 @@ inherited fmANNComEditor: TfmANNComEditor
             TabOrder = 8
             OnChange = iEtaChange
           end
-          object iNumNeu: TRxSpinEdit
+          object iNumNeu: TJvSpinEdit
             Left = 65
             Top = 190
             Width = 76

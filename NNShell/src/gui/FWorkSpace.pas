@@ -22,14 +22,15 @@ unit FWorkSpace;
 interface
 
 uses
-  FEditor, eANN, eDataPick, uWorkSpace, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, RXSplit, Menus, StdCtrls, ImgList, uANNWorkspace;
+  FEditor, eANNCore, eDataPick, uWorkSpace, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, ExtCtrls, JvSplitter, Menus, StdCtrls, ImgList, uANNWorkspace,
+  JvExExtCtrls;
 
 type
   TfmWorkSpace = class(TForm)
     ImageList1: TImageList;
     tvWorkSpace: TTreeView;
-    RxSplitter1: TRxSplitter;
+    RxSplitter1: TJvSplitter;
     mnWorkSpace: TMainMenu;
     WorkSpace1: TMenuItem;
     NewNeuralNetwork1: TMenuItem;

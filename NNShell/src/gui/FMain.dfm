@@ -22,7 +22,7 @@ object fmMain: TfmMain
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object sbStatus: TSpeedBar
+  object sbStatus: TJvSpeedBar
     Left = 0
     Top = 339
     Width = 504
@@ -37,7 +37,6 @@ object fmMain: TfmMain
     BtnOffsetVert = 4
     BtnWidth = 24
     BtnHeight = 23
-    IniStorage = fp
     BevelInner = bvLowered
     TabOrder = 0
     OnApplyAlign = sbStatusApplyAlign
@@ -62,7 +61,7 @@ object fmMain: TfmMain
       Progress = 0
     end
   end
-  object sbMain: TSpeedBar
+  object sbMain: TJvSpeedBar
     Left = 0
     Top = 0
     Width = 504
@@ -81,16 +80,16 @@ object fmMain: TfmMain
     TabOrder = 1
     OnDblClick = miToolsToolbarClick
     InternalVer = 1
-    object ssFile: TSpeedbarSection
+    object ssFile: TJvSpeedBarSection
       Caption = 'File'
     end
-    object ssWorkSpace: TSpeedbarSection
+    object ssWorkSpace: TJvSpeedBarSection
       Caption = 'Workspace'
     end
-    object ssTools: TSpeedbarSection
+    object ssTools: TJvSpeedBarSection
       Caption = 'Tools'
     end
-    object siLoad: TSpeedItem
+    object siLoad: TJvSpeedItem
       Caption = 'Open Workspace'
       Glyph.Data = {
         56070000424D5607000000000000360400002800000028000000140000000100
@@ -161,7 +160,7 @@ object fmMain: TfmMain
       OnClick = miFileOpenClick
       SectionName = 'File'
     end
-    object siSave: TSpeedItem
+    object siSave: TJvSpeedItem
       Caption = 'Save Workspace'
       Glyph.Data = {
         56070000424D5607000000000000360400002800000028000000140000000100
@@ -232,7 +231,7 @@ object fmMain: TfmMain
       OnClick = miFileSaveClick
       SectionName = 'File'
     end
-    object siNew: TSpeedItem
+    object siNew: TJvSpeedItem
       Caption = 'New WorkSpace'
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -255,7 +254,7 @@ object fmMain: TfmMain
       OnClick = miFileNewClick
       SectionName = 'File'
     end
-    object siExit: TSpeedItem
+    object siExit: TJvSpeedItem
       Caption = 'Exit program'
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -277,7 +276,7 @@ object fmMain: TfmMain
       Top = 4
       SectionName = 'File'
     end
-    object siWSDelete: TSpeedItem
+    object siWSDelete: TJvSpeedItem
       Caption = 'Delete Workspace Object'
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -301,7 +300,7 @@ object fmMain: TfmMain
       OnClick = siWSDeleteClick
       SectionName = 'Workspace'
     end
-    object siCalculator: TSpeedItem
+    object siCalculator: TJvSpeedItem
       Caption = 'Calculator'
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -323,7 +322,7 @@ object fmMain: TfmMain
       OnClick = miToolsCalcultatorClick
       SectionName = 'Tools'
     end
-    object siCustomize: TSpeedItem
+    object siCustomize: TJvSpeedItem
       Caption = 'Customize Toolbar'
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -426,19 +425,11 @@ object fmMain: TfmMain
       end
     end
   end
-  object fp: TFormPlacement
-    IniSection = 'ShellWindow'
-    UseRegistry = False
-    OnSavePlacement = SetINIPath
-    OnRestorePlacement = SetINIPath
-    Left = 110
-    Top = 40
-  end
-  object dlgCalc: TRxCalculator
+  object dlgCalc: TJvCalculator
     Left = 50
     Top = 40
   end
-  object AppEvents1: TAppEvents
+  object AppEvents1: TJvAppEvents
     OnHint = AppEvents1Hint
     Left = 20
     Top = 40
@@ -1165,5 +1156,21 @@ object fmMain: TfmMain
       FEBF80030003DCF7FC9F80070003FF0FFDDF807F0003FFFFFDDF80FF8007FFFF
       FDDF81FFF87FFFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
+  end
+  object AppStorage: TJvAppIniFileStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    SubStorages = <>
+    Left = 104
+    Top = 96
+  end
+  object fp: TJvFormStorage
+    AppStorage = AppStorage
+    AppStoragePath = '%FORM_NAME%\'
+    OnSavePlacement = SetINIPath
+    OnRestorePlacement = SetINIPath
+    StoredValues = <>
+    Left = 168
+    Top = 96
   end
 end

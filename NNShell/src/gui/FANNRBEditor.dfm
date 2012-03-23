@@ -78,7 +78,7 @@ inherited fmANNRBEditor: TfmANNRBEditor
             Height = 13
             Caption = ' Neurons properties '
           end
-          object iMaxNeu: TRxSpinEdit
+          object iMaxNeu: TJvSpinEdit
             Left = 100
             Top = 215
             Width = 76
@@ -88,7 +88,7 @@ inherited fmANNRBEditor: TfmANNRBEditor
             TabOrder = 8
             OnChange = iMaxNeuChange
           end
-          object iMaxErr: TRxSpinEdit
+          object iMaxErr: TJvSpinEdit
             Left = 100
             Top = 190
             Width = 76
@@ -100,7 +100,7 @@ inherited fmANNRBEditor: TfmANNRBEditor
             TabOrder = 9
             OnChange = iMaxErrChange
           end
-          object iRo: TRxSpinEdit
+          object iRo: TJvSpinEdit
             Left = 330
             Top = 215
             Width = 86

@@ -23,7 +23,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  FEditor, StdCtrls, Buttons, ComCtrls, ExtCtrls, RXSpin, Mask;
+  FEditor, StdCtrls, Buttons, ComCtrls, ExtCtrls, JvSpin, Mask, JvExMask;
 
 type
   TfmANNEditor = class(TfmEditor)
@@ -74,9 +74,9 @@ type
     lbDesc: TLabel;
     Label18: TLabel;
     cbErrMode: TCheckBox;
-    iErrParam: TRxSpinEdit;
-    iIter: TRxSpinEdit;
-    iProgStep: TRxSpinEdit;
+    iErrParam: TJvSpinEdit;
+    iIter: TJvSpinEdit;
+    iProgStep: TJvSpinEdit;
     cbDataIn: TComboBox;
     cbDataOut: TComboBox;
     iName: TEdit;
@@ -128,7 +128,7 @@ implementation
 
 uses
   FOutput,
-  eDataPick, eLibMath, eLibStat, eANN;
+  eDataPick, eLibMath, eLibStat, eANNCore;
 
 procedure TfmANNEditor.UpdateInfo;
 begin
@@ -167,13 +167,13 @@ begin
   UpdateInfo;
   cbProgressive.Checked:= niProgressive in Net.NetInfos;
   OP:= Net.SupportedOperation;
-  cbReset.Checked:= eANN.noReset in Op; btReset.Enabled:= eANN.noReset in Op;
-  cbApply.Checked:= eANN.noApply in Op; btApply.Enabled:= eANN.noApply in Op;
-  cbTrain.Checked:= eANN.noTrain in Op; btTrain.Enabled:= eANN.noTrain in Op;
-  cbError.Checked:= eANN.noError in Op; btError.Enabled:= eANN.noError in Op;
-  cbLearn.Checked:= eANN.noLearn in Op;
-  cbSimul.Checked:= eANN.noSimul in Op;
-  cbFindCluster.Checked:= eANN.noFindCluster in Op;
+  cbReset.Checked:= eANNCore.noReset in Op; btReset.Enabled:= eANNCore.noReset in Op;
+  cbApply.Checked:= eANNCore.noApply in Op; btApply.Enabled:= eANNCore.noApply in Op;
+  cbTrain.Checked:= eANNCore.noTrain in Op; btTrain.Enabled:= eANNCore.noTrain in Op;
+  cbError.Checked:= eANNCore.noError in Op; btError.Enabled:= eANNCore.noError in Op;
+  cbLearn.Checked:= eANNCore.noLearn in Op;
+  cbSimul.Checked:= eANNCore.noSimul in Op;
+  cbFindCluster.Checked:= eANNCore.noFindCluster in Op;
   cbAcquire.Checked:= noAcquire in Op;
   iErrParam.Value:= Net.Options.ErrorParam;
   if Net.Options.ErrorMode = imNone then begin
@@ -354,7 +354,7 @@ procedure TfmANNEditor.iNameKeyPress(Sender: TObject; var Key: Char);
 begin
   inherited;
   if (Key>=#32) and (Key<>#127) then begin
-    if not (Key in ['A'..'Z','a'..'z','0'..'9','_']) then begin
+    if not CharInSet(Key, ['A'..'Z','a'..'z','0'..'9','_']) then begin
       Key:= #0;
       Beep;
     end;

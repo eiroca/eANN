@@ -23,8 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, Grids, RXGrids, RXSpin, StdCtrls, Buttons, Mask,
-  FEditor;
+  ComCtrls, ExtCtrls, Grids, JvGrids, JvSpin, StdCtrls, Buttons, Mask,
+  FEditor, JvExGrids, JvExMask;
 
 type
   TfmDataListEditor = class(TfmEditor)
@@ -34,9 +34,9 @@ type
     Panel1: TPanel;
     Label4: TLabel;
     Label6: TLabel;
-    iNumCif: TRxSpinEdit;
-    iNumDec: TRxSpinEdit;
-    dgDati: TRxDrawGrid;
+    iNumCif: TJvSpinEdit;
+    iNumDec: TJvSpinEdit;
+    dgDati: TJvDrawGrid;
     ScrollBox1: TScrollBox;
     iName: TEdit;
     btRename: TBitBtn;
@@ -46,8 +46,8 @@ type
     sdSave: TSaveDialog;
     Label1: TLabel;
     Label8: TLabel;
-    iDim: TRxSpinEdit;
-    iCount: TRxSpinEdit;
+    iDim: TJvSpinEdit;
+    iCount: TJvSpinEdit;
     btSave: TBitBtn;
     btLoad: TBitBtn;
     odOpen: TOpenDialog;
@@ -90,7 +90,7 @@ implementation
 {$R *.DFM}
 
 uses
-  eLib, FOutput, uWorkSpace, eDataPick;
+  eLibCore, FOutput, uWorkSpace, eDataPick;
 
 procedure TfmDataListEditor.ShowEditor;
 begin
@@ -128,7 +128,7 @@ function TfmDataListEditor.dgDatiAcceptEditKey(Sender: TObject;
   var Key: Char): Boolean;
 begin
   inherited;
-  Result:= Key in ['0'..'9',DecimalSeparator,'+','-'];
+  Result:= CharInSet(Key, ['0'..'9',FormatSettings.DecimalSeparator,'+','-']);
 end;
 
 procedure TfmDataListEditor.dgDatiDrawCell(Sender: TObject; Col,

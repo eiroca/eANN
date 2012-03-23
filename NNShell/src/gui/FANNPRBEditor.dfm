@@ -140,7 +140,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             Height = 13
             Caption = 'Delta'
           end
-          object iTotErr: TRxSpinEdit
+          object iTotErr: TJvSpinEdit
             Left = 85
             Top = 190
             Width = 70
@@ -152,7 +152,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 8
             OnChange = iTotErrChange
           end
-          object iAveErr: TRxSpinEdit
+          object iAveErr: TJvSpinEdit
             Left = 85
             Top = 220
             Width = 70
@@ -164,7 +164,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 9
             OnChange = iAveErrChange
           end
-          object iMaxErr: TRxSpinEdit
+          object iMaxErr: TJvSpinEdit
             Left = 85
             Top = 255
             Width = 70
@@ -185,7 +185,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 11
             OnClick = cbAgedClick
           end
-          object iDeadAge: TRxSpinEdit
+          object iDeadAge: TJvSpinEdit
             Left = 230
             Top = 205
             Width = 76
@@ -197,7 +197,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 12
             OnChange = iDeadAgeChange
           end
-          object iSpread: TRxSpinEdit
+          object iSpread: TJvSpinEdit
             Left = 230
             Top = 230
             Width = 76
@@ -209,7 +209,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 13
             OnChange = iSpreadChange
           end
-          object iDecay: TRxSpinEdit
+          object iDecay: TJvSpinEdit
             Left = 230
             Top = 255
             Width = 76
@@ -221,7 +221,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 14
             OnChange = iDecayChange
           end
-          object iRo: TRxSpinEdit
+          object iRo: TJvSpinEdit
             Left = 360
             Top = 205
             Width = 76
@@ -233,7 +233,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 15
             OnChange = iRoChange
           end
-          object iDelta: TRxSpinEdit
+          object iDelta: TJvSpinEdit
             Left = 360
             Top = 255
             Width = 76

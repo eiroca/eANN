@@ -23,7 +23,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, Menus, StdCtrls, ComCtrls, rxAppEvent;
+  Forms, Dialogs, Menus, StdCtrls, ComCtrls, JvAppEvent, JvComponentBase;
 
 type
   TfmOutput = class(TForm)
@@ -43,7 +43,7 @@ type
     odSaveScr: TSaveDialog;
     meOut: TMemo;
     N2: TMenuItem;
-    AppEvents1: TAppEvents;
+    AppEvents1: TJvAppEvents;
     procedure FormCreate(Sender: TObject);
     procedure CloseWindow1Click(Sender: TObject);
     procedure miEditCopyClick(Sender: TObject);
@@ -70,7 +70,7 @@ implementation
 {$R *.DFM}
 
 uses
-  eLib, uOpzioni;
+  eLibCore, uOpzioni;
 
 var
   fmOutput: TfmOutput = nil;

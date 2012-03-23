@@ -6,10 +6,6 @@ inherited fmDataPatternEditor: TfmDataPatternEditor
     inherited pcEditor: TPageControl
       ActivePage = tsData
       inherited tsProp: TTabSheet
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         inherited ScrollBox1: TScrollBox
           object Label3: TLabel [2]
             Left = 5
@@ -38,7 +34,6 @@ inherited fmDataPatternEditor: TfmDataPatternEditor
             Width = 91
             Height = 21
             Style = csDropDownList
-            ItemHeight = 0
             TabOrder = 3
             OnChange = cbKindChange
             Items.Strings = (
@@ -54,12 +49,11 @@ inherited fmDataPatternEditor: TfmDataPatternEditor
             TabOrder = 4
             OnClick = cbAutoLoadClick
           end
-          object iFileName: TFilenameEdit [12]
+          object iFileName: TJvFilenameEdit [12]
             Left = 70
             Top = 135
             Width = 186
             Height = 21
-            NumGlyphs = 1
             TabOrder = 5
             Text = 'iFileName'
             OnChange = iFileNameChange
@@ -73,10 +67,10 @@ inherited fmDataPatternEditor: TfmDataPatternEditor
             TabOrder = 9
             OnClick = btLoadPatternClick
           end
-          inherited iDim: TRxSpinEdit
+          inherited iDim: TJvSpinEdit
             TabOrder = 7
           end
-          inherited iCount: TRxSpinEdit
+          inherited iCount: TJvSpinEdit
             TabOrder = 8
           end
           inherited btSave: TBitBtn

@@ -120,7 +120,7 @@ object fmOutput: TfmOutput
     Left = 275
     Top = 25
   end
-  object AppEvents1: TAppEvents
+  object AppEvents1: TJvAppEvents
     OnIdle = AppEvents1Idle
     Left = 165
     Top = 20

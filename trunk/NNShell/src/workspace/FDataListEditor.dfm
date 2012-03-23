@@ -26,6 +26,10 @@ inherited fmDataListEditor: TfmDataListEditor
       OnChanging = pcEditorChanging
       object tsProp: TTabSheet
         Caption = 'Properties'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ScrollBox1: TScrollBox
           Left = 0
           Top = 0
@@ -77,8 +81,6 @@ inherited fmDataListEditor: TfmDataListEditor
             Width = 81
             Height = 28
             Caption = 'Rename'
-            TabOrder = 1
-            OnClick = btRenameClick
             Glyph.Data = {
               06020000424D0602000000000000760000002800000028000000140000000100
               0400000000009001000000000000000000001000000000000000000000000000
@@ -99,6 +101,8 @@ inherited fmDataListEditor: TfmDataListEditor
               33333333333333333333}
             NumGlyphs = 2
             Spacing = 5
+            TabOrder = 1
+            OnClick = btRenameClick
           end
           object iDesc: TEdit
             Left = 70
@@ -109,7 +113,7 @@ inherited fmDataListEditor: TfmDataListEditor
             Text = 'iDesc'
             OnChange = iDescChange
           end
-          object iDim: TRxSpinEdit
+          object iDim: TJvSpinEdit
             Left = 335
             Top = 10
             Width = 66
@@ -118,7 +122,7 @@ inherited fmDataListEditor: TfmDataListEditor
             TabOrder = 3
             OnChange = iDimChange
           end
-          object iCount: TRxSpinEdit
+          object iCount: TJvSpinEdit
             Left = 335
             Top = 35
             Width = 66
@@ -175,7 +179,7 @@ inherited fmDataListEditor: TfmDataListEditor
             Height = 13
             Caption = 'Decimals'
           end
-          object iNumCif: TRxSpinEdit
+          object iNumCif: TJvSpinEdit
             Left = 35
             Top = 5
             Width = 61
@@ -187,7 +191,7 @@ inherited fmDataListEditor: TfmDataListEditor
             TabOrder = 0
             OnChange = iNumCifChange
           end
-          object iNumDec: TRxSpinEdit
+          object iNumDec: TJvSpinEdit
             Left = 155
             Top = 5
             Width = 61
@@ -199,7 +203,7 @@ inherited fmDataListEditor: TfmDataListEditor
             OnChange = iNumDecChange
           end
         end
-        object dgDati: TRxDrawGrid
+        object dgDati: TJvDrawGrid
           Left = 0
           Top = 31
           Width = 439
@@ -219,6 +223,7 @@ inherited fmDataListEditor: TfmDataListEditor
           OnGetEditText = dgDatiGetEditText
           OnSelectCell = dgDatiSelectCell
           OnSetEditText = dgDatiSetEditText
+          DrawButtons = False
           OnAcceptEditKey = dgDatiAcceptEditKey
           ColWidths = (
             80

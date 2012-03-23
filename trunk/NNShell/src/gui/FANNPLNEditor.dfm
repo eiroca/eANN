@@ -3,6 +3,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
   Top = 181
   Caption = 'fmANNPLNEditor'
   ClientHeight = 302
+  ExplicitWidth = 320
   ExplicitHeight = 336
   PixelsPerInch = 96
   TextHeight = 13
@@ -115,7 +116,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             Height = 13
             Caption = 'Winnner(s)'
           end
-          object iEps: TRxSpinEdit
+          object iEps: TJvSpinEdit
             Left = 60
             Top = 190
             Width = 76
@@ -127,7 +128,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             TabOrder = 8
             OnChange = iEpsChange
           end
-          object iEta: TRxSpinEdit
+          object iEta: TJvSpinEdit
             Left = 60
             Top = 215
             Width = 76
@@ -139,7 +140,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             TabOrder = 9
             OnChange = iEtaChange
           end
-          object iSpr: TRxSpinEdit
+          object iSpr: TJvSpinEdit
             Left = 60
             Top = 240
             Width = 76
@@ -151,7 +152,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             TabOrder = 10
             OnChange = iSprChange
           end
-          object iLmd: TRxSpinEdit
+          object iLmd: TJvSpinEdit
             Left = 270
             Top = 240
             Width = 76
@@ -163,7 +164,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             TabOrder = 11
             OnChange = iLmdChange
           end
-          object iRoI: TRxSpinEdit
+          object iRoI: TJvSpinEdit
             Left = 270
             Top = 190
             Width = 76
@@ -175,7 +176,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             TabOrder = 12
             OnChange = iRoIChange
           end
-          object iRoO: TRxSpinEdit
+          object iRoO: TJvSpinEdit
             Left = 270
             Top = 215
             Width = 76
@@ -188,7 +189,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             TabOrder = 13
             OnChange = iRoOChange
           end
-          object iWin: TRxSpinEdit
+          object iWin: TJvSpinEdit
             Left = 375
             Top = 210
             Width = 59

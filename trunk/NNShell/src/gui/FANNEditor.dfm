@@ -163,7 +163,7 @@ inherited fmANNEditor: TfmANNEditor
             TabOrder = 0
             OnClick = cbErrModeClick
           end
-          object iErrParam: TRxSpinEdit
+          object iErrParam: TJvSpinEdit
             Left = 145
             Top = 113
             Width = 76
@@ -175,7 +175,7 @@ inherited fmANNEditor: TfmANNEditor
             TabOrder = 1
             OnChange = iErrParamChange
           end
-          object iIter: TRxSpinEdit
+          object iIter: TJvSpinEdit
             Left = 65
             Top = 138
             Width = 66
@@ -188,7 +188,7 @@ inherited fmANNEditor: TfmANNEditor
             TabOrder = 2
             OnChange = iIterChange
           end
-          object iProgStep: TRxSpinEdit
+          object iProgStep: TJvSpinEdit
             Left = 255
             Top = 138
             Width = 66
@@ -207,7 +207,6 @@ inherited fmANNEditor: TfmANNEditor
             Width = 100
             Height = 21
             Style = csDropDownList
-            ItemHeight = 0
             TabOrder = 4
             OnChange = cbDataInChange
           end
@@ -217,7 +216,6 @@ inherited fmANNEditor: TfmANNEditor
             Width = 100
             Height = 21
             Style = csDropDownList
-            ItemHeight = 0
             TabOrder = 5
             OnChange = cbDataOutChange
           end
@@ -237,8 +235,6 @@ inherited fmANNEditor: TfmANNEditor
             Width = 81
             Height = 28
             Caption = 'Rename'
-            TabOrder = 7
-            OnClick = btRenameClick
             Glyph.Data = {
               06020000424D0602000000000000760000002800000028000000140000000100
               0400000000009001000000000000000000001000000000000000000000000000
@@ -259,6 +255,8 @@ inherited fmANNEditor: TfmANNEditor
               33333333333333333333}
             NumGlyphs = 2
             Spacing = 5
+            TabOrder = 7
+            OnClick = btRenameClick
           end
         end
       end

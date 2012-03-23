@@ -24,9 +24,11 @@ interface
 uses
   uWorkSpace, FWorkSpace, FEditor,
   SysUtils, WinTypes, WinProcs, Messages, Classes,
-  eLibMath, eANN, eDataPick,
-  Graphics, Controls, Forms, Dialogs, RxCalc, Menus, Gauges, StdCtrls, ExtCtrls,
-  ImgList, StdActns, ActnList, rxAppEvent, rxPlacemnt, rxSpeedbar;
+  eLibMath, eANNCore, eDataPick,
+  Graphics, Controls, Forms, Dialogs, JVCalc, Menus, Gauges, StdCtrls, ExtCtrls,
+  ImgList, StdActns, ActnList, JvFormPlacement, JvAppEvent, JvSpeedbar,
+  JvAppStorage, JvAppIniStorage, JvBaseDlg, JvComponentBase, JvExExtCtrls,
+  JvExtComponent;
 
 type
   TfmMain = class(TForm)
@@ -35,18 +37,17 @@ type
     mnHelp: TMenuItem;
     miAbout: TMenuItem;
     miFileExit: TMenuItem;
-    fp: TFormPlacement;
-    dlgCalc: TRxCalculator;
+    dlgCalc: TJVCalculator;
     miToolsCalcultator: TMenuItem;
-    AppEvents1: TAppEvents;
-    sbStatus: TSpeedBar;
+    AppEvents1: TJvAppEvents;
+    sbStatus: TJvSpeedbar;
     lbStatus: TLabel;
     Progress: TGauge;
-    sbMain: TSpeedBar;
-    ssFile: TSpeedbarSection;
-    siLoad: TSpeedItem;
-    siSave: TSpeedItem;
-    siNew: TSpeedItem;
+    sbMain: TJvSpeedbar;
+    ssFile: TJvSpeedbarSection;
+    siLoad: TJvSpeedItem;
+    siSave: TJvSpeedItem;
+    siNew: TJvSpeedItem;
     miFileNew: TMenuItem;
     miFileOpen: TMenuItem;
     miFileClose: TMenuItem;
@@ -54,15 +55,15 @@ type
     miFileSaveAs: TMenuItem;
     N1: TMenuItem;
     miToolCalc: TMenuItem;
-    siExit: TSpeedItem;
+    siExit: TJvSpeedItem;
     sdWorkspace: TSaveDialog;
     odWorkSpace: TOpenDialog;
     miToolsToolbar: TMenuItem;
-    ssWorkSpace: TSpeedbarSection;
-    siWSDelete: TSpeedItem;
-    ssTools: TSpeedbarSection;
-    siCalculator: TSpeedItem;
-    siCustomize: TSpeedItem;
+    ssWorkSpace: TJvSpeedbarSection;
+    siWSDelete: TJvSpeedItem;
+    ssTools: TJvSpeedbarSection;
+    siCalculator: TJvSpeedItem;
+    siCustomize: TJvSpeedItem;
     ActionList1: TActionList;
     aFileExit: TFileExit;
     aWindowCascade: TWindowCascade;
@@ -77,6 +78,8 @@ type
     ileVertically1: TMenuItem;
     ileHorizontally1: TMenuItem;
     Cascade1: TMenuItem;
+    AppStorage: TJvAppIniFileStorage;
+    fp: TJvFormStorage;
     procedure FormCreate(Sender: TObject);
     procedure miAboutClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -113,7 +116,7 @@ implementation
 {$R *.DFM}
 
 uses
-  uOpzioni, eLib, FOutput, FAboutGPL,
+  uOpzioni, eLibCore, FOutput, FAboutGPL,
   eANNPRB, eANNRB, eANNPLN, eANNMLP, eANNCom, 
   FErrorSetEditor,
   FDataPatternEditor, FDataListEditor,
@@ -164,7 +167,7 @@ end;
 
 procedure TfmMain.SetINIPath(Sender: TObject);
 begin
-  fp.INIFileName:= Opzioni.INIPath;
+  AppStorage.FileName:= Opzioni.INIPath;
 end;
 
 var

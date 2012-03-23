@@ -22,7 +22,7 @@ unit uANNWorkSpace;
 interface
 
 uses
-  Classes, uWorkspace, eANN;
+  Classes, uWorkspace, eANNCore;
 
 type
 

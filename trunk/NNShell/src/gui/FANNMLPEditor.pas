@@ -23,8 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, RXSpin, ComCtrls, Grids, RXGrids, Mask,
-  FEditor, eANN, FANNEditor, eANNMLP;
+  ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Grids, JvGrids, Mask,
+  FEditor, eANNCore, FANNEditor, eANNMLP, JvExGrids, JvExMask;
 
 type
   TfmANNMLPEditor = class(TfmANNEditor)
@@ -33,13 +33,13 @@ type
     Label22: TLabel;
     Label23: TLabel;
     Label30: TLabel;
-    iLC: TRxSpinEdit;
-    iMC: TRxSpinEdit;
-    iTol: TRxSpinEdit;
+    iLC: TJvSpinEdit;
+    iMC: TJvSpinEdit;
+    iTol: TJvSpinEdit;
     tsLayers: TTabSheet;
     ScrollBox4: TScrollBox;
     Panel1: TPanel;
-    dgLayers: TRxDrawGrid;
+    dgLayers: TJvDrawGrid;
     btAddLayer: TBitBtn;
     BitBtn2: TBitBtn;
     btModifyNet: TBitBtn;
@@ -50,8 +50,6 @@ type
     procedure iTolChange(Sender: TObject);
     procedure dgLayersGetPicklist(Sender: TObject; ACol, ARow: Longint;
       PickList: TStrings);
-    procedure dgLayersGetEditStyle(Sender: TObject; ACol, ARow: Longint;
-      var Style: TInplaceEditStyle);
     procedure dgLayersDrawCell(Sender: TObject; Col, Row: Longint;
       Rect: TRect; State: TGridDrawState);
     procedure dgLayersShowEditor(Sender: TObject; ACol, ARow: Longint;
@@ -68,6 +66,8 @@ type
     procedure BitBtn2Click(Sender: TObject);
     procedure btModifyNetClick(Sender: TObject);
     procedure cbNormClick(Sender: TObject);
+    procedure dgLayersGetEditStyle(Sender: TObject; ACol, ARow: Integer;
+      var Style: TEditStyle);
   protected
     { Private declarations }
     NeuKind: TStrings;
@@ -96,7 +96,7 @@ implementation
 {$R *.DFM}
 
 uses
-  eLib;
+  eLibCore;
 
 constructor TLayerDesc.Create(ACollection: TCollection);
 begin
@@ -194,16 +194,6 @@ begin
   PickList.AddStrings(NeuKind);
 end;
 
-procedure TfmANNMLPEditor.dgLayersGetEditStyle(Sender: TObject; ACol,
-  ARow: Longint; var Style: TInplaceEditStyle);
-begin
-  inherited;
-  case ACol of
-    1: Style:= ieSimple;
-    2: Style:= iePickList;
-  end;
-end;
-
 function TfmANNMLPEditor.GetText(Col, Row: Longint): string;
 var
   L: TLayerDesc;
@@ -259,6 +249,16 @@ procedure TfmANNMLPEditor.dgLayersGetEditAlign(Sender: TObject; ACol,
 begin
   inherited;
   if ACol<>2 then Alignment:= taRightJustify;
+end;
+
+procedure TfmANNMLPEditor.dgLayersGetEditStyle(Sender: TObject; ACol,
+  ARow: Integer; var Style: TEditStyle);
+begin
+  inherited;
+  case ACol of
+    1: Style:= ieSimple;
+    2: Style:= iePickList;
+  end;
 end;
 
 procedure TfmANNMLPEditor.dgLayersGetEditText(Sender: TObject; ACol,

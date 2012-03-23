@@ -2,6 +2,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
   Caption = 'fmANNMLPEditor'
   ClientHeight = 249
   OnCreate = FormCreate
+  ExplicitWidth = 320
   ExplicitHeight = 283
   PixelsPerInch = 96
   TextHeight = 13
@@ -56,7 +57,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
             Height = 13
             Caption = ' Learning parameters '
           end
-          object iLC: TRxSpinEdit
+          object iLC: TJvSpinEdit
             Left = 30
             Top = 190
             Width = 76
@@ -68,7 +69,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
             TabOrder = 8
             OnChange = iLCChange
           end
-          object iMC: TRxSpinEdit
+          object iMC: TJvSpinEdit
             Left = 140
             Top = 190
             Width = 76
@@ -80,7 +81,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
             TabOrder = 9
             OnChange = iMCChange
           end
-          object iTol: TRxSpinEdit
+          object iTol: TJvSpinEdit
             Left = 285
             Top = 190
             Width = 76
@@ -105,6 +106,10 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
       end
       object tsLayers: TTabSheet [1]
         Caption = 'Layers'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ScrollBox4: TScrollBox
           Left = 0
           Top = 0
@@ -148,7 +153,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
               OnClick = btModifyNetClick
             end
           end
-          object dgLayers: TRxDrawGrid
+          object dgLayers: TJvDrawGrid
             Left = 0
             Top = 41
             Width = 454
@@ -162,6 +167,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
             OnDrawCell = dgLayersDrawCell
             OnGetEditText = dgLayersGetEditText
             OnSetEditText = dgLayersSetEditText
+            DrawButtons = False
             OnShowEditor = dgLayersShowEditor
             OnGetEditAlign = dgLayersGetEditAlign
             OnGetEditStyle = dgLayersGetEditStyle

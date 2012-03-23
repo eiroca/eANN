@@ -21,6 +21,13 @@ object fmWorkSpace: TfmWorkSpace
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
+  object RxSplitter1: TJvSplitter
+    Left = 250
+    Top = 0
+    Width = 5
+    Height = 489
+    ExplicitLeft = 176
+  end
   object tvWorkSpace: TTreeView
     Left = 0
     Top = 0
@@ -33,20 +40,12 @@ object fmWorkSpace: TfmWorkSpace
     TabOrder = 0
     OnChange = tvWorkSpaceChange
     Items.NodeData = {
-      0101000000190000000000000000000000FFFFFFFFFFFFFFFF00000000040000
-      0000190000000100000001000000FFFFFFFFFFFFFFFF00000000000000000019
-      0000000100000001000000FFFFFFFFFFFFFFFF00000000000000000019000000
-      0100000001000000FFFFFFFFFFFFFFFF00000000000000000019000000010000
-      0001000000FFFFFFFFFFFFFFFF000000000000000000}
-  end
-  object RxSplitter1: TRxSplitter
-    Left = 250
-    Top = 0
-    Width = 5
-    Height = 489
-    ControlFirst = tvWorkSpace
-    Align = alLeft
-    ExplicitLeft = 176
+      03010000001E0000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF000000
+      000400000001001E0000000100000001000000FFFFFFFFFFFFFFFFFFFFFFFF00
+      0000000000000001001E0000000100000001000000FFFFFFFFFFFFFFFFFFFFFF
+      FF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFFFFFF
+      FFFFFF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFF
+      FFFFFFFFFF00000000000000000100}
   end
   object pnWorkSpace: TPanel
     Left = 255
@@ -55,8 +54,7 @@ object fmWorkSpace: TfmWorkSpace
     Height = 489
     Align = alLeft
     BevelOuter = bvNone
-    TabOrder = 2
-    ExplicitLeft = 181
+    TabOrder = 1
   end
   object ImageList1: TImageList
     Height = 32

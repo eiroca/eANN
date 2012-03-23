@@ -23,8 +23,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, RXSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, eANN, eANNRB, eANNPRB;
+  StdCtrls, ExtCtrls, Buttons, JvSpin, ComCtrls, Mask,
+  FEditor, FANNEditor, eANNCore, eANNRB, eANNPRB, JvExMask;
   
 type                 
   TfmANNPRBEditor = class(TfmANNEditor)
@@ -60,24 +60,24 @@ type
     Label22: TLabel;
     Label23: TLabel;
     Label30: TLabel;
-    iTotErr: TRxSpinEdit;
-    iAveErr: TRxSpinEdit;
-    iMaxErr: TRxSpinEdit;
+    iTotErr: TJvSpinEdit;
+    iAveErr: TJvSpinEdit;
+    iMaxErr: TJvSpinEdit;
     Label28: TLabel;
     Label29: TLabel;
     Bevel10: TBevel;
     Label27: TLabel;
     Label32: TLabel;
     cbAged: TCheckBox;
-    iDeadAge: TRxSpinEdit;
-    iSpread: TRxSpinEdit;
-    iDecay: TRxSpinEdit;
+    iDeadAge: TJvSpinEdit;
+    iSpread: TJvSpinEdit;
+    iDecay: TJvSpinEdit;
     Bevel9: TBevel;
     Label24: TLabel;
     Label25: TLabel;
     Label31: TLabel;
-    iRo: TRxSpinEdit;
-    iDelta: TRxSpinEdit;
+    iRo: TJvSpinEdit;
+    iDelta: TJvSpinEdit;
     Label13: TLabel;
     Label14: TLabel;
     procedure iTotErrChange(Sender: TObject);

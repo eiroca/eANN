@@ -37,7 +37,7 @@ unit eANNPLN;
 interface
 
 uses
-  Classes, SysUtils, eANN, eANNUtil, eANNMsg, eANNCom, eLibMath, eDataPick;
+  Classes, SysUtils, eANNCore, eANNUtil, eANNMsg, eANNCom, eLibMath, eDataPick;
 
 type
 

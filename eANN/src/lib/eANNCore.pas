@@ -51,7 +51,7 @@ Some definition used in this documentation @br
 @bold(i in I set), I number of elements in input vectors restricted to elements that have the magnitude grater then 'IgnoreIf' soil (see also 'IgnoreMode' parameter), @br
 @bold(Activation) Sum of activation (gaussian function) of all neuron @br
 *)
-unit eANN;
+unit eANNCore;
 
 interface
 

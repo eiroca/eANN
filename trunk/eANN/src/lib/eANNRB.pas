@@ -34,7 +34,7 @@ unit eANNRB;
 interface
 
 uses
-  Classes, eAnn, eAnnUtil, eANNMsg, eDataPick, eLibMath, SysUtils;
+  Classes, eAnnCore, eAnnUtil, eANNMsg, eDataPick, eLibMath, SysUtils;
 
 type
 

@@ -35,7 +35,7 @@ unit eANNMLP;
 interface
 
 uses
-  Classes, SysUtils, eANN, eANNUtil, eANNMsg, eDataPick;
+  Classes, SysUtils, eANNCore, eANNUtil, eANNMsg, eDataPick;
 
 type
   TLayer = class;

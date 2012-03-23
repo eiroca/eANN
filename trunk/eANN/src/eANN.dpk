@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 (*
  @author(Enrico Croce)
 *)
-package eANN2007;
+package eANN;
 
 {$R *.res}
 {$R 'lib\eANNCom.dcr'}
@@ -25,6 +25,7 @@ package eANN2007;
 {$R 'lib\eANNPLN.dcr'}
 {$R 'lib\eANNPRB.dcr'}
 {$R 'lib\eANNRB.dcr'}
+{$IFDEF IMPLICITBUILDING This IFDEF should not be used by users}
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
@@ -46,7 +47,10 @@ package eANN2007;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
+{$DEFINE DEBUG}
+{$ENDIF IMPLICITBUILDING}
 {$DESCRIPTION 'EicLib - ANN Components'}
+{$LIBSUFFIX '160'}
 {$IMPLICITBUILD OFF}
 
 requires
@@ -54,12 +58,11 @@ requires
   bdertl,
   dbrtl,
   vcl,
-  eLib_prj,
   eComp;
 
 contains
   eANNUtil in 'lib\eANNUtil.pas',
-  eANN in 'lib\eANN.pas',
+  eANNCore in 'lib\eANNCore.pas',
   eANNCom in 'lib\eANNCom.pas',
   eANNMLP in 'lib\eANNMLP.pas',
   eANNMsg in 'lib\eANNMsg.pas',

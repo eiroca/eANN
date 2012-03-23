@@ -35,7 +35,7 @@ unit eANNCom;
 interface
 
 uses
-  SysUtils, Classes, eANN, eANNMsg, eANNUtil, eDataPick;
+  SysUtils, Classes, eANNCore, eANNMsg, eANNUtil, eDataPick;
 
 const
   errBadNetDef   = 'bad network definition';

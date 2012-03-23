@@ -15,7 +15,7 @@ interface
 uses
   TestFramework, Classes, SysUtils,
   eDataPick, eLibMath, eLibStat,
-  eANNMsg, eANN, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB, eANNUtil;
+  eANNMsg, eANNCore, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB, eANNUtil;
 
 type
   // Test methods for class TPRBNetwork

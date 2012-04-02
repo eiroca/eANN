@@ -639,7 +639,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Eic', [TCompetitiveNetwork]);
+  RegisterComponents(COMPONENT_PALETTE, [TCompetitiveNetwork]);
 end;
 
 initialization

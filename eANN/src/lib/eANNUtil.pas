@@ -25,6 +25,9 @@ uses
   Classes, eDataPick;
 
 const
+  COMPONENT_PALETTE = 'eIrOcA';
+
+const
   //A low value assumed to be 0
   Zero: double = 0.0001;
 

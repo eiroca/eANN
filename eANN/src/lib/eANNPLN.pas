@@ -719,7 +719,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Eic', [TPLNetwork]);
+  RegisterComponents(COMPONENT_PALETTE, [TPLNetwork]);
 end;
 
 initialization

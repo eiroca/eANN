@@ -551,7 +551,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Eic', [TRBNetwork]);
+  RegisterComponents(COMPONENT_PALETTE, [TRBNetwork]);
 end;
 
 initialization

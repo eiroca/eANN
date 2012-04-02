@@ -744,7 +744,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Eic', [TPRBNetwork]);
+  RegisterComponents(COMPONENT_PALETTE, [TPRBNetwork]);
 end;
 
 initialization

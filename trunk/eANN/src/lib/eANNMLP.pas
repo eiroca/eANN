@@ -1094,7 +1094,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Eic', [TMLPNetwork]);
+  RegisterComponents(COMPONENT_PALETTE, [TMLPNetwork]);
 end;
 
 initialization

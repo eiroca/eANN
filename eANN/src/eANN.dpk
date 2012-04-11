@@ -37,8 +37,8 @@ package eANN;
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
-{$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$OVERFLOWCHECKS ON}
+{$RANGECHECKS ON}
 {$REFERENCEINFO ON}
 {$SAFEDIVIDE OFF}
 {$STACKFRAMES OFF}
@@ -61,13 +61,13 @@ requires
   eComp;
 
 contains
-  eANNUtil in 'lib\eANNUtil.pas',
   eANNCore in 'lib\eANNCore.pas',
   eANNCom in 'lib\eANNCom.pas',
   eANNMLP in 'lib\eANNMLP.pas',
-  eANNMsg in 'lib\eANNMsg.pas',
   eANNPLN in 'lib\eANNPLN.pas',
   eANNPRB in 'lib\eANNPRB.pas',
-  eANNRB in 'lib\eANNRB.pas';
+  eANNRB in 'lib\eANNRB.pas',
+  eANNReg in 'lib\eANNReg.pas';
 
 end.
+

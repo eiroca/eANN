@@ -37,7 +37,7 @@ unit eANNPLN;
 interface
 
 uses
-  Classes, SysUtils, eANNCore, eANNUtil, eANNMsg, eANNCom, eLibMath, eDataPick;
+  Classes, SysUtils, eANNCore, eANNCom, eLibMath, eDataPick;
 
 type
 
@@ -170,8 +170,6 @@ type
      property OnEndOper;
      property Parameters;
   end;
-
-procedure Register;
 
 implementation
 
@@ -715,11 +713,6 @@ destructor TCustomPLNetwork.Destroy;
 begin
   FParameters.Free;
   inherited Destroy;
-end;
-
-procedure Register;
-begin
-  RegisterComponents(COMPONENT_PALETTE, [TPLNetwork]);
 end;
 
 initialization

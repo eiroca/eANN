@@ -35,10 +35,7 @@ unit eANNCom;
 interface
 
 uses
-  SysUtils, Classes, eANNCore, eANNMsg, eANNUtil, eDataPick;
-
-const
-  errBadNetDef   = 'bad network definition';
+  SysUtils, Classes, eANNCore, eDataPick;
 
 type
   TCompetitor = class;
@@ -191,8 +188,6 @@ type
      property OnEndOper;
      property Parameters;
   end;
-
-procedure Register;
 
 implementation
 
@@ -635,11 +630,6 @@ destructor TCustomCompetitiveNetwork.Destroy;
 begin
   FParameters.Free;
   inherited Destroy;
-end;
-
-procedure Register;
-begin
-  RegisterComponents(COMPONENT_PALETTE, [TCompetitiveNetwork]);
 end;
 
 initialization

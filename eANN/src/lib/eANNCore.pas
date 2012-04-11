@@ -1,5 +1,5 @@
 (* GPL > 3.0
-Copyright (C) 1996-2008 eIrOcA Enrico Croce & Simona Burzio
+Copyright (C) 1996-2012 eIrOcA Enrico Croce & Simona Burzio
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ Artificial Neural Network Library @br
   1.12 Class reengineering (added or modified): Info, Query, SupportedOper @br
   2.00 Major class reengineering now with full Delphi support @br
   2.01 Added FindCluster, ResetTraining, ANNMsg and other minor changes @br
+  2.02 Ported to Delphi XE2 @br
 @br
 @br
 Some definition used in this documentation @br
@@ -56,9 +57,96 @@ unit eANNCore;
 interface
 
 uses
-  SysUtils, Classes,
-  eANNMsg,
+  SysUtils, Classes, Contnrs,
   eDataPick, eLibMath, eLibStat;
+
+const
+  //A low value assumed to be 0
+  Zero: double = 0.0001;
+
+resourcestring
+
+  wrnAborted     = 'operation aborted';
+  wrnMaxIter     = 'maximum iterations reached';
+  wrnNoConv      = 'convergence not reached';
+
+  errBadInput    = 'problem(s) with input data';
+  errBadOutput   = 'problem(s) with output data';
+  errBadIOCount  = 'fewer output patterns than input ones';
+  errNotTrained  = 'network must be trained';
+  errAbstract    = 'call to an abstract function';
+  errOutOfMemory = 'memory or object allocation failed';
+  errNeuronError1= 'neuron can be inserted only in layers';
+  errNeuronError2= 'neuron cannot accept other components';
+  errNeuronError3= 'TPLElem can be inserted only in TPLNetwork';
+  errLayerError1 = 'layer can be inserted only in MLP networks';
+  errLayerError2 = 'layer cannot accept nothing other neurons';
+  errBadNetDef   = 'bad network definition';
+
+  errListIndexError    = 'Out of index %d';
+  errListCapacityError = 'List Capacity Error %d';
+  errListCountError    = 'List Count Error %d';
+
+type
+
+  TWeights = class(TPersistent)
+    private
+     FWeights: TData;
+     FDim: integer;
+    protected
+     procedure SetDim(vl: integer);
+    public
+     constructor Create(aDim: integer);
+     procedure   SetWeights(const p: TData);
+     procedure   GetWeights(var p: TData);
+     procedure   Randomize(min, max: double);
+     function    SqrDist(const ip: TData): double;
+     procedure   Assign(Source: TPersistent); override;
+     procedure   SaveToStream(S: TStream);
+     procedure   LoadFromStream(S: TStream);
+     destructor  Destroy; override;
+    public
+     property Dim: integer read FDim write SetDim;
+     property Weights: TData read FWeights;
+  end;
+
+  TWeights_List = class(TObjectList)
+    protected
+     function  GetWeights(Index: Integer): TWeights;
+     procedure PutWeights(Index: Integer; Item: TWeights);
+    public
+     property Items[Index: Integer]: TWeights read GetWeights write PutWeights; default;
+  end;
+
+  TActivityLogger = class(TPersistent)
+    private
+     OldMin : double;
+     OldMax : double;
+     FMinAtt: double;
+     FMaxAtt: double;
+     FAveAtt: double;
+     FVarAtt: double;
+     FCntAtt: longint;
+     FAtt   : double;
+    public
+     constructor Create;
+     procedure   Reset;
+     procedure   Add(vl: double);
+     procedure   Undo;
+    private
+     procedure ReadData (Reader: TReader);
+     procedure WriteData(Writer: TWriter);
+    public
+     procedure DefineProperties(Filer: TFiler); override;
+     procedure Assign(Source: TPersistent); override;
+    public
+     property MinAtt: double  read FMinAtt;
+     property MaxAtt: double  read FMaxAtt;
+     property AveAtt: double  read FAveAtt;
+     property VarAtt: double  read FVarAtt;
+     property CntAtt: longint read FCntAtt;
+     property Att   : double  read FAtt;
+  end;
 
 type
   //Base exception class
@@ -286,6 +374,200 @@ type
   end;
 
 implementation
+
+constructor TWeights.Create(aDim: integer);
+begin
+  Dim:= aDim;
+end;
+
+procedure TWeights.SetDim(vl: integer);
+begin
+  SetLength(FWeights, vl);
+  FDim:= vl;
+end;
+
+procedure TWeights.SetWeights(const p: TData);
+var
+  i: integer;
+begin
+  for i:= 0 to Dim-1 do begin
+    Weights[i]:= p[i];
+  end;
+end;
+
+procedure TWeights.GetWeights(var p: TData);
+var
+  i: integer;
+begin
+  for i:= 0 to Dim-1 do begin
+    p[i]:= Weights[i];
+  end;
+end;
+
+procedure TWeights.Randomize(min, max: double);
+var
+  i: integer;
+  dlt: double;
+begin
+  dlt:= (max-min);
+  for i:= 0 to Dim-1 do begin
+    Weights[i]:= random * dlt + min;
+  end;
+end;
+
+function TWeights.SqrDist(const ip: TData): double;
+var
+  i: integer;
+begin
+  Result:= 0;
+  for i:= 0 to Dim-1 do begin
+    Result:= Result + sqr(Weights[i] - ip[i]);
+  end;
+end;
+
+procedure TWeights.Assign(Source: TPersistent);
+var
+  W: TWeights;
+begin
+  if Source is TWeights then begin
+    W:= TWeights(Source);
+    Dim:= W.Dim;
+    if Dim <> 0 then begin
+      FWeights:= W.FWeights;
+    end;
+  end
+  else inherited Assign(Source);
+end;
+
+procedure TWeights.SaveToStream(S: TStream);
+var
+  i: integer;
+begin
+  S.WriteBuffer(FDim, SizeOf(FDim));
+  for i:= 0 to Dim -1 do begin
+    S.WriteBuffer(Weights[i], SizeOf(double));
+  end;
+end;
+
+procedure TWeights.LoadFromStream(S: TStream);
+var
+  d: integer;
+  i: integer;
+begin
+  S.ReadBuffer(d, SizeOf(FDim));
+  Dim:= d;
+  for i:= 0 to Dim -1 do begin
+    S.ReadBuffer(Weights[i], SizeOf(double));
+  end;
+end;
+
+destructor TWeights.Destroy;
+begin
+  SetLength(FWeights, 0);
+  inherited Destroy;
+end;
+
+constructor TActivityLogger.Create;
+begin
+  inherited Create;
+  Reset;
+end;
+
+procedure TActivityLogger.Add(vl: double);
+begin
+  FAtt:= vl;
+  if FAtt < MinAtt then begin
+    OldMin:= MinAtt;
+    FMinAtt:= FAtt;
+  end
+  else if FAtt > MaxAtt then begin
+    OldMax:= MaxAtt;
+    FMaxAtt:= FAtt;
+  end;
+  FAveAtt:= (CntAtt * AveAtt + FAtt) / (CntAtt+1);
+  FVarAtt:= (CntAtt * VarAtt + sqr(FAtt-AveAtt)) / (CntAtt+1);
+  FCntAtt:= CntAtt + 1;
+end;
+
+procedure TActivityLogger.Undo;
+begin
+  if FAtt = MinAtt then FMinAtt:= OldMin
+  else if FAtt = MaxAtt then FMaxAtt:= OldMax;
+  FAveAtt:= (CntAtt * AveAtt - FAtt) / (CntAtt-1);
+  FVarAtt:= (CntAtt * VarAtt - sqr(FAtt-AveAtt)) / (CntAtt-1);
+  FCntAtt:= CntAtt - 1;
+end;
+
+procedure TActivityLogger.Reset;
+begin
+  FAveAtt:= 0;
+  FVarAtt:= 0;
+  FMinAtt:=  10e30;
+  FMaxAtt:= -10e30;
+  FCntAtt:= 0;
+  FAtt  := 0;
+  OldMin:= MinAtt;
+  OldMax:= MaxAtt;
+end;
+
+procedure TActivityLogger.Assign(Source: TPersistent);
+var
+  AL: TActivityLogger;
+begin
+  if Source is TActivityLogger then begin
+    AL:= TActivityLogger(Source);
+    FAveAtt:= AL.AveAtt;
+    FVarAtt:= AL.VarAtt;
+    FMinAtt:= AL.MinAtt;
+    FMaxAtt:= AL.MaxAtt;
+    FCntAtt:= AL.CntAtt;
+    FAtt  := AL.Att;
+    OldMin:= AL.OldMin;
+    OldMax:= AL.OldMax;
+  end
+  else inherited Assign(Source);
+end;
+
+procedure TActivityLogger.ReadData (Reader: TReader);
+begin
+  Reader.ReadListBegin;
+  if not Reader.EndOfList then FAtt:= Reader.ReadFloat;
+  if not Reader.EndOfList then FCntAtt:= Reader.ReadInteger;
+  if not Reader.EndOfList then FAveAtt:= Reader.ReadFloat;
+  if not Reader.EndOfList then FVarAtt:= Reader.ReadFloat;
+  if not Reader.EndOfList then FMinAtt:= Reader.ReadFloat;
+  if not Reader.EndOfList then FMaxAtt:= Reader.ReadFloat;
+  Reader.ReadListEnd;
+end;
+
+procedure TActivityLogger.WriteData(Writer: TWriter);
+begin
+  Writer.WriteListBegin;
+  Writer.WriteFloat(FAtt);
+  Writer.WriteInteger(FCntAtt);
+  Writer.WriteFloat(FAveAtt);
+  Writer.WriteFloat(FVarAtt);
+  Writer.WriteFloat(FMinAtt);
+  Writer.WriteFloat(FMaxAtt);
+  Writer.WriteListEnd;
+end;
+
+procedure TActivityLogger.DefineProperties(Filer: TFiler);
+begin
+  Filer.DefineProperty('ActivationInfo', ReadData, WriteData, CntAtt<>0);
+  inherited DefineProperties(Filer);
+end;
+
+function  TWeights_List.GetWeights(Index: Integer): TWeights;
+begin
+  if Index=-1 then Index:= Count-1;
+  Result:= TWeights(Get(Index));
+end;
+
+procedure TWeights_List.PutWeights(Index: Integer; Item: TWeights);
+begin
+  Put(Index, Item);
+end;
 
 constructor TANNParam.Create(AOwner: TANN);
 begin

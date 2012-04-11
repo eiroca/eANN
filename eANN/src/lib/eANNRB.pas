@@ -34,7 +34,7 @@ unit eANNRB;
 interface
 
 uses
-  Classes, eAnnCore, eAnnUtil, eANNMsg, eDataPick, eLibMath, SysUtils;
+  Classes, eAnnCore, eDataPick, eLibMath;
 
 type
 
@@ -139,8 +139,6 @@ type
      property OnEndOper;
      property Parameters;
   end;
-
-procedure Register;
 
 implementation
 
@@ -547,11 +545,6 @@ destructor TChenRBNetwork.Destroy;
 begin
   Parameters.Free;
   inherited Destroy;
-end;
-
-procedure Register;
-begin
-  RegisterComponents(COMPONENT_PALETTE, [TRBNetwork]);
 end;
 
 initialization

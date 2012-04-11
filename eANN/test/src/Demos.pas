@@ -15,7 +15,7 @@ interface
 uses
   TestFramework, Classes, SysUtils,
   eDataPick, eLibMath, eLibStat,
-  eANNMsg, eANNCore, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB, eANNUtil;
+  eANNCore, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB;
 
 type
   // Test methods for class TPRBNetwork
@@ -27,10 +27,9 @@ type
     procedure WriteNetworkCom(NW: TCompetitiveNetwork);
     procedure WriteNetworkPL(NW: TPLNetwork);
     procedure WriteTData(const data: TData);
-    procedure run_network(const NTW: array of TLayerDesc; iTrainPath: string; LC, MC, tol: Double; Normalize: Boolean);
+    procedure run_network(const NTW: array of TLayerDesc; iTrainPath: string; LC, MC, tol: Double; Normalize: Boolean; Iterations: integer = 10000);
     procedure WriteInfo(NW: TANN; estimate: Boolean);
     procedure WriteShape(NW1, NW2: TANN);
-    procedure BuildNetwork(var NW: TMLPNetwork; const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean);
   public
     procedure SetUp; override;
     procedure TearDown; override;
@@ -73,8 +72,8 @@ procedure TestANNNetwork.WriteTData(const data: TData);
 var
   i: integer;
 begin
-  for i:= 0 to High(data) do begin
-    if (i>0) then write(f, ' ');
+  for i:= Low(data) to High(data) do begin
+    if (i>Low(data)) then write(f, ' ');
     write(f, data[i]:6:2);
   end;
 end;
@@ -103,7 +102,7 @@ end;
 
 procedure TestANNNetwork.WriteNetworkCom(NW: TCompetitiveNetwork);
 var
-  i, j, k: integer;
+  i, j: integer;
 begin
   for i := 0 to NW.NumNeu - 1 do begin
     write(f, 'Neuron ',i,' ');
@@ -126,7 +125,7 @@ end;
 
 procedure TestANNNetwork.WriteNetworkPL(NW: TPLNetwork);
 var
-  i, j, k: integer;
+  i, j: integer;
 begin
   for i := 0 to NW.NumNeu - 1 do begin
     write(f, 'Neuron ',i,' ');
@@ -162,20 +161,7 @@ begin
   end;
 end;
 
-procedure TestANNNetwork.BuildNetwork(var NW: TMLPNetwork; const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean);
-begin
-  NW := TMLPNetwork.Create(nil);
-  NW.DataIn := ip;
-  NW.DataOut := op;
-  NW.Options.Iterations := 20000;
-  NW.Parameters.LC := LC;
-  NW.Parameters.MC := MC;
-  NW.Parameters.Tol := tol;
-  NW.Parameters.Normalize := Normalize;
-  NW.MakeLayers(NTW);
-end;
-
-procedure TestANNNetwork.run_network(const NTW: array of TLayerDesc; iTrainPath: string; LC, MC, tol: Double; Normalize: Boolean);
+procedure TestANNNetwork.run_network;
 var
   NW: TMLPNetwork;
   ip, op: TDataList;
@@ -183,7 +169,7 @@ var
   maxErr: double;
 begin
   LoadPattern(iTrainPath, ip, op);
-  BuildNetwork(NW, NTW, ip, op, LC, MC, tol, Normalize);
+  NW:= TMLPNetwork.BuildNetwork(NTW, ip, op, LC, MC, tol, Normalize, Iterations);
   try
     NW.Train;
   except
@@ -232,7 +218,7 @@ const
     (Neu: 1; Kind: TPerceptron)
   );
 begin
-  run_network(NTW, 'data/MLP-P3.DAT', 0.25, 0, 0, true);
+  run_network(NTW, 'data/MLP-P3.DAT', 0.25, 0, 0, true, 20000);
 end;
 
 procedure TestANNNetwork.TestApprox_001;
@@ -296,7 +282,7 @@ begin
   LoadPattern('data/MLP-C1.DAT', ip, op);
   tp:= TDataPattern.Create(nil);
   tp.LoadFromFile('data/MLP-C1.TST');
-  BuildNetwork(NW, NTW, ip, op, 0.25, 0, 0.4, false);
+  NW:= TMLPNetwork.BuildNetwork(NTW, ip, op, 0.25, 0, 0.4, false);
   try
     NW.Train;
   except
@@ -418,10 +404,8 @@ begin
   pWhat.LoadFromFile('data/NN-WHAT.DAT');
   pWhere:= TDataPattern.Create(nil);
   pWhere.LoadFromFile('data/NN-WHERE.DAT');
-  BuildNetwork(NW_what,  NTW, pShape, pWhat,  0.25, 0, 0, false);
-  NW_what.Options.Iterations:= 200;
-  BuildNetwork(NW_where, NTW, pShape, pWhere, 0.25, 0, 0, false);
-  NW_where.Options.Iterations:= 200;
+  NW_what:= TMLPNetwork.BuildNetwork(NTW, pShape, pWhat,  0.25, 0, 0, false, 200);
+  NW_where:= TMLPNetwork.BuildNetwork(NTW, pShape, pWhere, 0.25, 0, 0, false, 200);
   try
     NW_What.Train;
   except

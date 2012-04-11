@@ -1,10 +1,11 @@
 inherited fmDataPatternEditor: TfmDataPatternEditor
   Caption = 'fmDataPatternEditor'
+  ExplicitWidth = 320
+  ExplicitHeight = 240
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnMain: TPanel
     inherited pcEditor: TPageControl
-      ActivePage = tsData
       inherited tsProp: TTabSheet
         inherited ScrollBox1: TScrollBox
           object Label3: TLabel [2]
@@ -68,10 +69,18 @@ inherited fmDataPatternEditor: TfmDataPatternEditor
             OnClick = btLoadPatternClick
           end
           inherited iDim: TJvSpinEdit
+            Left = 338
+            Top = 10
             TabOrder = 7
+            ExplicitLeft = 338
+            ExplicitTop = 10
           end
           inherited iCount: TJvSpinEdit
+            Left = 338
+            Top = 37
             TabOrder = 8
+            ExplicitLeft = 338
+            ExplicitTop = 37
           end
           inherited btSave: TBitBtn
             TabOrder = 10

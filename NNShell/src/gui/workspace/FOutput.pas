@@ -23,7 +23,7 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, Menus, StdCtrls, ComCtrls, JvAppEvent, JvComponentBase;
+  Forms, Dialogs, Menus, StdCtrls, ComCtrls, JvAppEvent, JvComponentBase, Vcl.AppEvnts;
 
 type
   TfmOutput = class(TForm)
@@ -43,7 +43,7 @@ type
     odSaveScr: TSaveDialog;
     meOut: TMemo;
     N2: TMenuItem;
-    AppEvents1: TJvAppEvents;
+    ApplicationEvents1: TApplicationEvents;
     procedure FormCreate(Sender: TObject);
     procedure CloseWindow1Click(Sender: TObject);
     procedure miEditCopyClick(Sender: TObject);
@@ -54,9 +54,9 @@ type
     procedure ChangeFont1Click(Sender: TObject);
     procedure Loadtextfile1Click(Sender: TObject);
     procedure Savetextfile1Click(Sender: TObject);
-    procedure AppEvents1Idle(Sender: TObject; var Done: Boolean);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
+    procedure ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
   private
     { Private declarations }
   public
@@ -113,6 +113,17 @@ begin
   meOut.PasteFromClipboard;
 end;
 
+procedure TfmOutput.ApplicationEvents1Idle(Sender: TObject; var Done: Boolean);
+var
+  flg: boolean;
+begin
+  with fmOutput do begin
+    flg:= meOut.SelLength <> 0;
+    miEditCopy.Enabled:= flg;
+    miEditCut.Enabled:= flg;
+  end;
+end;
+
 procedure TfmOutput.ChangeFont1Click(Sender: TObject);
 begin
   fdFontScr.Font.Assign(meOut.Font);
@@ -143,17 +154,6 @@ begin
   end;
   fmOutput.Show;
   Result:= fmOutput.meOut.Lines;
-end;
-
-procedure TfmOutput.AppEvents1Idle(Sender: TObject; var Done: Boolean);
-var
-  flg: boolean;
-begin
-  with fmOutput do begin
-    flg:= meOut.SelLength <> 0;
-    miEditCopy.Enabled:= flg;
-    miEditCut.Enabled:= flg;
-  end;
 end;
 
 procedure TfmOutput.FormClose(Sender: TObject; var Action: TCloseAction);

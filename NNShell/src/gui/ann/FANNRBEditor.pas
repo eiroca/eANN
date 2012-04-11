@@ -24,40 +24,36 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, JvExMask;
+  FEditor, FANNEditor, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
 
 type
   TfmANNRBEditor = class(TfmANNEditor)
-    Bevel11: TBevel;
+    Bevel8: TJvGroupBox;
+    Label23: TLabel;
+    Label21: TLabel;
+    iMaxErr: TJvSpinEdit;
+    cbMaxNeu: TCheckBox;
+    iMaxNeu: TJvSpinEdit;
+    Bevel9: TJvGroupBox;
+    Label24: TLabel;
+    iRo: TJvSpinEdit;
+    btRecalcAtt: TBitBtn;
+    Bevel11: TJvGroupBox;
     Label26: TLabel;
     lbNumNeu: TLabel;
-    btRecalcAtt: TBitBtn;
-    Bevel13: TBevel;
-    lbAttMin: TLabel;
-    lbAttMax: TLabel;
-    lbAttLst: TLabel;
-    lbAttNum: TLabel;
-    lbAttVar: TLabel;
-    lbAttAve: TLabel;
+    Bevel13: TJvGroupBox;
     Label37: TLabel;
-    Label38: TLabel;
-    Label39: TLabel;
+    lbAttMin: TLabel;
     Label40: TLabel;
+    lbAttAve: TLabel;
     Label41: TLabel;
+    lbAttLst: TLabel;
+    lbAttVar: TLabel;
+    Label39: TLabel;
+    lbAttMax: TLabel;
+    Label38: TLabel;
     Label42: TLabel;
-    Label43: TLabel;
-    Bevel9: TBevel;
-    Bevel8: TBevel;
-    Label21: TLabel;
-    Label23: TLabel;
-    Label24: TLabel;
-    Label30: TLabel;
-    Label31: TLabel;
-    iMaxNeu: TJvSpinEdit;
-    iMaxErr: TJvSpinEdit;
-    iRo: TJvSpinEdit;
-    cbMaxNeu: TCheckBox;
-    procedure pcEditorChange(Sender: TObject);
+    lbAttNum: TLabel;
     procedure cbMaxNeuClick(Sender: TObject);
     procedure iRoChange(Sender: TObject);
     procedure iMaxErrChange(Sender: TObject);
@@ -65,8 +61,7 @@ type
     procedure btRecalcAttClick(Sender: TObject);
   protected
     { Private declarations }
-    procedure ShowEditor; override;
-    procedure UpdateParam;
+    procedure UpdateParam; override;
     procedure UpdateMaxNeu;
     procedure MoreInfo;
   public
@@ -80,23 +75,6 @@ implementation
 uses
   eANNRB;
 
-procedure TfmANNRBEditor.ShowEditor;
-begin
-  inherited ShowEditor;
-  UpdateParam;
-end;
-
-procedure TfmANNRBEditor.pcEditorChange(Sender: TObject);
-begin
-  inherited;
-  if pcEditor.ActivePage = tsProp then begin
-    UpdateParam;
-  end
-  else if pcEditor.ActivePage = tsInfo then begin
-    MoreInfo;
-  end;
-end;
-
 procedure TfmANNRBEditor.UpdateMaxNeu;
 begin
   iMaxNeu.Enabled:= cbMaxNeu.Checked;
@@ -108,6 +86,7 @@ end;
 
 procedure TfmANNRBEditor.UpdateParam;
 begin
+  inherited;
   with Obj as TRBNetwork do begin
     iMaxErr.Value   := Parameters.MaxErr;
     iRo.Value       := Parameters.Ro;

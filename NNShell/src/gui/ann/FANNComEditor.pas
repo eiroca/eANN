@@ -24,23 +24,20 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  eANNCore, FEditor, FANNEditor, eANNCom, JvExMask;
+  eANNCore, FEditor, FANNEditor, eANNCom, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
 
 type
   TfmANNComEditor = class(TfmANNEditor)
-    Bevel8: TBevel;
-    Label22: TLabel;
-    Label30: TLabel;
+    Bevel8: TJvGroupBox;
     Label13: TLabel;
-    iEta: TJvSpinEdit;
+    Label22: TLabel;
     iNumNeu: TJvSpinEdit;
-    procedure pcEditorChange(Sender: TObject);
+    iEta: TJvSpinEdit;
     procedure iEtaChange(Sender: TObject);
     procedure iNumNeuChange(Sender: TObject);
   protected
     { Private declarations }
-    procedure ShowEditor; override;
-    procedure UpdateParam;
+    procedure UpdateParam; override;
   public
     { Public declarations }
   end;
@@ -49,22 +46,9 @@ implementation
 
 {$R *.DFM}
 
-procedure TfmANNComEditor.ShowEditor;
-begin
-  inherited ShowEditor;
-  UpdateParam;
-end;
-
-procedure TfmANNComEditor.pcEditorChange(Sender: TObject);
-begin
-  inherited;
-  if pcEditor.ActivePage = tsProp then begin
-    UpdateParam;
-  end;
-end;
-
 procedure TfmANNComEditor.UpdateParam;
 begin
+  inherited;
   with Obj as TCompetitiveNetwork do begin
     iEta.Value   := Parameters.Eta;
     iNumNeu.Value:= Parameters.NumNeu;

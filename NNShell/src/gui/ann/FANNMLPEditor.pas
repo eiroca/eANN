@@ -24,18 +24,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Grids, JvGrids, Mask,
-  FEditor, eANNCore, FANNEditor, eANNMLP, JvExGrids, JvExMask;
+  FEditor, eANNCore, FANNEditor, eANNMLP, JvExGrids, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
 
 type
   TfmANNMLPEditor = class(TfmANNEditor)
-    Bevel8: TBevel;
-    Label21: TLabel;
-    Label22: TLabel;
-    Label23: TLabel;
-    Label30: TLabel;
-    iLC: TJvSpinEdit;
-    iMC: TJvSpinEdit;
-    iTol: TJvSpinEdit;
     tsLayers: TTabSheet;
     ScrollBox4: TScrollBox;
     Panel1: TPanel;
@@ -43,8 +35,14 @@ type
     btAddLayer: TBitBtn;
     BitBtn2: TBitBtn;
     btModifyNet: TBitBtn;
+    Bevel8: TJvGroupBox;
+    Label21: TLabel;
+    iLC: TJvSpinEdit;
+    Label22: TLabel;
+    iMC: TJvSpinEdit;
+    Label23: TLabel;
+    iTol: TJvSpinEdit;
     cbNorm: TCheckBox;
-    procedure pcEditorChange(Sender: TObject);
     procedure iLCChange(Sender: TObject);
     procedure iMCChange(Sender: TObject);
     procedure iTolChange(Sender: TObject);
@@ -68,14 +66,16 @@ type
     procedure cbNormClick(Sender: TObject);
     procedure dgLayersGetEditStyle(Sender: TObject; ACol, ARow: Integer;
       var Style: TEditStyle);
+    procedure pcEditorChange(Sender: TObject);
+  private
+    FNeuTypes: TNeuronTypes;
   protected
     { Private declarations }
     NeuKind: TStrings;
     function GetText(Col, Row: Longint): string;
-    procedure ShowEditor; override;
     procedure UpdateLayerDesc;
     procedure UpdateLayerGrid;
-    procedure UpdateParam;
+    procedure UpdateParam; override;
   public
     { Public declarations }
     LayerDesc: TCollection;
@@ -106,24 +106,6 @@ begin
   NeuKnd:= nil;
 end;
 
-procedure TfmANNMLPEditor.ShowEditor;
-begin
-  inherited ShowEditor;
-  UpdateParam;
-end;
-
-procedure TfmANNMLPEditor.pcEditorChange(Sender: TObject);
-begin
-  inherited;
-  if pcEditor.ActivePage = tsProp then begin
-    UpdateParam;
-  end
-  else if pcEditor.ActivePage = tsLayers then begin
-    UpdateLayerDesc;
-    UpdateLayerGrid;
-  end;
-end;
-
 procedure TfmANNMLPEditor.UpdateLayerDesc;
 var
   i: integer;
@@ -152,6 +134,7 @@ end;
 
 procedure TfmANNMLPEditor.UpdateParam;
 begin
+  inherited;
   with Obj as TMLPNetwork do begin
     iTol.Value:= Parameters.Tol;
     iMC.Value := Parameters.MC;
@@ -184,6 +167,15 @@ begin
   with TMLPNetwork(Obj) do begin
     Parameters.Tol:= iTol.Value;
     iTol.Value:= Parameters.Tol;
+  end;
+end;
+
+procedure TfmANNMLPEditor.pcEditorChange(Sender: TObject);
+begin
+  inherited;
+  if pcEditor.ActivePage = tsLayers then begin
+    UpdateLayerDesc;
+    UpdateLayerGrid;
   end;
 end;
 
@@ -235,13 +227,16 @@ begin
 end;
 
 procedure TfmANNMLPEditor.FormCreate(Sender: TObject);
+var
+  i: integer;
 begin
   inherited;
+  FNeuTypes:= TMLPNetwork.GetNeuronTypes;
   LayerDesc:= TCollection.Create(TLayerDesc);
   NeuKind:= TStringList.Create;
-  NeuKind.Add(TPerceptron.Description);
-  NeuKind.Add(TLinearNeuron.Description);
-  NeuKind.Add(TLogisticNeuron.Description);
+  for i:= low(FNeuTypes) to High(FNeuTypes) do begin
+    NeuKind.Add(FNeuTypes[i].Description);
+  end;
 end;
 
 procedure TfmANNMLPEditor.dgLayersGetEditAlign(Sender: TObject; ACol,
@@ -268,8 +263,9 @@ begin
   Value:= GetText(ACol , ARow);
 end;
 
-procedure TfmANNMLPEditor.dgLayersSetEditText(Sender: TObject; ACol,
-  ARow: Longint; const Value: string);
+procedure TfmANNMLPEditor.dgLayersSetEditText(Sender: TObject; ACol, ARow: Longint; const Value: string);
+var
+  i: integer;
 begin
   inherited;
   if (ARow=0) or (ARow>LayerDesc.Count) then exit;
@@ -284,9 +280,11 @@ begin
         end;
       end;
       2: begin
-        if Value = TPerceptron.Description then NeuKnd:= TPerceptron;
-        if Value = TLinearNeuron.Description then NeuKnd:= TLinearNeuron;
-        if Value = TLogisticNeuron.Description then NeuKnd:= TLogisticNeuron;
+        for i:= low(FNeuTypes) to High(FNeuTypes) do begin
+          if (Value = FNeuTypes[i].Description) then begin
+            NeuKnd:= FNeuTypes[i];
+          end;
+        end;
       end;
     end;
   end;
@@ -309,7 +307,7 @@ begin
     NeuKnd:= TLogisticNeuron;
     if LayerDesc.Count = 1 then begin
       if TANN(Obj).DimInp > 0 then NumNeu:= TANN(Obj).DimInp;
-      NeuKnd:= TLinearNeuron;
+      NeuKnd:= TNeuron;
     end
     else begin
       if TANN(Obj).DimOut > 0 then NumNeu:= TANN(Obj).DimOut;

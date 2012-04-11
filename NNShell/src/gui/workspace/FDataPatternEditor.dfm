@@ -1,11 +1,10 @@
 inherited fmDataPatternEditor: TfmDataPatternEditor
   Caption = 'fmDataPatternEditor'
-  ExplicitWidth = 320
-  ExplicitHeight = 240
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnMain: TPanel
     inherited pcEditor: TPageControl
+      ActivePage = tsData
       inherited tsProp: TTabSheet
         inherited ScrollBox1: TScrollBox
           object Label3: TLabel [2]

@@ -24,7 +24,7 @@ interface
 uses
   System.SysUtils, System.Classes,
   FEditor, FDataListEditor,
-  JvExGrids, JvExMask, JvToolEdit, JvGrids, JvSpin,
+  JvToolEdit, JvExGrids, JvGrids, JvExMask, JvSpin,
   Vcl.StdCtrls, Vcl.Grids, Vcl.Mask, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Buttons,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
 

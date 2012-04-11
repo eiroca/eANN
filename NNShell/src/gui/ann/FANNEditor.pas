@@ -22,10 +22,10 @@ unit FANNEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  System.SysUtils, System.Classes,
   eDataPick,
-  FEditor, StdCtrls, Buttons, ComCtrls, ExtCtrls, JvSpin, Mask, JvExMask, JvExStdCtrls, JvCheckBox,
-  JvGroupBox;
+  FEditor, JvExMask, JvSpin, JvExStdCtrls, JvCheckBox,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Mask, Vcl.Controls, Vcl.Forms;
 
 type
   TAssociated = record
@@ -35,9 +35,9 @@ type
 
 type
   TfmANNEditor = class(TfmEditor)
-    gErrOpt: TJvGroupBox;
-    gNetCan: TJvGroupBox;
-    gNetOpe: TJvGroupBox;
+    gErrOpt: TGroupBox;
+    gNetCan: TGroupBox;
+    gNetOpe: TGroupBox;
     btRename: TBitBtn;
     btReset: TBitBtn;
     cbAcquire: TJvCheckBox;
@@ -53,8 +53,8 @@ type
     cbSuper: TJvCheckBox;
     cbTrain: TJvCheckBox;
     cbTrained: TJvCheckBox;
-    gTrnOpt: TJvGroupBox;
-    gNetDesc: TJvGroupBox;
+    gTrnOpt: TGroupBox;
+    gNetDesc: TGroupBox;
     iErrParam: TJvSpinEdit;
     iIter: TJvSpinEdit;
     iName: TEdit;
@@ -62,7 +62,7 @@ type
     Label18: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    gDesc: TJvGroupBox;
+    gDesc: TGroupBox;
     pcEditor: TPageControl;
     sbApply: TScrollBox;
     sbError: TScrollBox;
@@ -78,28 +78,28 @@ type
     btStopTrn: TBitBtn;
     btStopApl: TBitBtn;
     btStopErr: TBitBtn;
-    gDataSource: TJvGroupBox;
+    gDataSource: TGroupBox;
     Label4: TLabel;
     btTrainIn: TSpeedButton;
     lbTrainOut: TLabel;
     btTrainOut: TSpeedButton;
     cbTrainIn: TComboBox;
     cbTrainOut: TComboBox;
-    gDataSourceApl: TJvGroupBox;
+    gDataSourceApl: TGroupBox;
     Label7: TLabel;
     btApplyIn: TSpeedButton;
     btApplyOut: TSpeedButton;
     cbApplyIn: TComboBox;
     cbApplyOut: TComboBox;
     cbOvervriteDataList: TJvCheckBox;
-    JvGroupBox1: TJvGroupBox;
+    JvGroupBox1: TGroupBox;
     Label11: TLabel;
     btErrorIn: TSpeedButton;
     Label16: TLabel;
     btErrorOut: TSpeedButton;
     cbErrorIn: TComboBox;
     cbErrorOut: TComboBox;
-    gSize: TJvGroupBox;
+    gSize: TGroupBox;
     lbNetDim: TLabel;
     procedure btTrainClick(Sender: TObject);
     procedure btErrorClick(Sender: TObject);

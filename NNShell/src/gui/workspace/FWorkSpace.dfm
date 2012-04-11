@@ -47,7 +47,6 @@ object fmWorkSpace: TfmWorkSpace
       FF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFFFFFF
       FFFFFF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFF
       FFFFFFFFFF00000000000000000100}
-    ExplicitHeight = 489
   end
   object pnWorkSpace: TPanel
     Left = 255
@@ -57,7 +56,7 @@ object fmWorkSpace: TfmWorkSpace
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitHeight = 489
+    ExplicitLeft = 256
   end
   object ImageList1: TImageList
     Height = 32

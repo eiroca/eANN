@@ -3,28 +3,19 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
   Top = 181
   Caption = 'fmANNPLNEditor'
   ClientHeight = 331
-  ClientWidth = 461
-  ExplicitWidth = 469
   ExplicitHeight = 365
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnMain: TPanel
-    Width = 461
     Height = 331
-    ExplicitWidth = 461
     ExplicitHeight = 331
     inherited pcEditor: TPageControl
-      Width = 461
       Height = 331
-      ExplicitWidth = 461
       ExplicitHeight = 331
       inherited tsProp: TTabSheet
-        ExplicitWidth = 453
         ExplicitHeight = 303
         inherited sbProp: TScrollBox
-          Width = 453
           Height = 303
-          ExplicitWidth = 453
           ExplicitHeight = 303
           object Label26: TLabel [0]
             Left = 295
@@ -40,14 +31,14 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             Height = 13
             Caption = '9999'
           end
-          object Bevel11: TJvGroupBox [2]
+          object Bevel11: TGroupBox [2]
             Left = 290
             Top = 10
             Width = 156
             Height = 41
             TabOrder = 4
           end
-          object Bevel1: TJvGroupBox [3]
+          object Bevel1: TGroupBox [3]
             Left = 291
             Top = 102
             Width = 156
@@ -69,7 +60,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
               Caption = '9999'
             end
           end
-          inherited gSize: TJvGroupBox
+          inherited gSize: TGroupBox
             Top = 50
             TabOrder = 6
             ExplicitTop = 50
@@ -77,14 +68,11 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
         end
       end
       inherited tsTrain: TTabSheet
-        ExplicitWidth = 453
         ExplicitHeight = 303
         inherited sbTrain: TScrollBox
-          Width = 453
           Height = 303
-          ExplicitWidth = 453
           ExplicitHeight = 303
-          object gTrnPrm: TJvGroupBox [0]
+          object gTrnPrm: TGroupBox [0]
             Left = 3
             Top = 56
             Width = 443
@@ -149,7 +137,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
               OnChange = iSprChange
             end
           end
-          object Bevel9: TJvGroupBox [1]
+          object Bevel9: TGroupBox [1]
             Left = 3
             Top = 113
             Width = 443
@@ -225,7 +213,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
               OnChange = iLmdChange
             end
           end
-          inherited gTrnOpt: TJvGroupBox
+          inherited gTrnOpt: TGroupBox
             Top = 193
             ExplicitTop = 193
           end
@@ -240,12 +228,9 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
         end
       end
       inherited tsApply: TTabSheet
-        ExplicitWidth = 453
         ExplicitHeight = 303
         inherited sbApply: TScrollBox
-          Width = 453
           Height = 303
-          ExplicitWidth = 453
           ExplicitHeight = 303
           inherited btApply: TBitBtn
             Top = 144
@@ -256,7 +241,7 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
             TabOrder = 2
             ExplicitTop = 144
           end
-          object Bevel10: TJvGroupBox [2]
+          object Bevel10: TGroupBox [2]
             Left = 3
             Top = 87
             Width = 443
@@ -284,20 +269,17 @@ inherited fmANNPLNEditor: TfmANNPLNEditor
               OnChange = iWinChange
             end
           end
-          inherited gDataSourceApl: TJvGroupBox
+          inherited gDataSourceApl: TGroupBox
             TabOrder = 3
           end
         end
       end
       inherited tsError: TTabSheet
-        ExplicitWidth = 453
         ExplicitHeight = 303
         inherited sbError: TScrollBox
-          Width = 453
           Height = 303
-          ExplicitWidth = 453
           ExplicitHeight = 303
-          inherited gErrOpt: TJvGroupBox
+          inherited gErrOpt: TGroupBox
             Height = 66
             ExplicitHeight = 66
             object Label19: TLabel [0]

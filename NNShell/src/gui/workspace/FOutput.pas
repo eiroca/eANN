@@ -22,8 +22,8 @@ unit FOutput;
 interface
 
 uses
-  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, Menus, StdCtrls, ComCtrls, JvAppEvent, JvComponentBase, Vcl.AppEvnts;
+  System.SysUtils, System.Classes,
+  Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.StdCtrls, Vcl.AppEvnts, Vcl.Controls;
 
 type
   TfmOutput = class(TForm)

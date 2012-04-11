@@ -35,12 +35,12 @@ unit eANNMLP;
 interface
 
 uses
-  Classes, SysUtils, eANNCore, eANNUtil, eANNMsg, eDataPick;
+  Classes, SysUtils, eANNCore, eDataPick;
 
 type
   TLayer = class;
-
   TNeuronClass = class of TNeuron;
+  TNeuronTypes = array of TNeuronClass;
 
   (* Definition of neuron *)
   TNeuron = class(TComponent)
@@ -117,6 +117,11 @@ type
      function dtf(v: double): double; override;
   end;
 
+  TLayerDesc = record
+    Neu: integer;
+    Kind: TNeuronClass;
+  end;
+
   (* Definition of a layer (set of neurons) *)
   TLayer = class(TComponent)
     protected
@@ -190,12 +195,6 @@ type
   end;
 
 type
-  TLayerDesc = record
-    Neu: integer;
-    Kind: TNeuronClass;
-  end;
-
-type
   (* Build a Multi Layer Network according to the layer description, in first
   layer neurons are only a input-buffer - no weights and transfer function - *)
   TCustomMLPNetwork = class(TANN)
@@ -206,6 +205,8 @@ type
     public
      (* Returns the name of the network *)
      class function Description: string; override;
+     (* Returns the allowed class type for neurons *)
+     class function GetNeuronTypes: TNeuronTypes;
     private
      FParameters: TMLPParameters;
      FEpochs: longint;
@@ -252,6 +253,9 @@ type
   end;
 
   TMLPNetwork = class(TCustomMLPNetwork)
+    public
+     (* Helper method to build a new network form scratch *)
+     class function BuildNetwork(const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean; Iterations: integer = 10000): TMLPNetwork;
     published
      property Options;
      property DimInp;
@@ -266,8 +270,6 @@ type
      property OnEndOper;
      property Parameters;
   end;
-
-procedure Register;
 
 implementation
 
@@ -786,7 +788,7 @@ constructor TMLPParameters.Create(AOwner: TANN);
 begin
   inherited Create(AOwner);
   FLC:= 0.1;
-  FMC:= 0.5;
+  FMC:= 0;
   FTol:= 0.01;
   FNorm:= false;
 end;
@@ -813,7 +815,7 @@ end;
 
 procedure TMLPParameters.SetTol(vl: double);
 begin
-  if vl < 0 then vl:= 0.01;
+  if vl < 0 then vl:= 0.0001;
   if vl <> FTol then begin
     FTol:= vl;
     TCustomMLPNetwork(Owner).UpdateParam;
@@ -841,6 +843,18 @@ end;
 class function TCustomMLPNetwork.Description;
 begin
   Result:= 'Multi Layer Neural Network';
+end;
+
+class function TCustomMLPNetwork.GetNeuronTypes: TNeuronTypes;
+var
+  types: TNeuronTypes;
+begin
+  SetLength(types, 4);
+  types[0]:= TNeuron;
+  types[1]:= TLogisticNeuron;
+  types[2]:= TLinearNeuron;
+  types[3]:= TPerceptron;
+  Result:= types;
 end;
 
 class procedure TCustomMLPNetwork.Supply(var Op: TNetOpers);
@@ -1092,9 +1106,17 @@ begin
   inherited Destroy;
 end;
 
-procedure Register;
+class function TMLPNetwork.BuildNetwork(const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean; Iterations: integer = 10000): TMLPNetwork;
 begin
-  RegisterComponents(COMPONENT_PALETTE, [TMLPNetwork]);
+  Result:= TMLPNetwork.Create(nil);
+  Result.DataIn := ip;
+  Result.DataOut := op;
+  Result.Options.Iterations := Iterations;
+  Result.Parameters.LC := LC;
+  Result.Parameters.MC := MC;
+  Result.Parameters.Tol := tol;
+  Result.Parameters.Normalize := Normalize;
+  Result.MakeLayers(NTW);
 end;
 
 initialization

@@ -39,7 +39,7 @@ unit eANNPRB;
 interface
 
 uses
-  Classes, SysUtils, eANNCore, eANNUtil, eANNMsg, eANNRB, eDataPick, eLibMath;
+  Classes, SysUtils, eANNCore, eANNRB, eDataPick, eLibMath;
 
 type
 
@@ -193,8 +193,6 @@ type
      property OnBeginOper;
      property OnEndOper;
   end;
-
-procedure Register;
 
 implementation
 
@@ -740,11 +738,6 @@ destructor TCustomPRBNetwork.Destroy;
 begin
   FParameters.Free;
   inherited Destroy;
-end;
-
-procedure Register;
-begin
-  RegisterComponents(COMPONENT_PALETTE, [TPRBNetwork]);
 end;
 
 initialization

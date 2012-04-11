@@ -22,26 +22,27 @@ unit FANNRBEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
+  System.SysUtils, System.Classes,
+  FEditor, FANNEditor,
+  JvExMask, JvSpin, JvExStdCtrls, JvCheckBox,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Vcl.ComCtrls, Vcl.Controls, Vcl.Forms;
 
 type
   TfmANNRBEditor = class(TfmANNEditor)
-    Bevel8: TJvGroupBox;
+    Bevel8: TGroupBox;
     Label23: TLabel;
     Label21: TLabel;
     iMaxErr: TJvSpinEdit;
     cbMaxNeu: TCheckBox;
     iMaxNeu: TJvSpinEdit;
-    Bevel9: TJvGroupBox;
+    Bevel9: TGroupBox;
     Label24: TLabel;
     iRo: TJvSpinEdit;
     btRecalcAtt: TBitBtn;
-    Bevel11: TJvGroupBox;
+    Bevel11: TGroupBox;
     Label26: TLabel;
     lbNumNeu: TLabel;
-    Bevel13: TJvGroupBox;
+    Bevel13: TGroupBox;
     Label37: TLabel;
     lbAttMin: TLabel;
     Label40: TLabel;

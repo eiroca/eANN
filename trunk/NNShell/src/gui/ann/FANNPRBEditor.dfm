@@ -10,22 +10,22 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
     Width = 464
     Height = 386
     ExplicitWidth = 464
-    ExplicitHeight = 349
+    ExplicitHeight = 386
     inherited pcEditor: TPageControl
       Width = 464
       Height = 386
       ActivePage = tsTrain
       ExplicitWidth = 464
-      ExplicitHeight = 349
+      ExplicitHeight = 386
       inherited tsProp: TTabSheet
         ExplicitWidth = 456
-        ExplicitHeight = 321
+        ExplicitHeight = 358
         inherited sbProp: TScrollBox
           Width = 456
           Height = 358
           ExplicitWidth = 456
-          ExplicitHeight = 321
-          object Bevel11: TJvGroupBox [4]
+          ExplicitHeight = 358
+          object Bevel11: TGroupBox [4]
             Left = 291
             Top = 49
             Width = 155
@@ -61,7 +61,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               Caption = '9999'
             end
           end
-          object Bevel13: TJvGroupBox [5]
+          object Bevel13: TGroupBox [5]
             Left = 3
             Top = 209
             Width = 282
@@ -153,7 +153,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               Caption = '99999.99999'
             end
           end
-          object Bevel12: TJvGroupBox [6]
+          object Bevel12: TGroupBox [6]
             Left = 291
             Top = 208
             Width = 158
@@ -203,7 +203,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               Caption = '9999'
             end
           end
-          inherited gSize: TJvGroupBox
+          inherited gSize: TGroupBox
             Top = 67
             Width = 0
             Height = 0
@@ -216,13 +216,13 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
       end
       inherited tsTrain: TTabSheet
         ExplicitWidth = 456
-        ExplicitHeight = 321
+        ExplicitHeight = 358
         inherited sbTrain: TScrollBox
           Width = 456
           Height = 358
           ExplicitWidth = 456
-          ExplicitHeight = 321
-          inherited gTrnOpt: TJvGroupBox
+          ExplicitHeight = 358
+          inherited gTrnOpt: TGroupBox
             Top = 160
             ExplicitTop = 160
           end
@@ -239,10 +239,10 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
             TabOrder = 6
             ExplicitTop = 323
           end
-          inherited gDataSource: TJvGroupBox
+          inherited gDataSource: TGroupBox
             TabOrder = 7
           end
-          object gLrnPrm: TJvGroupBox
+          object gLrnPrm: TGroupBox
             Left = 3
             Top = 52
             Width = 443
@@ -307,7 +307,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               OnChange = iMaxErrChange
             end
           end
-          object gNeuPrm: TJvGroupBox
+          object gNeuPrm: TGroupBox
             Left = 3
             Top = 107
             Width = 443
@@ -370,14 +370,13 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               OnChange = iDeltaChange
             end
           end
-          object gDynamic: TJvGroupBox
+          object gDynamic: TGroupBox
             Left = 3
             Top = 237
             Width = 443
             Height = 80
             Caption = 'Dynamic network'
             TabOrder = 4
-            PropagateEnable = True
             object Label27: TLabel
               Left = 8
               Top = 47
@@ -457,22 +456,22 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
       end
       inherited tsApply: TTabSheet
         ExplicitWidth = 456
-        ExplicitHeight = 321
+        ExplicitHeight = 358
         inherited sbApply: TScrollBox
           Width = 456
           Height = 358
           ExplicitWidth = 456
-          ExplicitHeight = 321
+          ExplicitHeight = 358
         end
       end
       inherited tsError: TTabSheet
         ExplicitWidth = 456
-        ExplicitHeight = 321
+        ExplicitHeight = 358
         inherited sbError: TScrollBox
           Width = 456
           Height = 358
           ExplicitWidth = 456
-          ExplicitHeight = 321
+          ExplicitHeight = 358
         end
       end
     end

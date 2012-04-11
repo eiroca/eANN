@@ -37,7 +37,7 @@ inherited fmANNComEditor: TfmANNComEditor
           Height = 231
           ExplicitWidth = 456
           ExplicitHeight = 231
-          object Bevel8: TJvGroupBox [0]
+          object Bevel8: TGroupBox [0]
             Left = 3
             Top = 56
             Width = 444
@@ -84,7 +84,7 @@ inherited fmANNComEditor: TfmANNComEditor
               OnChange = iEtaChange
             end
           end
-          inherited gTrnOpt: TJvGroupBox
+          inherited gTrnOpt: TGroupBox
             Top = 118
             TabOrder = 1
             ExplicitTop = 118

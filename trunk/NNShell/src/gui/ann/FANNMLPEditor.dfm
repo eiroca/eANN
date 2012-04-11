@@ -16,7 +16,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
         inherited sbProp: TScrollBox
           Height = 227
           ExplicitHeight = 227
-          inherited gSize: TJvGroupBox
+          inherited gSize: TGroupBox
             Top = 50
             ExplicitTop = 50
           end
@@ -24,6 +24,10 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
       end
       object tsLayers: TTabSheet [1]
         Caption = 'Layers'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object ScrollBox4: TScrollBox
           Left = 0
           Top = 0
@@ -98,7 +102,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
         inherited sbTrain: TScrollBox
           Height = 227
           ExplicitHeight = 227
-          object Bevel8: TJvGroupBox [0]
+          object Bevel8: TGroupBox [0]
             Left = 3
             Top = 55
             Width = 441
@@ -172,7 +176,7 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
               OnClick = cbNormClick
             end
           end
-          inherited gTrnOpt: TJvGroupBox
+          inherited gTrnOpt: TGroupBox
             Top = 114
             ExplicitTop = 114
           end

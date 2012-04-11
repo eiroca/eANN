@@ -22,9 +22,11 @@ unit FANNMLPEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Grids, JvGrids, Mask,
-  FEditor, eANNCore, FANNEditor, eANNMLP, JvExGrids, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
+  System.SysUtils, System.Classes, System.Types,
+  FEditor, eANNCore, FANNEditor, eANNMLP,
+  JvExGrids, JvGrids, JvExMask, JvSpin, JvExStdCtrls, JvCheckBox,
+  Vcl.Mask, Vcl.Grids, Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.Forms, Vcl.ComCtrls,
+  Vcl.ExtCtrls;
 
 type
   TfmANNMLPEditor = class(TfmANNEditor)
@@ -35,7 +37,7 @@ type
     btAddLayer: TBitBtn;
     BitBtn2: TBitBtn;
     btModifyNet: TBitBtn;
-    Bevel8: TJvGroupBox;
+    Bevel8: TGroupBox;
     Label21: TLabel;
     iLC: TJvSpinEdit;
     Label22: TLabel;

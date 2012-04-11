@@ -42,8 +42,8 @@ object fmOutput: TfmOutput
     TabOrder = 0
   end
   object MainMenu1: TMainMenu
-    Left = 110
-    Top = 20
+    Left = 14
+    Top = 12
     object mnEdit: TMenuItem
       Caption = '&Edit'
       GroupIndex = 10
@@ -103,26 +103,26 @@ object fmOutput: TfmOutput
     Font.Height = -13
     Font.Name = 'System'
     Font.Style = []
-    Left = 305
-    Top = 25
+    Left = 177
+    Top = 9
   end
   object odLoadScr: TOpenDialog
     DefaultExt = 'SCR'
     Filter = 'Script file|*.SCR|All Files|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofExtensionDifferent, ofFileMustExist]
-    Left = 245
-    Top = 25
+    Left = 77
+    Top = 9
   end
   object odSaveScr: TSaveDialog
     DefaultExt = 'SCR'
     Filter = 'Script file|*.SCR|All Files|*.*'
     Options = [ofOverwritePrompt, ofHideReadOnly, ofExtensionDifferent, ofPathMustExist]
-    Left = 275
-    Top = 25
+    Left = 131
+    Top = 9
   end
   object ApplicationEvents1: TApplicationEvents
     OnIdle = ApplicationEvents1Idle
-    Left = 400
-    Top = 16
+    Left = 232
+    Top = 8
   end
 end

@@ -22,18 +22,19 @@ unit FANNPLNEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, eANNCore, eANNPLN, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
+  System.SysUtils, System.Classes,
+  FEditor, FANNEditor, eANNCore, eANNPLN,
+  JvExMask, JvSpin, JvExStdCtrls, JvCheckBox,
+  Vcl.Controls, Vcl.StdCtrls, Vcl.Buttons, Vcl.Mask, Vcl.Forms, Vcl.ComCtrls, Vcl.ExtCtrls;
 
 type
   TfmANNPLNEditor = class(TfmANNEditor)
-    Bevel9: TJvGroupBox;
-    gTrnPrm: TJvGroupBox;
+    Bevel9: TGroupBox;
+    gTrnPrm: TGroupBox;
     Label26: TLabel;
     lbNumNeu1: TLabel;
-    Bevel11: TJvGroupBox;
-    Bevel1: TJvGroupBox;
+    Bevel11: TGroupBox;
+    Bevel1: TGroupBox;
     Label1: TLabel;
     Label6: TLabel;
     Label21: TLabel;
@@ -48,7 +49,7 @@ type
     iRoO: TJvSpinEdit;
     Label23: TLabel;
     iLmd: TJvSpinEdit;
-    Bevel10: TJvGroupBox;
+    Bevel10: TGroupBox;
     Label14: TLabel;
     iWin: TJvSpinEdit;
     Label13: TLabel;

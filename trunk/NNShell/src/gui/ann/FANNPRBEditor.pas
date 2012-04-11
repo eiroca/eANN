@@ -22,27 +22,28 @@ unit FANNPRBEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, eANNCore, eANNRB, eANNPRB, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
+  System.SysUtils, System.Classes,
+  FEditor, FANNEditor, eANNCore, eANNRB, eANNPRB,
+  JvSpin, JvExMask, JvExStdCtrls, JvCheckBox,
+  Vcl.Mask, Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Forms;
   
 type                 
   TfmANNPRBEditor = class(TfmANNEditor)
-    gLrnPrm: TJvGroupBox;
+    gLrnPrm: TGroupBox;
     Label21: TLabel;
     Label22: TLabel;
     Label23: TLabel;
     iTotErr: TJvSpinEdit;
     iAveErr: TJvSpinEdit;
     iMaxErr: TJvSpinEdit;
-    gNeuPrm: TJvGroupBox;
+    gNeuPrm: TGroupBox;
     Label24: TLabel;
     Label13: TLabel;
     Label25: TLabel;
     Label14: TLabel;
     iRo: TJvSpinEdit;
     iDelta: TJvSpinEdit;
-    gDynamic: TJvGroupBox;
+    gDynamic: TGroupBox;
     Label27: TLabel;
     Label28: TLabel;
     Label29: TLabel;
@@ -50,12 +51,12 @@ type
     iSpread: TJvSpinEdit;
     iDecay: TJvSpinEdit;
     btRecalcAtt: TBitBtn;
-    Bevel11: TJvGroupBox;
+    Bevel11: TGroupBox;
     Label33: TLabel;
     Label26: TLabel;
     lbNumNeu: TLabel;
     lbNumAux: TLabel;
-    Bevel13: TJvGroupBox;
+    Bevel13: TGroupBox;
     Label37: TLabel;
     lbAttMin: TLabel;
     Label40: TLabel;
@@ -68,7 +69,7 @@ type
     Label38: TLabel;
     Label41: TLabel;
     lbAttLst: TLabel;
-    Bevel12: TJvGroupBox;
+    Bevel12: TGroupBox;
     Label34: TLabel;
     lbKilled: TLabel;
     Label35: TLabel;

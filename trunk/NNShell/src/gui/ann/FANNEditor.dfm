@@ -34,7 +34,7 @@ inherited fmANNEditor: TfmANNEditor
           Align = alClient
           BorderStyle = bsNone
           TabOrder = 0
-          object gDesc: TJvGroupBox
+          object gDesc: TGroupBox
             Left = 3
             Top = 3
             Width = 443
@@ -97,7 +97,7 @@ inherited fmANNEditor: TfmANNEditor
               OnClick = btResetClick
             end
           end
-          object gNetDesc: TJvGroupBox
+          object gNetDesc: TGroupBox
             Left = 3
             Top = 49
             Width = 282
@@ -150,7 +150,7 @@ inherited fmANNEditor: TfmANNEditor
               ReadOnly = True
             end
           end
-          object gNetOpe: TJvGroupBox
+          object gNetOpe: TGroupBox
             Left = 4
             Top = 96
             Width = 281
@@ -218,7 +218,7 @@ inherited fmANNEditor: TfmANNEditor
               ReadOnly = True
             end
           end
-          object gNetCan: TJvGroupBox
+          object gNetCan: TGroupBox
             Left = 291
             Top = 97
             Width = 156
@@ -286,7 +286,7 @@ inherited fmANNEditor: TfmANNEditor
               ReadOnly = True
             end
           end
-          object gSize: TJvGroupBox
+          object gSize: TGroupBox
             Left = 291
             Top = 49
             Width = 156
@@ -314,7 +314,7 @@ inherited fmANNEditor: TfmANNEditor
           Align = alClient
           BorderStyle = bsNone
           TabOrder = 0
-          object gTrnOpt: TJvGroupBox
+          object gTrnOpt: TGroupBox
             Left = 3
             Top = 56
             Width = 443
@@ -409,7 +409,7 @@ inherited fmANNEditor: TfmANNEditor
             TabOrder = 2
             OnClick = btStopTrnClick
           end
-          object gDataSource: TJvGroupBox
+          object gDataSource: TGroupBox
             Left = 3
             Top = 3
             Width = 443
@@ -520,7 +520,7 @@ inherited fmANNEditor: TfmANNEditor
             TabOrder = 1
             OnClick = btStopTrnClick
           end
-          object gDataSourceApl: TJvGroupBox
+          object gDataSourceApl: TGroupBox
             Left = 3
             Top = 3
             Width = 443
@@ -621,7 +621,7 @@ inherited fmANNEditor: TfmANNEditor
           Align = alClient
           BorderStyle = bsNone
           TabOrder = 0
-          object gErrOpt: TJvGroupBox
+          object gErrOpt: TGroupBox
             Left = 3
             Top = 55
             Width = 443
@@ -663,7 +663,7 @@ inherited fmANNEditor: TfmANNEditor
             TabOrder = 2
             OnClick = btStopTrnClick
           end
-          object JvGroupBox1: TJvGroupBox
+          object JvGroupBox1: TGroupBox
             Left = 3
             Top = 3
             Width = 443

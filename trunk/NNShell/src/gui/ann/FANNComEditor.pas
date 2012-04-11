@@ -22,13 +22,14 @@ unit FANNComEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  eANNCore, FEditor, FANNEditor, eANNCom, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
+  System.SysUtils, System.Classes,
+  eANNCore, FEditor, FANNEditor, eANNCom,
+  JvExMask, JvSpin, JvExStdCtrls, JvCheckBox,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.Mask, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Forms;
 
 type
   TfmANNComEditor = class(TfmANNEditor)
-    Bevel8: TJvGroupBox;
+    Bevel8: TGroupBox;
     Label13: TLabel;
     Label22: TLabel;
     iNumNeu: TJvSpinEdit;

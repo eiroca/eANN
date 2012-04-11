@@ -2,7 +2,7 @@ object fmWorkSpace: TfmWorkSpace
   Left = 253
   Top = 135
   Caption = 'WorkSpace'
-  ClientHeight = 489
+  ClientHeight = 509
   ClientWidth = 664
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -25,14 +25,15 @@ object fmWorkSpace: TfmWorkSpace
     Left = 250
     Top = 0
     Width = 5
-    Height = 489
+    Height = 509
     ExplicitLeft = 176
+    ExplicitHeight = 489
   end
   object tvWorkSpace: TTreeView
     Left = 0
     Top = 0
     Width = 250
-    Height = 489
+    Height = 509
     Align = alLeft
     Images = ImageList1
     Indent = 35
@@ -46,15 +47,17 @@ object fmWorkSpace: TfmWorkSpace
       FF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFFFFFF
       FFFFFF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFF
       FFFFFFFFFF00000000000000000100}
+    ExplicitHeight = 489
   end
   object pnWorkSpace: TPanel
     Left = 255
     Top = 0
     Width = 185
-    Height = 489
+    Height = 509
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitHeight = 489
   end
   object ImageList1: TImageList
     Height = 32
@@ -1126,15 +1129,15 @@ object fmWorkSpace: TfmWorkSpace
   end
   object mnWorkSpace: TMainMenu
     AutoMerge = True
-    Left = 237
-    Top = 65
+    Left = 157
+    Top = 81
     object WorkSpace1: TMenuItem
       Caption = '&WorkSpace'
       GroupIndex = 100
       object NewNeuralNetwork1: TMenuItem
         Caption = 'New Neural Network'
         object MLP1: TMenuItem
-          Caption = 'MLP '
+          Caption = 'Multi Layer Perceptrons'
           OnClick = MLP1Click
         end
         object Competitive1: TMenuItem
@@ -1142,15 +1145,15 @@ object fmWorkSpace: TfmWorkSpace
           OnClick = Competitive1Click
         end
         object PLN1: TMenuItem
-          Caption = 'PLN'
+          Caption = 'Progressive Learning'
           OnClick = PLN1Click
         end
         object RBChen1: TMenuItem
-          Caption = 'RB Chen'
+          Caption = 'Radial Basis'
           OnClick = RBChen1Click
         end
         object PRB1: TMenuItem
-          Caption = 'PRB'
+          Caption = 'Progressive Radial Basis'
           OnClick = PRB1Click
         end
       end
@@ -1173,12 +1176,12 @@ object fmWorkSpace: TfmWorkSpace
   end
   object pmWorkSpace: TPopupMenu
     OnPopup = pmWorkSpacePopup
-    Left = 237
-    Top = 100
+    Left = 157
+    Top = 148
     object miNewNet: TMenuItem
       Caption = 'New Neural Network'
       object MLP2: TMenuItem
-        Caption = 'MLP '
+        Caption = 'Multi Layer Perceptrons'
         OnClick = MLP1Click
       end
       object Competitive2: TMenuItem
@@ -1186,15 +1189,15 @@ object fmWorkSpace: TfmWorkSpace
         OnClick = Competitive1Click
       end
       object PLN2: TMenuItem
-        Caption = 'PLN'
+        Caption = 'Progressive Learning'
         OnClick = PLN1Click
       end
       object RBChen2: TMenuItem
-        Caption = 'RB Chen'
+        Caption = 'Radial Basis'
         OnClick = RBChen1Click
       end
       object PRB2: TMenuItem
-        Caption = 'PRB'
+        Caption = 'Progressive Radial Basis'
         OnClick = PRB1Click
       end
     end

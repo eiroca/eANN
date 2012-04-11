@@ -24,65 +24,60 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, eANNCore, eANNRB, eANNPRB, JvExMask;
+  FEditor, FANNEditor, eANNCore, eANNRB, eANNPRB, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
   
 type                 
   TfmANNPRBEditor = class(TfmANNEditor)
-    btRecalcAtt: TBitBtn;
-    Bevel13: TBevel;
-    lbAttMin: TLabel;
-    lbAttMax: TLabel;
-    lbAttLst: TLabel;
-    lbAttNum: TLabel;
-    lbAttVar: TLabel;
-    lbAttAve: TLabel;
-    Label37: TLabel;
-    Label38: TLabel;
-    Label39: TLabel;
-    Label40: TLabel;
-    Label41: TLabel;
-    Label42: TLabel;
-    Label43: TLabel;
-    Bevel11: TBevel;
-    lbNumAux: TLabel;
-    lbNumNeu: TLabel;
-    Label26: TLabel;
-    Label33: TLabel;
-    Bevel12: TBevel;
-    lbKilled: TLabel;
-    lbReduction: TLabel;
-    lbPeak: TLabel;
-    Label34: TLabel;
-    Label35: TLabel;
-    Label36: TLabel;
-    Bevel8: TBevel;
+    gLrnPrm: TJvGroupBox;
     Label21: TLabel;
     Label22: TLabel;
     Label23: TLabel;
-    Label30: TLabel;
     iTotErr: TJvSpinEdit;
     iAveErr: TJvSpinEdit;
     iMaxErr: TJvSpinEdit;
+    gNeuPrm: TJvGroupBox;
+    Label24: TLabel;
+    Label13: TLabel;
+    Label25: TLabel;
+    Label14: TLabel;
+    iRo: TJvSpinEdit;
+    iDelta: TJvSpinEdit;
+    gDynamic: TJvGroupBox;
+    Label27: TLabel;
     Label28: TLabel;
     Label29: TLabel;
-    Bevel10: TBevel;
-    Label27: TLabel;
-    Label32: TLabel;
-    cbAged: TCheckBox;
     iDeadAge: TJvSpinEdit;
     iSpread: TJvSpinEdit;
     iDecay: TJvSpinEdit;
-    Bevel9: TBevel;
-    Label24: TLabel;
-    Label25: TLabel;
-    Label31: TLabel;
-    iRo: TJvSpinEdit;
-    iDelta: TJvSpinEdit;
-    Label13: TLabel;
-    Label14: TLabel;
+    btRecalcAtt: TBitBtn;
+    Bevel11: TJvGroupBox;
+    Label33: TLabel;
+    Label26: TLabel;
+    lbNumNeu: TLabel;
+    lbNumAux: TLabel;
+    Bevel13: TJvGroupBox;
+    Label37: TLabel;
+    lbAttMin: TLabel;
+    Label40: TLabel;
+    lbAttAve: TLabel;
+    lbAttVar: TLabel;
+    lbAttNum: TLabel;
+    Label42: TLabel;
+    Label39: TLabel;
+    lbAttMax: TLabel;
+    Label38: TLabel;
+    Label41: TLabel;
+    lbAttLst: TLabel;
+    Bevel12: TJvGroupBox;
+    Label34: TLabel;
+    lbKilled: TLabel;
+    Label35: TLabel;
+    lbPeak: TLabel;
+    Label36: TLabel;
+    lbReduction: TLabel;
+    cbAged: TCheckBox;
     procedure iTotErrChange(Sender: TObject);
     procedure iMaxErrChange(Sender: TObject);
-    procedure pcEditorChange(Sender: TObject);
     procedure iAveErrChange(Sender: TObject);
     procedure cbAgedClick(Sender: TObject);
     procedure iDeadAgeChange(Sender: TObject);
@@ -94,10 +89,9 @@ type
   private
     { Private declarations }
   protected
-    procedure ShowEditor; override;
-    procedure UpdateParam;
+    procedure UpdateParam; override;
     procedure UpdateAged;
-    procedure MoreInfo;
+    procedure UpdateInfo; override;
   public
     { Public declarations }
   end;
@@ -105,12 +99,6 @@ type
 implementation
 
 {$R *.DFM}
-
-procedure TfmANNPRBEditor.ShowEditor;
-begin
-  inherited ShowEditor;
-  UpdateParam;
-end;
 
 procedure TfmANNPRBEditor.UpdateAged;
 var
@@ -124,6 +112,7 @@ end;
 
 procedure TfmANNPRBEditor.UpdateParam;
 begin
+  inherited;
   with Obj as TPRBNetwork do begin
     iMaxErr.Value  := Parameters.MaxErr;
     iAveErr.Value  := Parameters.AveErr;
@@ -134,7 +123,7 @@ begin
     iDeadAge.Value := Parameters.DeadAge;
     iDecay.Value   := Parameters.Decay;
     iSpread.Value  := Parameters.Spread;
-    cbAged.Checked := Parameters.Aged;
+    cbAged.Checked  := Parameters.Aged;
     UpdateAged;
   end;
 end;
@@ -155,17 +144,6 @@ begin
   with TPRBNetwork(Obj) do begin
     Parameters.MaxErr:= iMaxErr.Value;
     iMaxErr.Value:= Parameters.MaxErr;
-  end;
-end;
-
-procedure TfmANNPRBEditor.pcEditorChange(Sender: TObject);
-begin
-  inherited;
-  if pcEditor.ActivePage = tsProp then begin
-    UpdateParam;
-  end
-  else if pcEditor.ActivePage = tsInfo then begin
-    MoreInfo;
   end;
 end;
 
@@ -234,8 +212,9 @@ begin
   end;
 end;
 
-procedure TfmANNPRBEditor.MoreInfo;
+procedure TfmANNPRBEditor.UpdateInfo;
 begin
+  inherited;
   with TPRBNetwork(Obj) do begin
     lbNumNeu.Caption   := IntToStr(NumNeu);
     lbNumAux.Caption   := IntToStr(NumAux);
@@ -257,7 +236,7 @@ procedure TfmANNPRBEditor.btRecalcAttClick(Sender: TObject);
 begin
   inherited;
   TPRBNetwork(Obj).RecalcActivation;
-  MoreInfo;
+  UpdateInfo;
 end;
 
 initialization

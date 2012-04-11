@@ -74,6 +74,7 @@ inherited fmDataListEditor: TfmDataListEditor
             TabOrder = 0
             Text = 'iName'
             OnChange = iNameChange
+            OnKeyPress = iNameKeyPress
           end
           object btRename: TBitBtn
             Left = 175
@@ -115,9 +116,10 @@ inherited fmDataListEditor: TfmDataListEditor
           end
           object iDim: TJvSpinEdit
             Left = 335
-            Top = 10
+            Top = 8
             Width = 66
             Height = 21
+            CheckMinValue = True
             Alignment = taRightJustify
             TabOrder = 3
             OnChange = iDimChange
@@ -127,6 +129,7 @@ inherited fmDataListEditor: TfmDataListEditor
             Top = 35
             Width = 66
             Height = 21
+            CheckMinValue = True
             Alignment = taRightJustify
             TabOrder = 4
             OnChange = iCountChange

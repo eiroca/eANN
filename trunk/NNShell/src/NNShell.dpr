@@ -23,26 +23,29 @@ uses
   Forms,
   uANNWorkSpace in 'lib\uANNWorkSpace.pas',
   uOpzioni in 'lib\uOpzioni.pas',
-  FWorkSpace in 'gui\FWorkSpace.pas' {fmWorkSpace},
-  FANNComEditor in 'gui\FANNComEditor.pas' {fmANNComEditor},
-  FANNEditor in 'gui\FANNEditor.pas' {fmANNEditor},
-  FANNMLPEditor in 'gui\FANNMLPEditor.pas' {fmANNMLPEditor},
-  FANNPLNEditor in 'gui\FANNPLNEditor.pas' {fmANNPLNEditor},
-  FANNPRBEditor in 'gui\FANNPRBEditor.pas' {fmANNPRBEditor},
-  FANNRBEditor in 'gui\FANNRBEditor.pas' {fmANNRBEditor},
-  FDataListEditor in 'workspace\FDataListEditor.pas' {fmDataListEditor},
-  FDataPatternEditor in 'workspace\FDataPatternEditor.pas' {fmDataPatternEditor},
-  FEditor in 'workspace\FEditor.pas' {fmEditor},
   FMain in 'gui\FMain.pas' {fmMain},
-  FOutput in 'workspace\FOutput.pas' {fmOutput},
-  uWorkSpace in 'workspace\uWorkSpace.pas',
-  FErrorSetEditor in 'workspace\FErrorSetEditor.pas' {fmErrorSetEditor};
+  Vcl.Themes,
+  Vcl.Styles,
+  uWorkSpace in 'lib\uWorkSpace.pas',
+  FANNRBEditor in 'gui\ann\FANNRBEditor.pas' {fmANNRBEditor},
+  FANNComEditor in 'gui\ann\FANNComEditor.pas' {fmANNComEditor},
+  FANNEditor in 'gui\ann\FANNEditor.pas' {fmANNEditor},
+  FANNMLPEditor in 'gui\ann\FANNMLPEditor.pas' {fmANNMLPEditor},
+  FANNPLNEditor in 'gui\ann\FANNPLNEditor.pas' {fmANNPLNEditor},
+  FANNPRBEditor in 'gui\ann\FANNPRBEditor.pas' {fmANNPRBEditor},
+  FWorkSpace in 'gui\workspace\FWorkSpace.pas' {fmWorkSpace},
+  FDataListEditor in 'gui\workspace\FDataListEditor.pas' {fmDataListEditor},
+  FDataPatternEditor in 'gui\workspace\FDataPatternEditor.pas' {fmDataPatternEditor},
+  FEditor in 'gui\workspace\FEditor.pas' {fmEditor},
+  FErrorSetEditor in 'gui\workspace\FErrorSetEditor.pas' {fmErrorSetEditor},
+  FOutput in 'gui\workspace\FOutput.pas' {fmOutput};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.Title := 'NNShell 2007';
+  TStyleManager.TrySetStyle('Aqua Light Slate');
+  Application.Title := 'Neural Network Shell';
   Application.CreateForm(TfmMain, fmMain);
   Application.Run;
 end.

@@ -44,6 +44,7 @@ inherited fmErrorSetEditor: TfmErrorSetEditor
         TabOrder = 0
         Text = 'iName'
         OnChange = iNameChange
+        OnKeyPress = iNameKeyPress
       end
       object btRename: TBitBtn
         Left = 175
@@ -51,8 +52,6 @@ inherited fmErrorSetEditor: TfmErrorSetEditor
         Width = 81
         Height = 28
         Caption = 'Rename'
-        TabOrder = 1
-        OnClick = btRenameClick
         Glyph.Data = {
           06020000424D0602000000000000760000002800000028000000140000000100
           0400000000009001000000000000000000001000000000000000000000000000
@@ -73,6 +72,8 @@ inherited fmErrorSetEditor: TfmErrorSetEditor
           33333333333333333333}
         NumGlyphs = 2
         Spacing = 5
+        TabOrder = 1
+        OnClick = btRenameClick
       end
       object BitBtn1: TBitBtn
         Left = 260

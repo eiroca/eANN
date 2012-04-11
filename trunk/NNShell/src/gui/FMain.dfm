@@ -347,7 +347,7 @@ object fmMain: TfmMain
   end
   object MainMenu1: TMainMenu
     Images = ilMenu
-    Left = 80
+    Left = 24
     Top = 40
     object mnFile: TMenuItem
       Caption = '&File'
@@ -426,31 +426,26 @@ object fmMain: TfmMain
     end
   end
   object dlgCalc: TJvCalculator
-    Left = 50
-    Top = 40
-  end
-  object AppEvents1: TJvAppEvents
-    OnHint = AppEvents1Hint
-    Left = 20
-    Top = 40
+    Left = 210
+    Top = 96
   end
   object sdWorkspace: TSaveDialog
     DefaultExt = 'nnw'
     Filter = 'Workspace files|*.nnw|All files|*.*'
     Options = [ofOverwritePrompt, ofExtensionDifferent, ofPathMustExist]
-    Left = 17
-    Top = 75
+    Left = 345
+    Top = 43
   end
   object odWorkSpace: TOpenDialog
     DefaultExt = 'nnw'
     Filter = 'Workspace files|*.nnw|All files|*.*'
     Options = [ofExtensionDifferent, ofPathMustExist, ofFileMustExist]
-    Left = 17
-    Top = 105
+    Left = 273
+    Top = 41
   end
   object ActionList1: TActionList
     Images = ilMenu
-    Left = 176
+    Left = 96
     Top = 40
     object aFileExit: TFileExit
       Category = 'File'
@@ -487,7 +482,7 @@ object fmMain: TfmMain
     end
   end
   object ilMenu: TImageList
-    Left = 208
+    Left = 152
     Top = 40
     Bitmap = {
       494C010112001300040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
@@ -1161,7 +1156,7 @@ object fmMain: TfmMain
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     SubStorages = <>
-    Left = 104
+    Left = 96
     Top = 96
   end
   object fp: TJvFormStorage
@@ -1170,7 +1165,12 @@ object fmMain: TfmMain
     OnSavePlacement = SetINIPath
     OnRestorePlacement = SetINIPath
     StoredValues = <>
-    Left = 168
+    Left = 152
     Top = 96
+  end
+  object appEvt: TApplicationEvents
+    OnHint = appEvtHint
+    Left = 208
+    Top = 40
   end
 end

@@ -22,9 +22,11 @@ unit FDataPatternEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  FEditor, FDataListEditor, JvToolEdit, StdCtrls, Grids, JvGrids, Mask, JvSpin,
-  Buttons, ComCtrls, ExtCtrls, JvExGrids, JvExMask;
+  System.SysUtils, System.Classes,
+  FEditor, FDataListEditor,
+  JvExGrids, JvExMask, JvToolEdit, JvGrids, JvSpin,
+  Vcl.StdCtrls, Vcl.Grids, Vcl.Mask, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Buttons,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
 
 type
   TfmDataPatternEditor = class(TfmDataListEditor)

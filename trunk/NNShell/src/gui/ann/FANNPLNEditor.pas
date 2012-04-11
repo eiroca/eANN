@@ -24,34 +24,36 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls, Buttons, JvSpin, ComCtrls, Mask,
-  FEditor, FANNEditor, eANNCore, eANNPLN, JvExMask;
+  FEditor, FANNEditor, eANNCore, eANNPLN, JvExMask, JvExStdCtrls, JvCheckBox, JvGroupBox;
 
 type
   TfmANNPLNEditor = class(TfmANNEditor)
-    Bevel11: TBevel;
-    lbNumNeu: TLabel;
+    Bevel9: TJvGroupBox;
+    gTrnPrm: TJvGroupBox;
     Label26: TLabel;
-    Bevel8: TBevel;
+    lbNumNeu1: TLabel;
+    Bevel11: TJvGroupBox;
+    Bevel1: TJvGroupBox;
+    Label1: TLabel;
+    Label6: TLabel;
     Label21: TLabel;
-    Label22: TLabel;
-    Label30: TLabel;
-    Label15: TLabel;
     iEps: TJvSpinEdit;
+    Label22: TLabel;
     iEta: TJvSpinEdit;
+    Label15: TLabel;
     iSpr: TJvSpinEdit;
-    Bevel9: TBevel;
-    Label23: TLabel;
     Label24: TLabel;
-    Label25: TLabel;
-    Label31: TLabel;
-    iLmd: TJvSpinEdit;
     iRoI: TJvSpinEdit;
+    Label25: TLabel;
     iRoO: TJvSpinEdit;
-    Bevel10: TBevel;
-    Label13: TLabel;
+    Label23: TLabel;
+    iLmd: TJvSpinEdit;
+    Bevel10: TJvGroupBox;
     Label14: TLabel;
     iWin: TJvSpinEdit;
-    procedure pcEditorChange(Sender: TObject);
+    Label13: TLabel;
+    JvSpinEdit1: TJvSpinEdit;
+    Label19: TLabel;
     procedure iEpsChange(Sender: TObject);
     procedure iEtaChange(Sender: TObject);
     procedure iLmdChange(Sender: TObject);
@@ -61,9 +63,8 @@ type
     procedure iSprChange(Sender: TObject);
   protected
     { Private declarations }
-    procedure ShowEditor; override;
-    procedure UpdateParam;
-    procedure MoreInfo;
+    procedure UpdateParam; override;
+    procedure UpdateInfo; override;
   public
     { Public declarations }
   end;
@@ -71,23 +72,6 @@ type
 implementation
 
 {$R *.DFM}
-
-procedure TfmANNPLNEditor.ShowEditor;
-begin
-  inherited ShowEditor;
-  UpdateParam;
-end;
-
-procedure TfmANNPLNEditor.pcEditorChange(Sender: TObject);
-begin
-  inherited;
-  if pcEditor.ActivePage = tsProp then begin
-    UpdateParam;
-  end
-  else if pcEditor.ActivePage = tsInfo then begin
-    MoreInfo;
-  end;
-end;
 
 procedure TfmANNPLNEditor.UpdateParam;
 begin
@@ -165,10 +149,11 @@ begin
   end;
 end;
 
-procedure TfmANNPLNEditor.MoreInfo;
+procedure TfmANNPLNEditor.UpdateInfo;
 begin
+  inherited;
   with TPLNetwork(Obj) do begin
-    lbNumNeu.Caption   := IntToStr(NumNeu);
+    lbNumNeu1.Caption   := IntToStr(NumNeu);
   end;
 end;
 

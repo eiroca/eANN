@@ -22,13 +22,13 @@ unit FMain;
 interface
 
 uses
+  System.SysUtils, System.Classes,
   uWorkSpace, FWorkSpace, FEditor,
-  SysUtils, WinTypes, WinProcs, Messages, Classes,
   eLibMath, eANNCore, eDataPick,
-  Graphics, Controls, Forms, Dialogs, JVCalc, Menus, Gauges, StdCtrls, ExtCtrls,
-  ImgList, StdActns, ActnList, JvFormPlacement, JvAppEvent, JvSpeedbar,
-  JvAppStorage, JvAppIniStorage, JvBaseDlg, JvComponentBase, JvExExtCtrls,
-  JvExtComponent;
+  JvFormPlacement, JvComponentBase, JvAppStorage, JvAppIniStorage, JvCalc,
+  JvSpeedbar, JvExExtCtrls, JvExtComponent,
+  Vcl.Forms, Vcl.ImgList, Vcl.Controls, Vcl.StdActns, Vcl.ActnList, Vcl.Dialogs, JvBaseDlg,
+  Vcl.Menus, Vcl.Samples.Gauges, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.AppEvnts;
 
 type
   TfmMain = class(TForm)
@@ -39,7 +39,6 @@ type
     miFileExit: TMenuItem;
     dlgCalc: TJVCalculator;
     miToolsCalcultator: TMenuItem;
-    AppEvents1: TJvAppEvents;
     sbStatus: TJvSpeedbar;
     lbStatus: TLabel;
     Progress: TGauge;
@@ -80,6 +79,7 @@ type
     Cascade1: TMenuItem;
     AppStorage: TJvAppIniFileStorage;
     fp: TJvFormStorage;
+    appEvt: TApplicationEvents;
     procedure FormCreate(Sender: TObject);
     procedure miAboutClick(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -97,7 +97,7 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure miToolsToolbarClick(Sender: TObject);
     procedure siWSDeleteClick(Sender: TObject);
-    procedure AppEvents1Hint(Sender: TObject);
+    procedure appEvtHint(Sender: TObject);
   private
     { Private declarations }
     procedure UpdateMenuItems(Sender: TObject);
@@ -227,7 +227,7 @@ begin
   end;
 end;
 
-procedure TfmMain.AppEvents1Hint(Sender: TObject);
+procedure TfmMain.appEvtHint(Sender: TObject);
 begin
   lbStatus.Caption:= Application.Hint;
 end;

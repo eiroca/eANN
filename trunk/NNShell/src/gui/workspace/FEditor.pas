@@ -22,8 +22,9 @@ unit FEditor;
 interface
 
 uses
-  eDataPick, uWorkSpace, Windows, Messages, SysUtils, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, Buttons, ComCtrls, ExtCtrls;
+  eDataPick, uWorkSpace,
+  System.Classes,
+  Vcl.Forms, Vcl.Controls, Vcl.ExtCtrls;
 
 type
   TfmEditorClass = class of TfmEditor;

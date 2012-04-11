@@ -22,9 +22,13 @@ unit FDataListEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, Grids, JvGrids, JvSpin, StdCtrls, Buttons, Mask,
-  FEditor, JvExGrids, JvExMask;
+  System.SysUtils, System.Classes, System.Types,
+  FEditor,
+  JvGrids, JvExGrids, JvSpin,
+  Vcl.Dialogs, Vcl.Grids, Vcl.Mask, JvExMask, Vcl.StdCtrls, Vcl.Buttons, Vcl.Controls,
+  Vcl.Forms, Vcl.ComCtrls, Vcl.ExtCtrls;
+
+
 
 type
   TfmDataListEditor = class(TfmEditor)
@@ -74,6 +78,7 @@ type
     procedure iCountChange(Sender: TObject);
     procedure btSaveClick(Sender: TObject);
     procedure btLoadClick(Sender: TObject);
+    procedure iNameKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     N, D: integer;
@@ -212,6 +217,15 @@ procedure TfmDataListEditor.iNameChange(Sender: TObject);
 begin
   inherited;
   btRename.Enabled:= WorkSpace.ValidRename(Obj, Obj.Name, iName.Text);
+end;
+
+procedure TfmDataListEditor.iNameKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  if not StrUtil.isLitteral(Key) then begin
+    Key:= #0;
+    Beep;
+  end;
 end;
 
 procedure TfmDataListEditor.btRenameClick(Sender: TObject);

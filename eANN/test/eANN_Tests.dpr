@@ -19,7 +19,11 @@ uses
   TestFramework,
   GUITestRunner,
   TextTestRunner,
-  Demos in 'src\Demos.pas';
+  uEANNTestCase in 'src\uEANNTestCase.pas',
+  Demo_MLP in 'src\Demo_MLP.pas',
+  Demo_Competitive in 'src\Demo_Competitive.pas',
+  Demo_ProgressiveLearning in 'src\Demo_ProgressiveLearning.pas',
+  Demo_ShapeDetector in 'src\Demo_ShapeDetector.pas';
 
 {$R *.RES}
 

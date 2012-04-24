@@ -27,9 +27,7 @@ uses
   eANNCore, eANNCom;
 
 type
-
-  // Test methods for class Competitive Networks
-  Competitive_Network = class(EANNTestCase)
+  Competitive_Network = class(ANNTestCase)
   published
     procedure Classifier_001;
   end;
@@ -47,7 +45,7 @@ begin
   NW:= TCompetitiveNetwork.Create(nil);
   NW.DataIn:= ip;
   NW.Parameters.Eta:= 0.1;
-  NW.Parameters.NumNeu:= 4;
+  NW.Parameters.MaxNeu:= 4;
   NW.Options.Iterations:= 100;
   try
     NW.Train;
@@ -58,11 +56,10 @@ begin
   NW.DataIn:= tp;
   NW.DataOut:= op;
   NW.Apply;
-  writeln(f);
-  writeln(f, 'Testing '+NW.Description+' on '+ip.Desc);
+  WriteMessage('');
+  WriteMessage('Testing '+NW.Description+' on '+ip.Desc);
   WriteNetworkCom(NW);
-
-  writeln(f);
+  WriteMessage('');
   NW.Free;
   ip.Free;
   op.Free;

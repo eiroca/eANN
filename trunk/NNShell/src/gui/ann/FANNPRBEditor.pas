@@ -23,7 +23,7 @@ interface
 
 uses
   System.SysUtils, System.Classes,
-  FEditor, FANNEditor, eANNCore, eANNRB, eANNPRB,
+  FEditor, FANNEditor, eANNCore, eANNRB,
   JvSpin, JvExMask, JvExStdCtrls, JvCheckBox,
   Vcl.Mask, Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Controls, Vcl.Forms;
   
@@ -31,10 +31,8 @@ type
   TfmANNPRBEditor = class(TfmANNEditor)
     gLrnPrm: TGroupBox;
     Label21: TLabel;
-    Label22: TLabel;
     Label23: TLabel;
     iTotErr: TJvSpinEdit;
-    iAveErr: TJvSpinEdit;
     iMaxErr: TJvSpinEdit;
     gNeuPrm: TGroupBox;
     Label24: TLabel;
@@ -79,7 +77,6 @@ type
     cbAged: TCheckBox;
     procedure iTotErrChange(Sender: TObject);
     procedure iMaxErrChange(Sender: TObject);
-    procedure iAveErrChange(Sender: TObject);
     procedure cbAgedClick(Sender: TObject);
     procedure iDeadAgeChange(Sender: TObject);
     procedure iSpreadChange(Sender: TObject);
@@ -101,6 +98,9 @@ implementation
 
 {$R *.DFM}
 
+uses
+  Math;
+
 procedure TfmANNPRBEditor.UpdateAged;
 var
   flg: boolean;
@@ -116,15 +116,13 @@ begin
   inherited;
   with Obj as TPRBNetwork do begin
     iMaxErr.Value  := Parameters.MaxErr;
-    iAveErr.Value  := Parameters.AveErr;
-    iAveErr.Enabled:= Parameters.AveErr>=0;
     iTotErr.Value  := Parameters.TotErr;
     iRo.Value      := Parameters.Ro;
     iDelta.Value   := Parameters.Delta;
     iDeadAge.Value := Parameters.DeadAge;
     iDecay.Value   := Parameters.Decay;
     iSpread.Value  := Parameters.Spread;
-    cbAged.Checked  := Parameters.Aged;
+    cbAged.Checked := Parameters.Aged;
     UpdateAged;
   end;
 end;
@@ -135,7 +133,6 @@ begin
   with TPRBNetwork(Obj) do begin
     Parameters.TotErr:= iTotErr.Value;
     iTotErr.Value:= Parameters.TotErr;
-    iAveErr.Value:= Parameters.AveErr;
   end;
 end;
 
@@ -145,16 +142,6 @@ begin
   with TPRBNetwork(Obj) do begin
     Parameters.MaxErr:= iMaxErr.Value;
     iMaxErr.Value:= Parameters.MaxErr;
-  end;
-end;
-
-procedure TfmANNPRBEditor.iAveErrChange(Sender: TObject);
-begin
-  inherited;
-  with TPRBNetwork(Obj) do begin
-    Parameters.AveErr:= iAveErr.Value;
-    iTotErr.Value:= Parameters.TotErr;
-    iAveErr.Value:= Parameters.AveErr;
   end;
 end;
 
@@ -213,6 +200,9 @@ begin
   end;
 end;
 
+resourcestring
+  strNONE = '<none>';
+
 procedure TfmANNPRBEditor.UpdateInfo;
 begin
   inherited;
@@ -222,14 +212,22 @@ begin
     lbKilled.Caption   := IntToStr(Killed);
     lbPeak.Caption     := IntToStr(Peak);
     lbReduction.Caption:= IntToStr(Reduction);
-    if Att.MinAtt < 1e19 then lbAttMin.Caption:= Trim(Format('%11.5f',[Att.MinAtt]))
-    else lbAttMin.Caption:= '<none>';
-    if Att.MaxAtt > 0 then lbAttMax.Caption:= Trim(Format('%11.5f',[Att.MaxAtt]))
-    else lbAttMax.Caption:= '<none>';
-    lbAttAve.Caption:= Trim(Format('%11.5f', [Att.AveAtt]));
-    lbAttVar.Caption:= Trim(Format('%11.5f', [Att.VarAtt]));
-    lbAttNum.Caption:= Trim(Format('%5d', [Att.CntAtt]));
-    lbAttLst.Caption:= Trim(Format('%11.5f', [Att.Att]));
+    if (Activity.Count>0) then begin
+      lbAttMin.Caption:= Trim(Format('%11.5f',[Activity.Minimum]));
+      lbAttMax.Caption:= Trim(Format('%11.5f',[Activity.Maximum]));
+      lbAttAve.Caption:= Trim(Format('%11.5f', [Activity.Average]));
+      lbAttVar.Caption:= Trim(Format('%11.5f', [Activity.Variance]));
+      lbAttNum.Caption:= Trim(Format('%5d', [Activity.Count]));
+      lbAttLst.Caption:= Trim(Format('%11.5f', [Activity.Current]));
+    end
+    else begin
+      lbAttMin.Caption:= strNONE;
+      lbAttMax.Caption:= strNONE;
+      lbAttAve.Caption:= strNONE;
+      lbAttVar.Caption:= strNONE;
+      lbAttNum.Caption:= strNONE;
+      lbAttLst.Caption:= strNONE;
+    end;
   end;
 end;
 

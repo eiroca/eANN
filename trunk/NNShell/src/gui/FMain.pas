@@ -117,7 +117,7 @@ implementation
 
 uses
   uOpzioni, eLibCore, FOutput, FAboutGPL,
-  eANNPRB, eANNRB, eANNPLN, eANNMLP, eANNCom, 
+  eANNRB, eANNPLN, eANNMLP, eANNCom,
   FErrorSetEditor,
   FDataPatternEditor, FDataListEditor,
   FANNEditor, FANNMLPEditor, FANNComEditor, FANNPLNEditor, FANNPRBEditor, FANNRBEditor;

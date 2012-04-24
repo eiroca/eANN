@@ -24,6 +24,7 @@ interface
 uses
   System.SysUtils, System.Classes,
   FEditor,
+  Winapi.Windows,
   Vcl.Forms, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Controls, Vcl.StdCtrls;
 
 type
@@ -64,7 +65,7 @@ begin
   inherited;
   if not StrUtil.isLitteral(Key) then begin
     Key:= #0;
-    Beep;
+    System.SysUtils.Beep;
   end;
 end;
 

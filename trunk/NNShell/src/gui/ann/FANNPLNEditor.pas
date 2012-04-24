@@ -78,12 +78,12 @@ procedure TfmANNPLNEditor.UpdateParam;
 begin
   with Obj as TPLNetwork do begin
     iEta.Value:= Parameters.Eta;
-    iLmd.Value:= Parameters.Lmd;
+    iLmd.Value:= Parameters.Lamda;
     iEps.Value:= Parameters.Eps;
     iRoI.Value:= Parameters.RoI;
     iRoO.Value:= Parameters.RoO;
     iWin.Value:= Parameters.Win;
-    iSpr.Value:= Parameters.Spr;
+    iSpr.Value:= Parameters.Spread;
   end;
 end;
 
@@ -109,8 +109,8 @@ procedure TfmANNPLNEditor.iLmdChange(Sender: TObject);
 begin
   inherited;
   with TPLNetwork(Obj) do begin
-    Parameters.Lmd:= iLmd.Value;
-    iLmd.Value:= Parameters.Lmd;
+    Parameters.Lamda:= iLmd.Value;
+    iLmd.Value:= Parameters.Lamda;
   end;
 end;
 
@@ -145,8 +145,8 @@ procedure TfmANNPLNEditor.iSprChange(Sender: TObject);
 begin
   inherited;
   with TPLNetwork(Obj) do begin
-    Parameters.Spr:= iSpr.Value;
-    iSpr.Value:= Parameters.Spr;
+    Parameters.Spread:= iSpr.Value;
+    iSpr.Value:= Parameters.Spread;
   end;
 end;
 

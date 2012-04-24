@@ -22,21 +22,22 @@ unit uWorkSpace;
 interface
 
 uses
-  eLibMath, eLibStat, eDataPick, SysUtils, Classes, Controls;
+  eLibCore, eLibMath, eLibStat, eDataPick,
+  System.SysUtils, System.Classes,
+  Vcl.Controls;
 
 type
 
   TObjectClass = class of TComponent;
   TWorkSpace = class;
 
-  TWorkSpace = class(TComponent)
+  TWorkSpace = class(TStorable)
     protected
      FChanged: boolean;
      FCreateListener: TListenerList;
      FFreeListener: TListenerList;
      FNameChangeListener: TListenerList;
     protected
-     procedure   GetChildren(Proc: TGetChildProc; Root: TComponent); override;
      procedure   FreeAllObjects;
      procedure   Loaded; override;
     public
@@ -74,19 +75,11 @@ procedure TWorkSpace.Loaded;
 var
   i: integer;
 begin
+  inherited;
   for i:= 0 to ComponentCount-1 do begin
     CreateListener.Notify(Components[i]);
   end;
   FChanged:= false;
-end;
-
-procedure TWorkSpace.GetChildren(Proc: TGetChildProc; Root: TComponent);
-var
-  i: integer;
-begin
-  for i:= 0 to ComponentCount-1 do begin
-    Proc(Components[i]);
-  end;
 end;
 
 function TWorkSpace.CreateObject(Kind: TObjectClass; const aName: string): TComponent;
@@ -179,22 +172,44 @@ end;
 
 procedure TWorkSpace.Save(Path: string);
 var
-  s: TFileStream;
+  S: TFileStream;
+  M: TMemoryStream;
 begin
-  s:= TFileStream.Create(Path, fmCreate);
-  S.WriteComponent(Self);
-  S.Free;
+  S:= TFileStream.Create(Path, fmCreate);
+  try
+    M:= TMemoryStream.Create;
+    try
+      M.WriteComponent(Self);
+      M.Seek(0, soFromBeginning);
+      ObjectBinaryToText(M, S);
+    finally
+      M.Free;
+    end;
+  finally
+    S.Free;
+  end;
   FChanged:= false;
 end;
 
 procedure TWorkSpace.Load(Path: string);
 var
-  s: TFileStream;
+  S: TFileStream;
+  M: TMemoryStream;
 begin
   FreeAllObjects;
-  s:= TFileStream.Create(Path, fmOpenRead);
-  S.ReadComponent(Self);
-  S.Free;
+  S:= TFileStream.Create(Path, fmOpenRead);
+  try
+    M:= TMemoryStream.Create;
+    try
+      ObjectTextToBinary(S, M);
+      M.Seek(0, soFromBeginning);
+      M.ReadComponent(Self);
+    finally
+      M.Free;
+    end;
+  finally
+    S.Free;
+  end;
   FChanged:= false;
 end;
 

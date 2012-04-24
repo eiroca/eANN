@@ -64,7 +64,7 @@ type
     { Private declarations }
     procedure UpdateParam; override;
     procedure UpdateMaxNeu;
-    procedure MoreInfo;
+    procedure UpdateInfo; override;
   public
     { Public declarations }
   end;
@@ -74,7 +74,7 @@ implementation
 {$R *.DFM}
 
 uses
-  eANNRB;
+  Math, eANNRB;
 
 procedure TfmANNRBEditor.UpdateMaxNeu;
 begin
@@ -131,18 +131,29 @@ begin
   end;
 end;
 
-procedure TfmANNRBEditor.MoreInfo;
+resourcestring
+  strNONE = '<none>';
+
+procedure TfmANNRBEditor.UpdateInfo;
 begin
   with TRBNetwork(Obj) do begin
     lbNumNeu.Caption   := IntToStr(NumNeu);
-    if Att.MinAtt < 1e19 then lbAttMin.Caption:= Trim(Format('%11.5f',[Att.MinAtt]))
-    else lbAttMin.Caption:= '<none>';
-    if Att.MaxAtt > 0 then lbAttMax.Caption:= Trim(Format('%11.5f',[Att.MaxAtt]))
-    else lbAttMax.Caption:= '<none>';
-    lbAttAve.Caption:= Trim(Format('%11.5f', [Att.AveAtt]));
-    lbAttVar.Caption:= Trim(Format('%11.5f', [Att.VarAtt]));
-    lbAttNum.Caption:= Trim(Format('%5d', [Att.CntAtt]));
-    lbAttLst.Caption:= Trim(Format('%11.5f', [Att.Att]));
+    if (Activity.Count>0) then begin
+      lbAttMin.Caption:= Trim(Format('%11.5f',[Activity.Minimum]));
+      lbAttMax.Caption:= Trim(Format('%11.5f',[Activity.Maximum]));
+      lbAttAve.Caption:= Trim(Format('%11.5f', [Activity.Average]));
+      lbAttVar.Caption:= Trim(Format('%11.5f', [Activity.Variance]));
+      lbAttNum.Caption:= Trim(Format('%5d', [Activity.Count]));
+      lbAttLst.Caption:= Trim(Format('%11.5f', [Activity.Current]));
+    end
+    else begin
+      lbAttMin.Caption:= strNONE;
+      lbAttMax.Caption:= strNONE;
+      lbAttAve.Caption:= strNONE;
+      lbAttVar.Caption:= strNONE;
+      lbAttNum.Caption:= strNONE;
+      lbAttLst.Caption:= strNONE;
+    end;
   end;
 end;
 
@@ -150,7 +161,7 @@ procedure TfmANNRBEditor.btRecalcAttClick(Sender: TObject);
 begin
   inherited;
   TRBNetwork(Obj).RecalcActivation;
-  MoreInfo;
+  UpdateInfo;
 end;
 
 initialization

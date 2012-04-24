@@ -215,6 +215,8 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
         end
       end
       inherited tsTrain: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 24
         ExplicitWidth = 456
         ExplicitHeight = 358
         inherited sbTrain: TScrollBox
@@ -256,15 +258,8 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               Height = 13
               Caption = 'Total error'
             end
-            object Label22: TLabel
-              Left = 139
-              Top = 21
-              Width = 64
-              Height = 13
-              Caption = 'Average error'
-            end
             object Label23: TLabel
-              Left = 285
+              Left = 139
               Top = 20
               Width = 68
               Height = 13
@@ -282,20 +277,8 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               TabOrder = 0
               OnChange = iTotErrChange
             end
-            object iAveErr: TJvSpinEdit
-              Left = 209
-              Top = 17
-              Width = 70
-              Height = 21
-              Alignment = taRightJustify
-              Decimal = 4
-              Increment = 0.010000000000000000
-              ValueType = vtFloat
-              TabOrder = 1
-              OnChange = iAveErrChange
-            end
             object iMaxErr: TJvSpinEdit
-              Left = 359
+              Left = 213
               Top = 17
               Width = 70
               Height = 21
@@ -303,7 +286,7 @@ inherited fmANNPRBEditor: TfmANNPRBEditor
               Decimal = 4
               Increment = 0.100000000000000000
               ValueType = vtFloat
-              TabOrder = 2
+              TabOrder = 1
               OnChange = iMaxErrChange
             end
           end

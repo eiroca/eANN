@@ -27,9 +27,7 @@ uses
   eANNCore, eANNPLN;
 
 type
-
-  // Test methods for class Progressive Learning Networks
-  ProgressiveLearning_Network = class(EANNTestCase)
+  ProgressiveLearning_Network = class(ANNTestCase)
   published
     procedure Classifier_001;
   end;
@@ -56,11 +54,11 @@ begin
   end;
   NW.DataIn:= tp;
   NW.Apply;
-  writeln(f);
-  writeln(f, 'Testing '+NW.Description+' on '+ip.Desc);
+  WriteMessage('');
+  WriteMessage('Testing '+NW.Description+' on '+ip.Desc);
   WriteNetworkPL(NW);
   WriteInfo(NW, false);
-  writeln(f);
+  WriteMessage('');
   NW.Free;
   ip.Free;
   op.Free;

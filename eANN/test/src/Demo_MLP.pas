@@ -28,9 +28,7 @@ uses
   eANNCore, eANNMLP;
 
 type
-
-  // Test methods for class Multi Layer Perceptron Networks
-  MLP_Network = class(EANNTestCase)
+  MLP_Network = class(ANNTestCase)
   private
     procedure run_network(const NTW: array of TLayerDesc; iTrainPath: string; LC, MC, tol: Double; Normalize: Boolean; Iterations: integer = 10000);
   published
@@ -48,6 +46,7 @@ type
 
 implementation
 
+//--------------------------------------------------------------------------------------------------
 procedure MLP_Network.run_network;
 var
   NW: TMLPNetwork;
@@ -60,17 +59,19 @@ begin
   try
     NW.Train;
   except
-    on EANNWarning do ;
+    on EANNWarning do begin
+      NW.Trained:= true;
+    end;
   end;
   ES:= TErrorSet.Create(nil);
   NW.Error(ES);
   maxErr:= ES.Find(0).ErrAbs.Max;
-  writeln(f);
-  writeln(f, 'Testing '+NW.Description+' on '+ip.Desc);
-  writeln(f, 'Max Error ', maxErr, ' in ', NW.Epochs,' iterations');
+  WriteMessage('');
+  WriteMessage('Testing '+NW.Description+' on '+ip.Desc);
+  WriteMessage('Max Error '+FloatToStr(maxErr)+' in '+IntToStr(NW.Epochs)+' iterations');
   WriteNetworkMLP(NW);
   WriteInfo(NW, true);
-  writeln(f);
+  WriteMessage('');
   Check(maxErr <= tol, 'Max error too high '+ FloatToStr(maxErr)+' > '+ FloatToStr(NW.Parameters.Tol));
   NW.Free;
   ES.Free;
@@ -78,6 +79,7 @@ begin
   op.Free;
 end;
 
+//--------------------------------------------------------------------------------------------------
 procedure MLP_Network.TestPerceptron_001;
 const
   NTW: array[1..2] of TLayerDesc = (
@@ -108,6 +110,7 @@ begin
   run_network(NTW, 'data/MLP-P3.DAT', 0.25, 0, 0, true, 20000);
 end;
 
+//--------------------------------------------------------------------------------------------------
 procedure MLP_Network.TestApprox_001;
 const
   NTW: array[1..2] of TLayerDesc = (
@@ -138,7 +141,7 @@ const
     (Neu: 1; Kind: TLogisticNeuron)
     );
 begin
-  run_network(NTW, 'data/MLP-F3.DAT', 0.5, 0, 0.3, false);
+  run_network(NTW, 'data/MLP-F3.DAT', 0.5, 0, 0.3, false, 50000);
 end;
 
 procedure MLP_Network.TestApprox_004;
@@ -151,9 +154,10 @@ const
     (Neu: 1; Kind: TLinearNeuron)
     );
 begin
-  run_network(NTW, 'data/MLP-F4.DAT', 0.25, 0, 0.01, false);
+  run_network(NTW, 'data/MLP-F4.DAT', 0.25, 0, 0.01, false, 50000);
 end;
 
+//--------------------------------------------------------------------------------------------------
 procedure MLP_Network.Classifier_001;
 const
   NTW: array[1..3] of TLayerDesc =
@@ -177,17 +181,18 @@ begin
   end;
   NW.DataIn:= tp;
   NW.Apply;
-  writeln(f);
-  writeln(f, 'Testing '+NW.Description+' on '+ip.Desc);
+  WriteMessage('');
+  WriteMessage('Testing '+NW.Description+' on '+ip.Desc);
   WriteNetworkMLP(NW);
   WriteInfo(NW, false);
-  writeln(f);
+  WriteMessage('');
   NW.Free;
   ip.Free;
   op.Free;
   tp.Free;
 end;
 
+//--------------------------------------------------------------------------------------------------
 initialization
   // Register any test cases with the test runner
   RegisterTest(MLP_Network.Suite);

@@ -23,13 +23,20 @@ interface
 
 uses
   TestFramework, Classes, SysUtils,
-  eDataPick, eLibMath, eLibStat,
-  eANNCore, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB;
+  eLibCore, eDataPick, eLibMath, eLibStat,
+  eANNCore, eANNCom, eANNMLP, eANNPLN, eANNRB;
+
+const
+  ZERO = 0.00001;
+  WRITEFULLINFO = false;
 
 type
-  EANNTestCase = class(TTestCase)
-    protected
-     f: TextFile;
+  ANNTestCase = class(TTestCase)
+    public
+      procedure CheckInteger(v1, v2: integer; Msg: string = '');
+      procedure CheckDouble(v1, v2: double; Msg: string = '');
+    public
+     procedure WriteMessage(Msg: string);
     public
      procedure WriteInfo(NW: TANN; estimate: Boolean);
      procedure WriteTData(const data: TData);
@@ -37,31 +44,55 @@ type
      procedure WriteNetworkMLP(NW: TMLPNetwork);
      procedure WriteNetworkCom(NW: TCompetitiveNetwork);
      procedure WriteNetworkPL(NW: TPLNetwork);
+    protected
     public
      procedure SetUp; override;
      procedure TearDown; override;
   end;
 
+  AutoTestCase = class(ANNTestCase)
+    private
+      fullInfo: boolean;
+    protected
+      function NewRandom: TComponent; virtual; abstract;
+      function NewEmpty: TComponent; virtual; abstract;
+    public
+     procedure SetUp; override;
+    published
+     procedure Test_Create;
+     procedure Test_Assign;
+     procedure Test_Serialize;
+  end;
 
 implementation
+var
+  f: TextFile;
 
-procedure EANNTestCase.SetUp;
+procedure ANNTestCase.SetUp;
 begin
   Randomize;
-  AssignFile(f, 'output.txt');
-  try
-    Append(f);
-  except
-    Rewrite(f);
-  end;
 end;
 
-procedure EANNTestCase.TearDown;
+procedure ANNTestCase.TearDown;
 begin
-  CloseFile(f);
 end;
 
-procedure EANNTestCase.WriteTData(const data: TData);
+procedure ANNTestCase.CheckInteger(v1, v2: integer; Msg: string = '');
+begin
+  Check(v1=v2, Msg);
+end;
+
+procedure ANNTestCase.CheckDouble(v1, v2: double; Msg: string = '');
+begin
+  Check(Abs(v1-v2)<ZERO, Msg);
+end;
+
+procedure ANNTestCase.WriteMessage(Msg: string);
+begin
+  writeln(f, Msg);
+end;
+
+procedure ANNTestCase.WriteTData(const data: TData);
 var
   i: integer;
 begin
@@ -71,7 +102,7 @@ begin
   end;
 end;
 
-procedure EANNTestCase.WriteInfo(NW: TANN; estimate: Boolean);
+procedure ANNTestCase.WriteInfo(NW: TANN; estimate: Boolean);
 var
   i: integer;
   ip, op, ep: TData;
@@ -90,44 +121,43 @@ begin
   end;
 end;
 
-procedure EANNTestCase.WriteNetworkMLP(NW: TMLPNetwork);
+procedure ANNTestCase.WriteNetworkMLP(NW: TMLPNetwork);
 var
   i, j, k: integer;
 begin
   for i := 0 to NW.NumLay - 1 do begin
-    write(f, 'Layer ',i,' ');
+    writeln(f, 'Layer ',i);
     with NW.Layers[i] do begin
-      write(f, NumNeu, ' ');
       for j:= 0 to NumNeu - 1 do begin
         with Neurons[j] do begin
-          write(f, Description, '(', Bias);
-          for k := 0 to NumWei - 1 do begin
-            write(f, ' ', Weights[k]);
+          write(f, '  ', Description, '(', Bias:12:8);
+          for k := 0 to Size-1 do begin
+            write(f, ' ', Weights[k]:12:8);
           end;
-          write(f, ') ');
+          writeln(f, ') ');
         end;
       end;
     end;
-    writeln(f);
   end;
+  writeln(f);
 end;
 
-procedure EANNTestCase.WriteNetworkCom(NW: TCompetitiveNetwork);
+procedure ANNTestCase.WriteNetworkCom(NW: TCompetitiveNetwork);
 var
   i, j: integer;
 begin
   for i := 0 to NW.NumNeu - 1 do begin
     write(f, 'Neuron ',i,' ');
     with NW.Neurons[i] do begin
-      for j:= 0 to Center.Dim - 1 do begin
-        write(f, ' ', FloatToStr(Center.Weights[j]));
+      for j:= 0 to Center.Size - 1 do begin
+        write(f, ' ', Center.Data[j]:12:8);
       end;
     end;
     if (NW.Neurons[i] is TFullCompetitor) then begin
       write(f, ' - ');
       with NW.Neurons[i] as TFullCompetitor do begin
-        for j:= 0 to Output.Dim - 1 do begin
-          write(f, ' ', FloatToStr(Output.Weights[j]));
+        for j:= 0 to Output.Size - 1 do begin
+          write(f, ' ', Output.Data[j]:12:8);
         end;
       end;
     end;
@@ -135,23 +165,81 @@ begin
   end;
 end;
 
-procedure EANNTestCase.WriteNetworkPL(NW: TPLNetwork);
+procedure ANNTestCase.WriteNetworkPL(NW: TPLNetwork);
 var
   i, j: integer;
 begin
   for i := 0 to NW.NumNeu - 1 do begin
     write(f, 'Neuron ',i,' ');
     with NW.Neurons[i] as TFullCompetitor do begin
-      for j:= 0 to Center.Dim - 1 do begin
-        write(f, ' ', FloatToStr(Center.Weights[j]));
+      for j:= 0 to Center.Size - 1 do begin
+        write(f, ' ', Center.Data[j]:12:8);
       end;
       write(f, ' - ');
-      for j:= 0 to Output.Dim - 1 do begin
-        write(f, ' ', FloatToStr(Output.Weights[j]));
+      for j:= 0 to Output.Size - 1 do begin
+        write(f, ' ', Output.Data[j]:12:8);
       end;
     end;
     writeln(f);
   end;
 end;
 
+procedure AutoTestCase.SetUp;
+begin
+  inherited;
+  fullInfo:= WRITEFULLINFO;
+end;
+
+procedure AutoTestCase.Test_Create;
+var
+  C: TComponent;
+begin
+  C:= NewEmpty;
+  C.Free;
+end;
+
+procedure AutoTestCase.Test_Assign;
+var
+  C1, C2: TComponent;
+begin
+  C1:= NewRandom;
+  C2:= NewEmpty;
+  C2.Assign(C1);
+  Check(C1.Equals(C2));
+  C2.Free;
+  C1.Free;
+end;
+
+procedure AutoTestCase.Test_Serialize;
+var
+  C1, C2: TComponent;
+  S: TMemoryStream;
+begin
+  C1:= NewRandom;
+  if (fullInfo) then WriteMessage('<<C0 '+TStorable.ComponentToString(C1));
+  C2:= NewEmpty;
+  C2.Assign(C1);
+  S:= TMemoryStream.Create;
+  S.WriteComponent(C1);
+  C1.Free;
+  S.Seek(0, soFromBeginning);
+  C1:= S.ReadComponent(nil);
+  S.Free;
+  if (not C1.Equals(C2)) then begin
+    WriteMessage('>>C1 '+TStorable.ComponentToString(C1));
+    WriteMessage('>>C2 '+TStorable.ComponentToString(C2));
+  end;
+  Check(C1.Equals(C2), 'Error in binary the stream');
+  C2.Free;
+  C2:= TStorable.StringToComponent(TStorable.ComponentToString(C1));
+  Check(C1.Equals(C2), 'Error in binary the text stream');
+  C2.Free;
+  C1.Free;
+end;
+
+initialization
+  AssignFile(f, 'output.txt');
+  Rewrite(f);
+finalization
+  CloseFile(f);
 end.

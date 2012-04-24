@@ -35,12 +35,10 @@ uses
   TestFramework, Classes, SysUtils,
   uEANNTestCase,
   eDataPick, eLibMath, eLibStat,
-  eANNCore, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB;
+  eANNCore, eANNMLP;
 
 type
-  // Test methods for class TPRBNetwork
-
-  ShapeDetector = class(EANNTestCase)
+  ShapeDetector = class(ANNTestCase)
   private
     procedure WriteShape(NW1, NW2: TANN);
   published
@@ -53,6 +51,7 @@ procedure ShapeDetector.WriteShape(NW1, NW2: TANN);
 var
   i, j: integer;
   ip, p1, p2: TData;
+  tmp: string;
 begin
   SetLength(p1, NW1.DimOut);
   SetLength(p2, NW2.DimOut);
@@ -60,13 +59,17 @@ begin
     ip:= NW1.DataIn[i];
     NW1.Simul(ip, p1);
     NW2.Simul(ip, p2);
-    Writeln(f, '(',findPosMax(p1)+1,',',findPosMax(p2)+1,')');
+    WriteMessage('('+IntToStr(findPosMax(p1)+1)+','+IntToStr(findPosMax(p2)+1)+')');
+    tmp:= '';
     for j := 0 to 24 do begin
-      if ((j>0) and ((j mod 5) = 0)) then writeln(f);
-      if (ip[j]>0.001) then write(f,'*')
-      else write(f,'.');
+      if ((j>0) and ((j mod 5) = 0)) then begin
+//        WriteMessage(tmp);
+        tmp:='';
+      end;
+      if (ip[j]>0.001) then tmp:= tmp+'*'
+      else tmp:= tmp+'.';
     end;
-    Writeln(f);
+//    WriteMessage(tmp);
   end;
 end;
 
@@ -88,8 +91,8 @@ begin
   pWhat.LoadFromFile('data/NN-WHAT.DAT');
   pWhere:= TDataPattern.Create(nil);
   pWhere.LoadFromFile('data/NN-WHERE.DAT');
-  NW_what:= TMLPNetwork.BuildNetwork(NTW, pShape, pWhat,  0.25, 0, 0, false, 200);
-  NW_where:= TMLPNetwork.BuildNetwork(NTW, pShape, pWhere, 0.25, 0, 0, false, 200);
+  NW_what:= TMLPNetwork.BuildNetwork(NTW, pShape, pWhat,  0.10, 0, 0, false, 300);
+  NW_where:= TMLPNetwork.BuildNetwork(NTW, pShape, pWhere, 0.20, 0, 0.1, false, 200);
   try
     NW_What.Train;
   except
@@ -101,13 +104,13 @@ begin
     on EANNWarning do ;
   end;
 
-  writeln(f);
-  writeln(f, 'Testing '+pShape.Desc);
+  WriteMessage('');
+  WriteMessage('Testing '+pShape.Desc);
   WriteNetworkMLP(NW_What);
   WriteNetworkMLP(NW_Where);
   WriteShape(NW_What, NW_where);
 
-  writeln(f);
+  WriteMessage('');
   NW_What.Free;
   NW_Where.Free;
   pShape.Free;

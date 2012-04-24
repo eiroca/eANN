@@ -57,12 +57,8 @@ unit eANNCore;
 interface
 
 uses
-  SysUtils, Classes, Contnrs,
-  eDataPick, eLibMath, eLibStat;
-
-const
-  //A low value assumed to be 0
-  Zero: double = 0.0001;
+  System.SysUtils, System.Classes, System.Contnrs,
+  eDataPick, eLibCore, eLibMath, eLibStat;
 
 resourcestring
 
@@ -83,70 +79,15 @@ resourcestring
   errLayerError2 = 'layer cannot accept nothing other neurons';
   errBadNetDef   = 'bad network definition';
 
-  errListIndexError    = 'Out of index %d';
-  errListCapacityError = 'List Capacity Error %d';
-  errListCountError    = 'List Count Error %d';
+const
+  //A low value assumed to be 0
+  Zero: double = 0.0001;
 
-type
-
-  TWeights = class(TPersistent)
-    private
-     FWeights: TData;
-     FDim: integer;
-    protected
-     procedure SetDim(vl: integer);
-    public
-     constructor Create(aDim: integer);
-     procedure   SetWeights(const p: TData);
-     procedure   GetWeights(var p: TData);
-     procedure   Randomize(min, max: double);
-     function    SqrDist(const ip: TData): double;
-     procedure   Assign(Source: TPersistent); override;
-     procedure   SaveToStream(S: TStream);
-     procedure   LoadFromStream(S: TStream);
-     destructor  Destroy; override;
-    public
-     property Dim: integer read FDim write SetDim;
-     property Weights: TData read FWeights;
-  end;
-
-  TWeights_List = class(TObjectList)
-    protected
-     function  GetWeights(Index: Integer): TWeights;
-     procedure PutWeights(Index: Integer; Item: TWeights);
-    public
-     property Items[Index: Integer]: TWeights read GetWeights write PutWeights; default;
-  end;
-
-  TActivityLogger = class(TPersistent)
-    private
-     OldMin : double;
-     OldMax : double;
-     FMinAtt: double;
-     FMaxAtt: double;
-     FAveAtt: double;
-     FVarAtt: double;
-     FCntAtt: longint;
-     FAtt   : double;
-    public
-     constructor Create;
-     procedure   Reset;
-     procedure   Add(vl: double);
-     procedure   Undo;
-    private
-     procedure ReadData (Reader: TReader);
-     procedure WriteData(Writer: TWriter);
-    public
-     procedure DefineProperties(Filer: TFiler); override;
-     procedure Assign(Source: TPersistent); override;
-    public
-     property MinAtt: double  read FMinAtt;
-     property MaxAtt: double  read FMaxAtt;
-     property AveAtt: double  read FAveAtt;
-     property VarAtt: double  read FVarAtt;
-     property CntAtt: longint read FCntAtt;
-     property Att   : double  read FAtt;
-  end;
+const
+  defErrorMode   = imNone;
+  defErrorParam  = 0;
+  defIterations  = 1;
+  defProgressStep= 100;
 
 type
   //Base exception class
@@ -179,8 +120,6 @@ type
 type
   TNetInfo  = (
     niSuper,
-    niTrained,
-    niStopTrain,
     niProgressive);
   TNetInfos = set of TNetInfo;
 
@@ -202,6 +141,116 @@ type
   TDataNotify     = (dnDataIn, dnDataOut, dnDimInp, dnDimOut);
 
 type
+  TWeights = class(TStorable)
+    private
+     FWeights: TData;
+    protected
+     procedure  SetSize(vl: integer);
+     function   GetSize: integer;
+     procedure  SetItem(index: integer; vl: double);
+     function   GetItem(index: integer): double;
+     procedure  WriteWeights(Writer: TWriter);
+     procedure  ReadWeights(Reader: TReader);
+    public
+     class function New(aSize: integer): TWeights; static;
+    public
+     constructor Create(AOwner: TComponent); override;
+     destructor  Destroy; override;
+    protected
+     procedure   DefineProperties(Filer: TFiler); override;
+    public
+     (* Deep copy of the network *)
+     procedure   Assign(Source: TPersistent); override;
+    public
+     procedure   SetWeights(const p: TData);
+     function    GetWeights: TData;
+     procedure   Randomize(min, max: double);
+     procedure   Setup(value: double);
+     function    SqrDist(const ip: TData): double;
+    public
+     property Items[i: integer]: double
+       read GetItem
+       write SetItem;
+       default;
+     property Data: TData
+       read FWeights;
+    published
+     property Size: integer
+       read GetSize
+       write SetSize
+       stored true;
+  end;
+
+  TWeights_List = class(TComponentList)
+    protected
+     function  GetWeights(Index: Integer): TWeights;
+     procedure PutWeights(Index: Integer; Item: TWeights);
+    public
+     property Items[Index: Integer]: TWeights
+       read GetWeights
+       write PutWeights;
+       default;
+  end;
+
+type
+  TActivityLogger = class(TStorable)
+    private
+     FCntAtt: integer;
+     FCurAtt: double;
+     FSumAtt: double;
+     FSm2Att: double;
+     FMinAtt: double;
+     FMaxAtt: double;
+     FLstAtt: double;
+     FOldMin: double;
+     FOldMax: double;
+     FCanUnd: boolean;
+    protected
+     function  GetAverage: double;
+     function  GetVariance: double;
+     procedure WriteStatus(Writer: TWriter);
+     procedure ReadStatus(Reader: TReader);
+    public
+     constructor Create(AOwner: TComponent); override;
+    protected
+     procedure   DefineProperties(Filer: TFiler); override;
+    public
+     procedure   Assign(Source: TPersistent); override;
+    public
+     procedure   Reset;
+     procedure   Add(vl: double);
+     procedure   Undo;
+    published
+     property Count   : integer
+       read FCntAtt
+       stored true;
+     property Current : double
+       read FCurAtt
+       stored true;
+     property SumX    : double
+       read FSumAtt
+       stored true;
+     property SumX2   : double
+       read FSm2Att
+       stored true;
+     property Minimum : double
+       read FMinAtt
+       stored true;
+     property Maximum : double
+       read FMaxAtt
+       stored true;
+     property Average : double
+       read GetAverage
+       stored false;
+     property Variance: double
+       read GetVariance
+       stored false;
+     property CanUndo : boolean
+       read FCanUnd
+       stored false;
+  end;
+
+type
   TANN = class;
   TANNClass = class of TANN;
 
@@ -210,48 +259,55 @@ type
   TDataChange     = procedure(Sender: TANN; What: TDataNotify) of object;
   TNetworkChange  = procedure(Sender: TANN) of object;
 
-  TANNParam = class(TPersistent)
+  TANNOptions = class(TStorable)
     private
-     FOwner   : TANN;
-    public
-     constructor Create(AOwner: TANN); virtual;
-    public
-     property Owner: TANN read FOwner;
-  end;
-
-  // Network Options
-  TANNOptions = class(TANNParam)
-    private
-     FErrorParam: double;
+     // Network Options
      FErrorMode : TIgnoreMode;
+     FErrorParam: double;
      FProgStep  : integer;
      FIterations: integer;
     protected
      procedure SetErrorParam(vl: double);
-     procedure SetErrorMode(vl: TIgnoreMode);
      procedure SetProgStep(vl: integer);
      procedure SetIterations(vl: integer);
     public
-     constructor Create(AOwner: TANN); override;
+     constructor Create(AOwner: TComponent); override;
+    public
+     (* Deep copy of the network *)
+     procedure   Assign(Source: TPersistent); override;
     published
      //IgnoreMode (default 0) errors ignoring policy 0=take all errors, 1 = ignore errors if IgnoreIf condition is true, 2 = error=0 if ErrorParam condition is true.
-     property ErrorMode   : TIgnoreMode read FErrorMode  write SetErrorMode default imNone;
+     property ErrorMode   : TIgnoreMode
+       read FErrorMode
+       write FErrorMode
+       stored true
+       default defErrorMode;
      //ErrorParam (default 0). Let error method to ignore elements of output vectors if its magnitude is under this value.
-     property ErrorParam  : double      read FErrorParam write SetErrorParam;
+     property ErrorParam  : double
+       read FErrorParam
+       write SetErrorParam
+       stored true
+       nodefault;
      //Iterations (default 1) times to repeat patterns during trainings.
-     property Iterations  : integer     read FIterations write SetIterations default 1;
+     property Iterations  : integer
+       read FIterations
+       write SetIterations
+       stored true
+       default defIterations;
      //Iteration(s) between progress indication
-     property ProgressStep: integer     read FProgStep   write SetProgStep default 100;
+     property ProgressStep: integer
+       read FProgStep
+       write SetProgStep
+       stored true
+       default defProgressStep;
   end;
 
   (* Pure interface Network *)
-  TANN = class(TComponent)
+  TANN = class(TStorable)
     protected
      (* Adds operation to supported operation set *)
      class procedure Supply(var Op: TNetOpers); virtual;
     public
-     (* Generate an exception *)
-     class procedure DoError(ExptKind: ANNExceptionClass; const Msg: string);
      (*
      Returns the operation allowed with the network
      @returns Supported Operation set
@@ -259,42 +315,38 @@ type
      class function SupportedOperation: TNetOpers; virtual;
      (* Returns the name of the network *)
      class function Description: string; virtual;
-    private
-     FOpts      : TANNOptions;
-     FDataIn    : TDataPicker;
-     FDataOut   : TDataPicker;
-     FDimInp    : integer;
-     FDimOut    : integer;
-     FStopOper  : boolean;
-     FNetInfos  : TNetInfos;
+    protected
+     FTrained     : boolean;
+     FDataIn      : TDataPicker;
+     FDataOut     : TDataPicker;
+     FDimInp      : integer;
+     FDimOut      : integer;
+     FStopOper    : boolean;
+     FNetInfos    : TNetInfos;
      FOnProgress  : TProgressEvent;
      FOnPrepare   : TNetOperEvent;
      FOnBeginOper : TNetOperEvent;
      FOnEndOper   : TNetOperEvent;
      FOnChange    : TNetworkChange;
      FOnDataChange: TDataChange;
+     FOptions     : TANNOptions;
+     // Change status
      ChangesLock  : integer;
      NeedChange   : boolean;
     private
      procedure DataInChanged(Sender: TObject);
      procedure DataOutChanged(Sender: TObject);
+    private
      procedure SetDataIn(vl: TDataPicker);
      procedure SetDataOut(vl: TDataPicker);
-     procedure SetOpts(NewOpts: TANNOptions);
-     procedure ReadDataNetDim(Reader: TReader);
-     procedure WriteDataNetDim(Writer: TWriter);
-     procedure ReadTrained(Reader: TReader);
-     procedure WriteTrained(Writer: TWriter);
     protected
+     procedure SetOptions(vl: TANNOptions);
      procedure SetNetInfos(vl: TNetInfos);
-     function  CheckCreate(Instance: TComponent; ClassKind: TComponentClass; const Name: string): TComponent;
-     procedure DefineProperties(Filer: TFiler); override;
-     procedure Loaded; override;
      procedure Notification(AComponent: TComponent; Operation: TOperation); override;
      (* Initializes the progress indicator *)
      procedure ProgressInit(AMax: integer);
      (* Reports a progress step *)
-     procedure ProgressStep;
+     procedure DoProgressStep;
      (* Reports a interation progress *)
      procedure ProgressIteration(ite: integer);
      (* Stops the progress indicator *)
@@ -306,31 +358,36 @@ type
     public
      (* Constructs the network *)
      constructor Create(AOwner: TComponent); override;
-     procedure   Assign(Source: TPersistent); override;
      (* Destroys the network *)
      destructor  Destroy; override;
     public
+     (* Deep copy of the network *)
+     procedure   Assign(Source: TPersistent); override;
+    protected
+     procedure   Loaded; override;
+    public
      procedure   BeginUpdate; virtual;
-     procedure   Change; virtual;
+     procedure   Change;
+     procedure   DoChange; dynamic;
      procedure   EndUpdate; virtual;
     public
      function    BeginLearning: boolean; virtual;
      (* Learns a single sample (valid for supervisioned networks) *)
-     procedure   Learn(const ip, op: TData); virtual;
+     procedure   Learn(const ip, op: TData); dynamic;
      procedure   EndLearning; virtual;
     public
      function    BeginAcquisition: boolean; virtual;
      (* Acquire a single sample (valid for non supervisioned networks) *)
-     procedure   Acquire(const ip: TData); virtual;
+     procedure   Acquire(const ip: TData); dynamic;
      procedure   EndAcquisition; virtual;
     public
      function    BeginSimulation: boolean; virtual;
      (* Computes output of a single input *)
-     procedure   Simul(const ip: TData; var op: TData); virtual;
+     procedure   Simul(const ip: TData; var op: TData); dynamic;
      procedure   EndSimulation; virtual;
     public
      function    BeginClusterization: boolean; virtual;
-     function    FindCluster(const ip: TData): integer; virtual;
+     function    FindCluster(const ip: TData): integer; dynamic;
      procedure   EndClusterization; virtual;
     public
      (* Resets the network (loosing learning) *)
@@ -339,69 +396,165 @@ type
      procedure   Train; virtual;
      (* Computes network output based on a set of inputs. DataIn holds the inputs and DataOut will contains the predicted outputs *)
      procedure   Apply; virtual;
-     (*
-     Computes network errors on a given set of samples. DataIn holds the inputs and DataOut holds the real outputs
-     The following report is available through TErrorSet @br
-     i a value taken from I, n a value taken from N. @br
-     Total Absolute Error: Min, Max, Ave, Var of E[n, i] for all i, n @br
-     Total Relative Error: Min, Max, Ave, Var of Er[n, i] for all i, n @br
-     Total EQM Error: Min, Max, Ave, Var of D[n] for all n @br
-     Total Relative EQM Error: Min, Max, Ave, Var of Dr[n] for all n @br
-     *)
+     (* Computes network errors on a given set of samples. DataIn holds the inputs and DataOut holds the real outputs *)
      procedure   Error(ES: TErrorSet); virtual;
-    public
-     (* Read Only *)
-     property NetInfos   : TNetInfos   read FNetInfos;
+    published
+     property Options: TANNOptions
+       read FOptions
+       write SetOptions
+       stored true;
      (* Run-Time Only *)
-     property StopOper   : boolean     read FStopOper   write FStopOper;
+     property StopOper   : boolean
+       read FStopOper
+       write FStopOper
+       stored false;
      (* Publishable *)
+     (* Flag to indicate if the network is trained or not *)
+     property Trained    : boolean
+       read FTrained
+       write FTrained
+       stored true
+       default false;
+     (* Read Only *)
+     property NetInfos   : TNetInfos
+       read FNetInfos;
      (* Read Only. Input dimension *)
-     property DimInp     : integer      read FDimInp;
+     property DimInp     : integer
+       read FDimInp
+       write FDimInp
+       stored true
+       default -1;
      (* Read Only. Output dimension *)
-     property DimOut     : integer      read FDimOut;
+     property DimOut     : integer
+       read FDimOut
+       write FDimOut
+       stored true
+       default -1;
      (* Input data *)
-     property DataIn     : TDataPicker  read FDataIn  write SetDataIn;
+     property DataIn     : TDataPicker
+       read FDataIn
+       write SetDataIn
+       stored true;
      (* Output data *)
-     property DataOut    : TDataPicker  read FDataOut write SetDataOut;
-     property Options    : TANNOptions  read FOpts write SetOpts;
-     (* Event *)
-     property OnChange    : TNetworkChange read FOnChange     write FOnChange;
-     property OnDataChange: TDataChange    read FOnDataChange write FOnDataChange;
-     property OnProgress  : TProgressEvent read FOnProgress   write FOnProgress;
-     property OnPrepare   : TNetOperEvent  read FOnPrepare    write FOnPrepare;
-     property OnBeginOper : TNetOperEvent  read FOnBeginOper  write FOnBeginOper;
-     property OnEndOper   : TNetOperEvent  read FOnEndOper    write FOnEndOper;
+     property DataOut    : TDataPicker
+       read FDataOut
+       write SetDataOut
+       stored true;
+     (* Events *)
+     property OnChange    : TNetworkChange
+       read FOnChange
+       write FOnChange;
+     property OnDataChange: TDataChange
+       read FOnDataChange
+       write FOnDataChange;
+     property OnProgress  : TProgressEvent
+       read FOnProgress
+       write FOnProgress;
+     property OnPrepare   : TNetOperEvent
+       read FOnPrepare
+       write FOnPrepare;
+     property OnBeginOper : TNetOperEvent
+       read FOnBeginOper
+       write FOnBeginOper;
+     property OnEndOper   : TNetOperEvent
+       read FOnEndOper
+       write FOnEndOper;
   end;
 
 implementation
 
-constructor TWeights.Create(aDim: integer);
+uses
+  Math;
+
+//--------------------------------------------------------------------------------------------------
+class function TWeights.New(aSize: integer): TWeights;
 begin
-  Dim:= aDim;
+  Result:= TWeights.Create(nil);
+  Result.Size:= aSize;
 end;
 
-procedure TWeights.SetDim(vl: integer);
+constructor TWeights.Create(AOwner: TComponent);
+begin
+  inherited;
+end;
+
+destructor TWeights.Destroy;
+begin
+  inherited;
+end;
+
+procedure TWeights.DefineProperties(Filer: TFiler);
+begin
+  inherited;
+  Filer.DefineProperty('Data', ReadWeights, WriteWeights, Size>0);
+end;
+
+procedure TWeights.Assign(Source: TPersistent);
+var
+  W: TWeights;
+  s: integer;
+begin
+  if Source is TWeights then begin
+    W:= TWeights(Source);
+    s:= W.Size;
+    Size:= s;
+    FWeights:= System.Copy(W.FWeights, 0, s);
+  end
+  else inherited;
+end;
+
+procedure TWeights.SetSize(vl: integer);
 begin
   SetLength(FWeights, vl);
-  FDim:= vl;
+end;
+
+function TWeights.GetSize: integer;
+begin
+  Result:= Length(FWeights);
+end;
+
+procedure  TWeights.SetItem(index: integer; vl: double);
+begin
+  FWeights[index]:= vl;
+end;
+
+function   TWeights.GetItem(index: integer): double;
+begin
+  Result:= FWeights[index];
+end;
+
+procedure TWeights.ReadWeights(Reader: TReader);
+var
+  i: integer;
+  d: double;
+begin
+  Reader.ReadListBegin;
+  for i:= 0 to Size-1 do begin
+    d:= Reader.ReadFloat;
+    FWeights[i]:= d;
+  end;
+  Reader.ReadListEnd;
+end;
+
+procedure TWeights.WriteWeights(Writer: TWriter);
+var
+  i: integer;
+begin
+  Writer.WriteListBegin;
+  for i:= 0 to Size-1 do begin
+    Writer.WriteFloat(Data[i]);
+  end;
+  Writer.WriteListEnd;
 end;
 
 procedure TWeights.SetWeights(const p: TData);
-var
-  i: integer;
 begin
-  for i:= 0 to Dim-1 do begin
-    Weights[i]:= p[i];
-  end;
+  FWeights:= System.Copy(p, 0, Length(p))
 end;
 
-procedure TWeights.GetWeights(var p: TData);
-var
-  i: integer;
+function TWeights.GetWeights: TData;
 begin
-  for i:= 0 to Dim-1 do begin
-    p[i]:= Weights[i];
-  end;
+  Result:= System.Copy(FWeights, 0, Length(FWeights))
 end;
 
 procedure TWeights.Randomize(min, max: double);
@@ -410,8 +563,17 @@ var
   dlt: double;
 begin
   dlt:= (max-min);
-  for i:= 0 to Dim-1 do begin
-    Weights[i]:= random * dlt + min;
+  for i:= 0 to Size-1 do begin
+    Data[i]:= random * dlt + min;
+  end;
+end;
+
+procedure TWeights.Setup(value: double);
+var
+  i: integer;
+begin
+  for i:= 0 to Size-1 do begin
+    Data[i]:= value;
   end;
 end;
 
@@ -420,144 +582,12 @@ var
   i: integer;
 begin
   Result:= 0;
-  for i:= 0 to Dim-1 do begin
-    Result:= Result + sqr(Weights[i] - ip[i]);
+  for i:= 0 to Size-1 do begin
+    Result:= Result + sqr(Data[i] - ip[i]);
   end;
 end;
 
-procedure TWeights.Assign(Source: TPersistent);
-var
-  W: TWeights;
-begin
-  if Source is TWeights then begin
-    W:= TWeights(Source);
-    Dim:= W.Dim;
-    if Dim <> 0 then begin
-      FWeights:= W.FWeights;
-    end;
-  end
-  else inherited Assign(Source);
-end;
-
-procedure TWeights.SaveToStream(S: TStream);
-var
-  i: integer;
-begin
-  S.WriteBuffer(FDim, SizeOf(FDim));
-  for i:= 0 to Dim -1 do begin
-    S.WriteBuffer(Weights[i], SizeOf(double));
-  end;
-end;
-
-procedure TWeights.LoadFromStream(S: TStream);
-var
-  d: integer;
-  i: integer;
-begin
-  S.ReadBuffer(d, SizeOf(FDim));
-  Dim:= d;
-  for i:= 0 to Dim -1 do begin
-    S.ReadBuffer(Weights[i], SizeOf(double));
-  end;
-end;
-
-destructor TWeights.Destroy;
-begin
-  SetLength(FWeights, 0);
-  inherited Destroy;
-end;
-
-constructor TActivityLogger.Create;
-begin
-  inherited Create;
-  Reset;
-end;
-
-procedure TActivityLogger.Add(vl: double);
-begin
-  FAtt:= vl;
-  if FAtt < MinAtt then begin
-    OldMin:= MinAtt;
-    FMinAtt:= FAtt;
-  end
-  else if FAtt > MaxAtt then begin
-    OldMax:= MaxAtt;
-    FMaxAtt:= FAtt;
-  end;
-  FAveAtt:= (CntAtt * AveAtt + FAtt) / (CntAtt+1);
-  FVarAtt:= (CntAtt * VarAtt + sqr(FAtt-AveAtt)) / (CntAtt+1);
-  FCntAtt:= CntAtt + 1;
-end;
-
-procedure TActivityLogger.Undo;
-begin
-  if FAtt = MinAtt then FMinAtt:= OldMin
-  else if FAtt = MaxAtt then FMaxAtt:= OldMax;
-  FAveAtt:= (CntAtt * AveAtt - FAtt) / (CntAtt-1);
-  FVarAtt:= (CntAtt * VarAtt - sqr(FAtt-AveAtt)) / (CntAtt-1);
-  FCntAtt:= CntAtt - 1;
-end;
-
-procedure TActivityLogger.Reset;
-begin
-  FAveAtt:= 0;
-  FVarAtt:= 0;
-  FMinAtt:=  10e30;
-  FMaxAtt:= -10e30;
-  FCntAtt:= 0;
-  FAtt  := 0;
-  OldMin:= MinAtt;
-  OldMax:= MaxAtt;
-end;
-
-procedure TActivityLogger.Assign(Source: TPersistent);
-var
-  AL: TActivityLogger;
-begin
-  if Source is TActivityLogger then begin
-    AL:= TActivityLogger(Source);
-    FAveAtt:= AL.AveAtt;
-    FVarAtt:= AL.VarAtt;
-    FMinAtt:= AL.MinAtt;
-    FMaxAtt:= AL.MaxAtt;
-    FCntAtt:= AL.CntAtt;
-    FAtt  := AL.Att;
-    OldMin:= AL.OldMin;
-    OldMax:= AL.OldMax;
-  end
-  else inherited Assign(Source);
-end;
-
-procedure TActivityLogger.ReadData (Reader: TReader);
-begin
-  Reader.ReadListBegin;
-  if not Reader.EndOfList then FAtt:= Reader.ReadFloat;
-  if not Reader.EndOfList then FCntAtt:= Reader.ReadInteger;
-  if not Reader.EndOfList then FAveAtt:= Reader.ReadFloat;
-  if not Reader.EndOfList then FVarAtt:= Reader.ReadFloat;
-  if not Reader.EndOfList then FMinAtt:= Reader.ReadFloat;
-  if not Reader.EndOfList then FMaxAtt:= Reader.ReadFloat;
-  Reader.ReadListEnd;
-end;
-
-procedure TActivityLogger.WriteData(Writer: TWriter);
-begin
-  Writer.WriteListBegin;
-  Writer.WriteFloat(FAtt);
-  Writer.WriteInteger(FCntAtt);
-  Writer.WriteFloat(FAveAtt);
-  Writer.WriteFloat(FVarAtt);
-  Writer.WriteFloat(FMinAtt);
-  Writer.WriteFloat(FMaxAtt);
-  Writer.WriteListEnd;
-end;
-
-procedure TActivityLogger.DefineProperties(Filer: TFiler);
-begin
-  Filer.DefineProperty('ActivationInfo', ReadData, WriteData, CntAtt<>0);
-  inherited DefineProperties(Filer);
-end;
-
+//--------------------------------------------------------------------------------------------------
 function  TWeights_List.GetWeights(Index: Integer): TWeights;
 begin
   if Index=-1 then Index:= Count-1;
@@ -569,54 +599,191 @@ begin
   Put(Index, Item);
 end;
 
-constructor TANNParam.Create(AOwner: TANN);
+//--------------------------------------------------------------------------------------------------
+constructor TActivityLogger.Create(AOwner: TComponent);
 begin
-  inherited Create;
-  FOwner:= AOwner;
+  inherited;
+  Reset;
 end;
 
-constructor TANNOptions.Create(AOwner: TANN);
+procedure TActivityLogger.DefineProperties(Filer: TFiler);
 begin
-  inherited Create(AOwner);
-  ErrorParam:= 0.0;
-  ErrorMode := imNone;
-  FProgStep := 100;
-  FIterations := 1;
+  inherited;
+  Filer.DefineProperty('Status', ReadStatus, WriteStatus, Count>0);
+end;
+
+procedure TActivityLogger.Assign(Source: TPersistent);
+var
+  AL: TActivityLogger;
+begin
+  if Source is TActivityLogger then begin
+    AL:= TActivityLogger(Source);
+    FCntAtt:= AL.FCntAtt;
+    FCurAtt:= AL.FCurAtt;
+    FSumAtt:= AL.FSumAtt;
+    FSm2Att:= AL.FSm2Att;
+    FMinAtt:= AL.FMinAtt;
+    FMaxAtt:= AL.FMaxAtt;
+    FLstAtt:= AL.FLstAtt;
+    FOldMin:= AL.FOldMin;
+    FOldMax:= AL.FOldMax;
+    FCanUnd:= AL.FCanUnd;
+  end
+  else inherited;
+end;
+
+procedure TActivityLogger.ReadStatus(Reader: TReader);
+begin
+  Reader.ReadListBegin;
+  FCntAtt:= Reader.ReadInteger;
+  FCurAtt:= Reader.ReadFloat;
+  FSumAtt:= Reader.ReadFloat;
+  FSm2Att:= Reader.ReadFloat;
+  FMinAtt:= Reader.ReadFloat;
+  FMaxAtt:= Reader.ReadFloat;
+  FLstAtt:= NaN;
+  FOldMin:= NaN;
+  FOldMax:= NaN;
+  FCanUnd:= false;
+  Reader.ReadListEnd;
+end;
+
+procedure TActivityLogger.WriteStatus(Writer: TWriter);
+begin
+  Writer.WriteListBegin;
+  Writer.WriteInteger(FCntAtt);
+  Writer.WriteFloat(FCurAtt);
+  Writer.WriteFloat(FSumAtt);
+  Writer.WriteFloat(FSm2Att);
+  Writer.WriteFloat(FMinAtt);
+  Writer.WriteFloat(FMaxAtt);
+  Writer.WriteListEnd;
+end;
+
+function TActivityLogger.getAverage: double;
+begin
+  if (Count>0) then begin
+    Result:= SumX / Count;
+  end
+  else begin
+    Result:= 0;
+  end;
+end;
+
+function TActivityLogger.getVariance: double;
+begin
+  if (Count>0) then begin
+    Result:= SumX2 / Count - sqr(SumX/Count);
+  end
+  else begin
+    Result:= 0;
+  end;
+end;
+
+procedure TActivityLogger.Add(vl: double);
+begin
+  FCanUnd:= true;
+  if Count = 0 then begin
+    FCntAtt:= 1;
+    FCurAtt:= vl;
+    FMinAtt:= vl;
+    FMaxAtt:= vl;
+    FSumAtt:= vl;
+    FSm2Att:= sqr(vl);
+    FLstAtt:= NaN;
+    FOldMin:= NaN;
+    FOldMax:= NaN;
+  end
+  else begin
+    FLstAtt:= Current;
+    FCurAtt:= vl;
+    if Current < Minimum then begin
+      FOldMin:= Minimum;
+      FMinAtt:= Current;
+    end
+    else if Current > Maximum then begin
+      FOldMax:= Maximum;
+      FMaxAtt:= Current;
+    end;
+    FSumAtt:= SumX + Current;
+    FSm2Att:= SumX2 + sqr(Current);
+    FCntAtt:= Count + 1;
+  end;
+end;
+
+procedure TActivityLogger.Undo;
+begin
+  if not FCanUnd then exit;
+  if (Count<=1) then begin
+    Reset;
+    exit;
+  end;
+  if Current = Minimum then FMinAtt:= FOldMin
+  else if Current = Maximum then FMaxAtt:= FOldMax;
+  FSumAtt:= SumX - Current;
+  FSm2Att:= SumX2 - sqr(Current);
+  FCntAtt:= Count - 1;
+  FCurAtt:= FLstAtt;
+  FCanUnd:= false;
+end;
+
+procedure TActivityLogger.Reset;
+begin
+  FCanUnd:= false;
+  FCntAtt:= 0;
+  FSumAtt:= 0;
+  FSm2Att:= 0;
+  FMinAtt:= NaN;
+  FMaxAtt:= NaN;
+  FCurAtt:= NaN;
+  FLstAtt:= NaN;
+  FOldMin:= NaN;
+  FOldMax:= NaN;
+end;
+
+//--------------------------------------------------------------------------------------------------
+constructor TANNOptions.Create(AOwner: TComponent);
+begin
+  inherited;
+  FErrorParam := defErrorParam;
+  FErrorMode  := defErrorMode;
+  FProgStep   := defProgressStep;
+  FIterations := defIterations;
+end;
+
+procedure TANNOptions.Assign(Source: TPersistent);
+var
+  Opts: TANNOptions;
+begin
+  if Source is TANNOptions then begin
+    Opts:= TANNOptions(Source);
+    FErrorParam:= Opts.FErrorParam;
+    FErrorMode := Opts.FErrorMode;
+    FProgStep  := Opts.FProgStep;
+    FIterations:= Opts.FIterations;
+  end
+  else inherited;
 end;
 
 procedure TANNOptions.SetErrorParam(vl: double);
 begin
   if vl < 0 then vl:= 0;
-  if vl <> FErrorParam then begin
-    FErrorParam:= vl;
-    Owner.Change;
-  end;
-end;
-
-procedure TANNOptions.SetErrorMode(vl: TIgnoreMode);
-begin
-  if vl <> FErrorMode then begin
-    FErrorMode:= vl;
-    Owner.Change;
-  end;
+  FErrorParam:= vl;
 end;
 
 procedure TANNOptions.SetProgStep(vl: integer);
 begin
-  if vl <> FProgStep then begin
-    FProgStep:= vl;
-    Owner.Change;
-  end;
+  if (vl < 0) then vl:= 0;
+  FProgStep:= vl;
 end;
 
 procedure TANNOptions.SetIterations(vl: integer);
 begin
-  if vl <> FIterations then begin
-    FIterations:= vl;
-    Owner.Change;
-  end;
+  if (vl < 0) then vl:= 0;
+  FIterations:= vl;
 end;
 
+//--------------------------------------------------------------------------------------------------
 class procedure TANN.Supply(var Op: TNetOpers);
 begin
   if noLearn in Op then Op:= Op + [noTrain];
@@ -636,37 +803,57 @@ begin
   Result:= 'Artificial Neural Network Interface';
 end;
 
-class procedure TANN.DoError(ExptKind: ANNExceptionClass; const Msg: string);
-  function ReturnAddr: Pointer;
-  asm
-    MOV EAX,[EBP+4]
-  end;
-begin
-  raise ExptKind.Create(Msg) at ReturnAddr;
-end;
-
 constructor TANN.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FOpts:= TANNOptions.Create(Self);
-  NeedChange := false;
-  ChangesLock:= 0;
-  StopOper   := false;
-  DataIn := nil; FDimInp:= -1;
-  DataOut:= nil; FDimOut:= -1;
-  FOnProgress:= nil;
-  FOnPrepare := nil;
+  inherited;
+  FOptions:= TANNOptions.Create(nil);
+  NeedChange  := false;
+  ChangesLock := 0;
+  StopOper    := false;
+  DataIn      := nil;
+  DataOut     := nil;
+  FDimInp     := -1;
+  FDimOut     := -1;
+  FTrained    := false;
+  FOnProgress := nil;
+  FOnPrepare  := nil;
   FOnBeginOper:= nil;
-  FOnEndOper := nil;
-  FOnChange  := nil;
+  FOnEndOper  := nil;
+  FOnChange   := nil;
   FOnDataChange:= nil;
-  FNetInfos  := [];
+  FNetInfos   := [];
 end;
 
 destructor TANN.Destroy;
 begin
-  FOpts.Free;
-  inherited Destroy;
+  FOptions.Free;
+  inherited;
+end;
+
+procedure TANN.Assign(Source: TPersistent);
+var
+  N: TANN;
+begin
+  if Source is TANN then begin
+    N:= TANN(Source);
+    BeginUpdate;
+    NeedChange:= true;
+    FNetInfos:= N.FNetInfos;
+    Trained:= N.Trained;
+    DimInp:= N.DimInp;
+    DimOut:= N.DimOut;
+    DataIn:= N.DataIn;
+    DataOut:= N.DataOut;
+    Options:= N.Options;
+    Change;
+  end
+  else inherited;
+end;
+
+procedure TANN.Loaded;
+begin
+  inherited;
+  if NeedChange then Change;
 end;
 
 procedure TANN.DataInChanged(Sender: TObject);
@@ -717,11 +904,9 @@ begin
   end;
 end;
 
-procedure TANN.SetOpts(NewOpts: TANNOptions);
+procedure TANN.SetOptions(vl: TANNOptions);
 begin
-  BeginUpdate;
-  FOpts.Assign(NewOpts);
-  EndUpdate;
+  FOptions.Assign(vl);
 end;
 
 procedure TANN.SetNetInfos(vl: TNetInfos);
@@ -734,7 +919,7 @@ end;
 
 procedure TANN.ResetTraining;
 begin
-  FNetInfos:= FNetInfos - [niTrained];
+  Trained:= false;
 end;
 
 procedure TANN.Reset;
@@ -746,21 +931,21 @@ function TANN.Prepare(What: TNetOper): boolean;
   procedure ValidDataIn;
   begin
     if ((DataIn = nil) or (DataIn.Count=0)) then begin
-      DoError(EANNDataError, errBadInput);
+      raise EANNDataError.Create(errBadInput);
     end;
   end;
   procedure ValidDataOut;
   begin
     if ((DataOut=nil) or (DataOut.Count=0)) then begin
-      DoError(EANNDataError, errBadOutput);
+      raise EANNDataError.Create(errBadOutput);
     end;
     if (DataOut.Count<DataIn.Count) then begin
-      DoError(EANNDataError, errBadIOCount);
+      raise EANNDataError.Create(errBadIOCount);
     end;
   end;
   procedure CheckTrained;
   begin
-    if not(niTrained in NetInfos) then begin
+    if not FTrained then begin
       raise EANNNotTrained.Create(errNotTrained);
     end;
   end;
@@ -779,6 +964,7 @@ begin
       ValidDataOut;
     end;
     noApply: begin
+      ValidDataIn;
       if (DataOut<>nil) and (DataOut.Count < DataIn.Count) then begin
         if niSuper in NetInfos then begin
           DataOut.Setup(DimOut, DataIn.Count);
@@ -793,6 +979,11 @@ begin
   if Assigned(FOnPrepare) then Prepare:= OnPrepare(Self, What);
 end;
 
+procedure TANN.DoChange;
+begin
+  if (Assigned(FOnChange)) then OnChange(Self);
+end;
+
 procedure TANN.Change;
 begin
   if (ChangesLock = 0) then begin
@@ -801,7 +992,7 @@ begin
     end
     else begin
       NeedChange:= false;
-      if (Assigned(FOnChange)) then OnChange(Self);
+      DoChange;
     end;
   end
   else begin
@@ -812,27 +1003,9 @@ end;
 procedure TANN.DataChange(What: TDataNotify);
 begin
   if (What=dnDimInp) or ((What=dnDimOut) and (niSuper in NetInfos)) then begin
-    if niTrained in NetInfos then ResetTraining;
+    if FTrained then ResetTraining;
   end;
   if Assigned(FOnDataChange) then OnDataChange(Self, What);
-end;
-
-procedure TANN.Assign(Source: TPersistent);
-var
-  N: TANN;
-begin
-  if Source is TANN then begin
-    N:= TANN(Source);
-    BeginUpdate;
-    DataIn:= N.DataIn;
-    DataOut:= N.DataOut;
-    Options:= N.Options;
-    if Source is ClassType then begin
-      FNetInfos:= N.FNetInfos;
-    end;
-    EndUpdate;
-  end
-  else inherited Assign(Source);
 end;
 
 procedure TANN.BeginUpdate;
@@ -875,7 +1048,7 @@ begin
       for it:= 0 to ite-1 do begin
         ProgressIteration(it+1);
         for i:= 0 to NumPat-1 do begin
-          if (ProgStep<>0) and ((i mod ProgStep) = 1) then ProgressStep;
+          if (ProgStep<>0) and ((i mod ProgStep) = 1) then DoProgressStep;
           if StopOper then raise EANNStopped.Create(wrnAborted);
           Learn(DataIn[i], DataOut[i]);
         end;
@@ -885,13 +1058,13 @@ begin
       for it:= 0 to ite-1 do begin
         ProgressIteration(it+1);
         for i:= 0 to NumPat-1 do begin
-          if (ProgStep<>0) and ((i mod ProgStep) = 1) then ProgressStep;
+          if (ProgStep<>0) and ((i mod ProgStep) = 1) then DoProgressStep;
           if StopOper then raise EANNWarning.Create(wrnAborted);
           Acquire(DataIn[i]);
         end;
       end;
     end;
-    FNetInfos:= FNetInfos + [niTrained];
+    FTrained:= true;
   finally
     ProgressDone;
     if niSuper in NetInfos then begin (* supervisionata *)
@@ -921,12 +1094,11 @@ begin
   NumPat:= DataIn.Count;
   od:= DataOut.Dim;
   setLength(YC, od);
-  if YC = nil then raise EANNMemory.Create(errOutOfMemory);
   ProgressInit(NumPat);
   try
     ES.BeginCalc;
     for i:= 0 to NumPat-1 do begin
-      if (ProgStep<>0) and ((i mod ProgStep) = 1) then ProgressStep;
+      if (ProgStep<>0) and ((i mod ProgStep) = 1) then DoProgressStep;
       if StopOper then raise EANNStopped.Create(wrnAborted);
       Simul(DataIn[i], YC);
       ES.Analyze(i, od, YC, DataOut[i]);
@@ -956,7 +1128,7 @@ begin
   ProgressInit(NumPat);
   try
     for i:= 0 to NumPat-1 do begin
-      if (ProgStep<>0) and ((i mod ProgStep) = 1) then ProgressStep;
+      if (ProgStep<>0) and ((i mod ProgStep) = 1) then DoProgressStep;
       if StopOper then raise EANNStopped.Create(wrnAborted);
       if niSuper in NetInfos then begin (* supervisionata *)
         op:= FDataOut[i];
@@ -1045,58 +1217,6 @@ begin
   raise EANNAbstract.Create(errAbstract);
 end;
 
-function TANN.CheckCreate(Instance: TComponent; ClassKind: TComponentClass; const Name: string): TComponent;
-begin
-  Result:= Instance;
-  if Result = nil then begin
-    Result:= FindComponent(Name);
-    if Result = nil then begin
-      Result:= ClassKind.Create(Self);
-      Result.Name:= Name;
-    end;
-  end;
-end;
-
-procedure TANN.ReadTrained(Reader: TReader);
-begin
-  if Reader.ReadBoolean then SetNetInfos(NetInfos + [niTrained])
-  else SetNetInfos(NetInfos - [niTrained]);
-end;
-
-procedure TANN.WriteTrained(Writer: TWriter);
-begin
-  Writer.WriteBoolean(niTrained in NetInfos);
-end;
-
-procedure TANN.ReadDataNetDim(Reader: TReader);
-begin
-  Reader.ReadListBegin;
-  if not Reader.EndOfList then FDimInp:= Reader.ReadInteger;
-  if not Reader.EndOfList then FDimOut:= Reader.ReadInteger;
-  Reader.ReadListEnd;
-end;
-
-procedure TANN.WriteDataNetDim(Writer: TWriter);
-begin
-  Writer.WriteListBegin;
-  Writer.WriteInteger(FDimInp);
-  Writer.WriteInteger(FDimOut);
-  Writer.WriteListEnd;
-end;
-
-procedure TANN.DefineProperties(Filer: TFiler);
-begin
-  inherited DefineProperties(Filer);
-  Filer.DefineProperty('NetDim', ReadDataNetDim, WriteDataNetDim, (FDimInp<>0) or (FDimOut<>0));
-  Filer.DefineProperty('Trained', ReadTrained, WriteTrained, true);
-end;
-
-procedure TANN.Loaded;
-begin
-  inherited Loaded;
-  if NeedChange then Change;
-end;
-
 procedure TANN.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   if Operation = opRemove then begin
@@ -1111,7 +1231,7 @@ begin
       DataChange(dnDataOut);
     end;
   end;
-  inherited Notification(AComponent, Operation);
+  inherited;
 end;
 
 procedure TANN.ProgressInit(AMax: integer);
@@ -1124,7 +1244,7 @@ begin
   if Assigned(FOnProgress) then OnProgress(Self, pkIteration, ite);
 end;
 
-procedure TANN.ProgressStep;
+procedure TANN.DoProgressStep;
 begin
   if Assigned(FOnProgress) then OnProgress(Self, pkStep, Options.ProgressStep);
 end;
@@ -1134,8 +1254,8 @@ begin
   if Assigned(FOnProgress) then OnProgress(Self, pkDone, 0);
 end;
 
+//--------------------------------------------------------------------------------------------------
 initialization
-  RegisterClass(TANNParam);
-  RegisterClass(TANNOptions);
+  RegisterClasses([TWeights, TActivityLogger]);
+  RegisterClasses([TANNOptions, TANN]);
 end.
-

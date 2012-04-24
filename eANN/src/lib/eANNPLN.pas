@@ -37,7 +37,9 @@ unit eANNPLN;
 interface
 
 uses
-  Classes, SysUtils, eANNCore, eANNCom, eLibMath, eDataPick;
+  System.Classes, System.SysUtils,
+  eANNCore, eANNCom,
+  eLibCore, eLibMath, eDataPick;
 
 type
 
@@ -57,28 +59,37 @@ type
      class function Description: string; override;
     private
      FAge: double;
-     FSpread: double;
     protected
-     procedure   SaveToStream(S: TStream); override;
-     procedure   LoadFromStream(S: TStream); override;
+     function    GetSpread: double;
     public
      constructor Create(AOwner: TComponent); override;
-     procedure   UpdateParam; override;
      procedure   Assign(Source: TPersistent); override;
      (* Update state of the input centroid accordin to input *)
-     procedure   CentroidUpdate(const p: TData); override;
+     procedure   CentroidUpdate(const p: TData; eta: double); override;
      (* Update state of the output centroid accordin to input *)
-     procedure   OutputUpdate(const p: TData); override;
+     procedure   OutputUpdate(const p: TData; eta: double); override;
      (* Update Age *)
-     procedure   AddSpread; virtual;
+     procedure   AddSpread(Spread: double); virtual;
+    public
+     property Spread: double
+       read GetSpread;
     published
-     property Age: double read FAge write FAge;
-     property Spread: double read FSpread write FSpread;
+     property Age: double
+       read FAge
+       write FAge;
   end;
 
-  TCustomPLNetwork = class;
+const
+  defRoI = 1;
+  defRoO = 1;
+  defEta = 0.01;
+  defSpread = 1;
+  defEps = 0;
+  defLmd = 1;
+  defWin = 1;
 
-  TPLParameters = class(TANNParam)
+type
+  TPLParameters = class(TStorable)
     private
      FRoI: double;
      FRoO: double;
@@ -87,9 +98,7 @@ type
      FEps: double;
      FLmd: double;
      FWin: integer;
-    public
-     constructor Create(AOwner: TANN); override;
-    private
+    protected
      procedure SetRoI(vl: double);
      procedure SetRoO(vl: double);
      procedure SetEta(vl: double);
@@ -97,50 +106,66 @@ type
      procedure SetEps(vl: double);
      procedure SetLmd(vl: double);
      procedure SetWin(vl: integer);
+    public
+     constructor Create(AOwner: TComponent); override;
+    public
+     (* Deep copy of the network *)
+     procedure   Assign(Source: TPersistent); override;
     published
      //input space vigilance threshold
-     property RoI: double  read FRoI write SetRoI;
+     property RoI: double
+       read FRoI
+       write SetRoI;
      //output space vigilance threshold
-     property RoO: double  read FRoO write SetRoO;
+     property RoO: double
+       read FRoO
+       write SetRoO;
      //merging factor
-     property lmd: double  read FLmd write SetLmd;
+     property Lamda: double
+       read FLmd
+       write SetLmd;
      //number of neuron taken in output
-     property win: integer read FWin write SetWin;
+     property Win: integer
+       read FWin
+       write SetWin;
      //decay constant
-     property eta: double  read FEta write SetEta;
+     property Eta: double
+       read FEta
+       write SetEta;
      //'Spread' (defualt 1.0) Age-spread given to winner aux-neuron
-     property spr: double  read FSpr write SetSpr;
+     property Spread: double
+       read FSpr
+       write SetSpr;
      //extinction threshold
-     property eps: double  read FEps write SetEps;
+     property Eps: double
+       read FEps
+       write SetEps;
   end;
 
   // Progressive Learning Neural Network
-  TCustomPLNetwork = class(TANN)
+  TPLNetwork = class(TANN)
+    private
+     FParameters: TPLParameters;
     protected
      class procedure Supply(var Op: TNetOpers); override;
     public
      (* Returns the name of the network *)
      class function Description: string; override;
-    private
-     FParameters: TPLParameters;
-    private
-     procedure SetParameters(Prm: TPLParameters);
+    protected
      function  GetNeuron(i: integer): TPLNElem;
      function  GetNumNeu: integer;
-     procedure SaveNeurons(S: TStream);
-     procedure LoadNeurons(S: TStream);
+     procedure SetParameters(vl: TPLParameters);
     protected
      procedure MakeNeuron(const ip, op: TData); virtual;
-     procedure UpdateParam;
-     procedure DefineProperties(Filer: TFiler); override;
      procedure Notification(AComponent: TComponent; Operation: TOperation); override;
      procedure DataChange(What: TDataNotify); override;
     public
      (* Create a PLN network structure and its "PLNElems" *)
      constructor Create(AOwner: TComponent); override;
-     procedure   Assign(Source: TPersistent); override;
      (* Free all memory that was assigned for the specified network structure *)
      destructor  Destroy; override;
+    public
+     procedure   Assign(Source: TPersistent); override;
     public
      procedure   MergeStep(i, j: integer); virtual;
      procedure   UpdateAge; virtual;
@@ -150,29 +175,17 @@ type
      procedure   Simul(const ip: TData; var op: TData); override;
      function    FindCluster(const ip: TData): integer; override;
     public
-     property Parameters: TPLParameters read FParameters write SetParameters;
      property Neurons[i: integer]: TPLNElem read GetNeuron;
      property NumNeu: integer read GetNumNeu;
-  end;
-
-  TPLNetwork = class(TCustomPLNetwork)
     published
-     property Options;
-     property DimInp;
-     property DimOut;
-     property DataIn;
-     property DataOut;
-     property OnChange;
-     property OnDataChange;
-     property OnProgress;
-     property OnPrepare;
-     property OnBeginOper;
-     property OnEndOper;
-     property Parameters;
+     property Parameters: TPLParameters
+       read FParameters
+       write SetParameters;
   end;
 
 implementation
 
+//--------------------------------------------------------------------------------------------------
 procedure QuickSort(Dst: Index; Num: integer);
   procedure QuickSort2(sinistra,destra: integer);
   var
@@ -225,6 +238,7 @@ begin
   until (flg) or (Win=0);
 end;
 
+//--------------------------------------------------------------------------------------------------
 class function TPLNElem.Description: string;
 begin
   Result:= 'Progressive learnig element';
@@ -232,24 +246,11 @@ end;
 
 constructor TPLNElem.Create(AOwner: TComponent);
 begin
-  if (AOwner <> nil) and not (AOwner is TCustomPLNetwork) then begin
-    TANN.DoError(EANNNeuron, errNeuronError3);
+  if (AOwner <> nil) and not (AOwner is TPLNetwork) then begin
+    raise EANNNeuron.Create(errNeuronError3);
   end;
-  Eta:= 0.1;
-  Spread:= 1;
-  inherited Create(AOwner);
-  Age:= Spread+Eta;
-end;
-
-procedure TPLNElem.UpdateParam;
-var
-  N: TCustomPLNetwork;
-begin
-  if Owner <> nil then begin
-    N:= TCustomPLNetwork(Owner);
-    Eta:= N.Parameters.Eta;
-    Spread:= N.Parameters.Spr;
-  end;
+  inherited;
+  Age:= 0;
 end;
 
 procedure TPLNElem.CentroidUpdate;
@@ -257,8 +258,8 @@ var
   i: integer;
 begin
   with Center do begin
-    for i:= 0 to Dim-1 do begin
-      Weights[i]:= (Weights[i] * Age + p[i]) / (Age+1);
+    for i:= 0 to Size-1 do begin
+      Data[i]:= (Data[i] * Age + p[i]) / (Age+1);
     end;
   end;
 end;
@@ -268,29 +269,15 @@ var
   i: integer;
 begin
   with Output do begin
-    for i:= 0 to Dim-1 do begin
-      Weights[i]:= (Weights[i] * Age + p[i]) / (Age+1);
+    for i:= 0 to Size-1 do begin
+      Data[i]:= (Data[i] * Age + p[i]) / (Age+1);
     end;
   end;
 end;
 
-procedure TPLNElem.AddSpread;
+procedure TPLNElem.AddSpread(Spread: double);
 begin
-  Age:= Age + Spread + eta;
-end;
-
-procedure TPLNElem.SaveToStream(S: TStream);
-begin
-  inherited SaveToStream(S);
-  S.Write(FAge, SizeOf(FAge));
-  S.Write(FSpread, SizeOf(FSpread));
-end;
-
-procedure TPLNElem.LoadFromStream(S: TStream);
-begin
-  inherited LoadFromStream(S);
-  S.Read(FAge, SizeOf(FAge));
-  S.Read(FSpread, SizeOf(FSpread));
+  Age:= Age + Spread;
 end;
 
 procedure TPLNElem.Assign(Source: TPersistent);
@@ -298,162 +285,147 @@ var
   C: TPLNElem;
 begin
   if Source is TPLNElem then begin
-    inherited Assign(Source);
+    inherited;
     C:= TPLNElem(Source);
     Age:= C.Age;
-    Spread:= C.Spread;
   end
-  else inherited Assign(Source);
+  else inherited;
 end;
 
-constructor TPLParameters.Create(AOwner: TANN);
+function TPLNElem.GetSpread: double;
 begin
-  inherited Create(AOwner);
-  FRoI:= 1;
-  FRoO:= 1;
-  FEta:= 0.01;
-  FSpr:= 1;
-  FEps:= 0;
-  FLmd:= 1;
-  FWin:= 1;
+  if (Owner<>nil) then begin
+    Result:= TPLNetwork(Owner).Parameters.Spread;
+  end
+  else begin
+    Result:= defSpread;
+  end;
+end;
+
+
+//--------------------------------------------------------------------------------------------------
+constructor TPLParameters.Create(AOwner: TComponent);
+begin
+  inherited;
+  FRoI:= defRoI;
+  FRoO:= defRoO;
+  FEta:= defEta;
+  FSpr:= defSpread;
+  FEps:= defEps;
+  FLmd:= defLmd;
+  FWin:= defWin;
+end;
+
+procedure TPLParameters.Assign(Source: TPersistent);
+var
+  P: TPLParameters;
+begin
+  if Source is TPLParameters then begin
+    P:= TPLParameters(Source);
+    RoI:= P.RoI;
+    RoO:= P.RoO;
+    Eta:= P.Eta;
+    Spread:= P.Spread;
+    Eps:= P.Eps;
+    Lamda:= P.Lamda;
+    Win:= P.Win;
+  end
+  else inherited;
 end;
 
 procedure TPLParameters.SetRoI(vl: double);
 begin
   if vl < 0 then vl:= 1;
-  if vl <> FRoI then begin
-    FRoI:= vl;
-    Owner.Change;
-  end;
+  FRoI:= vl;
 end;
 
 procedure TPLParameters.SetRoO(vl: double);
 begin
   if vl < 0 then vl:= 1;
-  if vl <> FRoO then begin
-    FRoO:= vl;
-    Owner.Change;
-  end;
+  FRoO:= vl;
 end;
 
 procedure TPLParameters.SetEta(vl: double);
 begin
   if vl < 0 then vl:= 1;
-  if vl <> FEta then begin
-    FEta:= vl;
-    TPLNetwork(Owner).UpdateParam;
-    Owner.Change;
-  end;
+  FEta:= vl;
 end;
 
 procedure TPLParameters.SetSpr(vl: double);
 begin
   if vl < 0 then vl:= 1;
-  if vl <> FSpr then begin
-    FSpr:= vl;
-    TPLNetwork(Owner).UpdateParam;
-    Owner.Change;
-  end;
+  FSpr:= vl;
 end;
 
 procedure TPLParameters.SetEps(vl: double);
 begin
   if vl < 0 then vl:= 0;
-  if vl <> FEps then begin
-    FEps:= vl;
-    Owner.Change;
-  end;
+  FEps:= vl;
 end;
 
 procedure TPLParameters.SetLmd(vl: double);
 begin
   if vl < 0 then vl:= 1;
-  if vl <> FLmd then begin
-    FLmd:= vl;
-    Owner.Change;
-  end;
+  FLmd:= vl;
 end;
 
 procedure TPLParameters.SetWin(vl: integer);
 begin
   if vl < 0 then vl:= 0;
-  if vl <> FWin then begin
-    FWin:= vl;
-    Owner.Change;
-  end;
+  FWin:= vl;
 end;
 
-class function TCustomPLNetwork.Description;
+//--------------------------------------------------------------------------------------------------
+class function TPLNetwork.Description;
 begin
   Result:= 'Progressive Learning Neural Network';
 end;
 
-class procedure TCustomPLNetwork.Supply(var Op: TNetOpers);
+class procedure TPLNetwork.Supply(var Op: TNetOpers);
 begin
   Op:= Op + [noLearn, noSimul, noFindCluster, noReset];
-  inherited Supply(Op);
+  inherited;
 end;
 
-constructor TCustomPLNetwork.Create;
+constructor TPLNetwork.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FParameters:= TPLParameters.Create(Self);
+  inherited;
+  FParameters:= TPLParameters.Create(nil);
   SetNetInfos([niSuper, niProgressive]);
 end;
 
-procedure TCustomPLNetwork.DataChange(What: TDataNotify);
+destructor TPLNetwork.Destroy;
+begin
+  FParameters.Free;
+  inherited;
+end;
+
+procedure TPLNetwork.SetParameters(vl: TPLParameters);
+begin
+  FParameters.Assign(vl);
+end;
+
+procedure TPLNetwork.DataChange(What: TDataNotify);
 var
   i: integer;
 begin
-  inherited DataChange(What);
+  inherited;
   for i:= 0 to NumNeu-1 do begin
     Neurons[i].DataChange(What);
   end;
 end;
 
-procedure TCustomPLNetwork.SaveNeurons(S: TStream);
-var
-  i, tmp: integer;
-begin
-  tmp:= NumNeu;
-  S.Write(tmp, SizeOf(tmp));
-  for i:= 0 to tmp-1 do begin
-    S.WriteComponent(Neurons[i]);
-  end;
-end;
-
-procedure TCustomPLNetwork.LoadNeurons(S: TStream);
-var
-  i, tmp: integer;
-  C: TComponent;
-begin
-  S.Read(tmp, SizeOf(tmp));
-  if tmp > 0 then begin
-    for i:= 0 to tmp-1 do begin
-      C:= S.ReadComponent(nil);
-      InsertComponent(C);
-    end;
-  end;
-end;
-
-procedure TCustomPLNetwork.DefineProperties(Filer: TFiler);
-begin
-  Filer.DefineBinaryProperty('Neurons', LoadNeurons, SaveNeurons, NumNeu>0);
-  inherited DefineProperties(Filer);
-end;
-
-procedure TCustomPLNetwork.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TPLNetwork.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   if AComponent.Owner = Self then begin
     if not (csLoading in ComponentState) then begin
       if Operation = opInsert then begin
         if not (AComponent is TPLNElem) then begin
-          DoError(EANNStructure, errBadNetDef);
+          raise EANNStructure.Create(errBadNetDef);
         end;
         with TPLNElem(AComponent) do begin
-          Center.Dim:= DimInp;
-          Output.Dim:= DimOut;
-          UpdateParam;
+          Center.Size:= DimInp;
+          Output.Size:= DimOut;
         end;
         ResetTraining;
       end;
@@ -461,15 +433,15 @@ begin
   end;
 end;
 
-procedure TCustomPLNetwork.Assign(Source: TPersistent);
+procedure TPLNetwork.Assign(Source: TPersistent);
 var
   i: integer;
-  N: TCustomPLNetwork;
+  N: TPLNetwork;
   C: TComponent;
 begin
-  if Source is TCustomPLNetwork then begin
-    inherited Assign(Source);
-    N:= TCustomPLNetwork(Source);
+  if Source is TPLNetwork then begin
+    inherited;
+    N:= TPLNetwork(Source);
     Parameters:= N.Parameters;
     for i:= NumNeu-1 downto 0 do begin
       Neurons[i].Free;
@@ -479,76 +451,56 @@ begin
       C.Assign(N.Neurons[i]);
     end;
   end
-  else inherited Assign(Source);
+  else inherited;
 end;
 
-procedure TCustomPLNetwork.SetParameters(Prm: TPLParameters);
-begin
-  FParameters.Assign(Prm);
-end;
-
-function TCustomPlNetwork.GetNeuron(i: integer): TPLNElem;
+function TPLNetwork.GetNeuron(i: integer): TPLNElem;
 begin
   Result:= TPLNElem(Components[i]);
 end;
 
-function TCustomPlNetwork.GetNumNeu: integer;
+function TPLNetwork.GetNumNeu: integer;
 begin
   Result:= ComponentCount;
 end;
 
-procedure TCustomPLNetwork.UpdateParam;
+procedure TPLNetwork.Reset;
 var
   i: integer;
 begin
-  for i:= 0 to NumNeu-1 do begin
-    Neurons[i].UpdateParam;
-  end;
-end;
-
-procedure TCustomPLNetwork.Reset;
-var
-  i: integer;
-begin
-  inherited Reset;
+  inherited;
   for i:= NumNeu-1 downto 0 do begin
     Neurons[i].Free;
   end;
 end;
 
-procedure TCustomPLNetwork.MakeNeuron(const ip, op: TData);
+procedure TPLNetwork.MakeNeuron(const ip, op: TData);
 var
   N: TPLNElem;
 begin
   N:= TPLNElem.Create(Self);
-  with N do begin
-    Eta:= Parameters.Eta;
-    Spread:= Parameters.Spr;
-    Age:= Spread+Eta;
-    Center.SetWeights(ip);
-    Output.SetWeights(op);
-    HasInp:= true;
-    HasOut:= true;
-  end;
+  N.Age:= Parameters.Spread+Parameters.Eta;
+  N.HasCenter:= true;
+  N.Center.SetWeights(ip);
+  N.HasOutput:= true;
+  N.Output.SetWeights(op);
 end;
 
-procedure TCustomPLNetwork.UpdateAge;
+procedure TPLNetwork.UpdateAge;
 var
   i: integer;
   N: TPLNElem;
 begin
   for i:= NumNeu-1 downto 0 do begin
     N:= Neurons[i];
-    with N do begin
-      Age:= Age - Parameters.eta;
-      if Age < Parameters.eps then begin
-        N.Free;
-      end;
+    N.Age:= N.Age - Parameters.Eta;
+    if N.Age < Parameters.Eps then begin
+      N.Free;
     end;
   end;
 end;
 
-function TCustomPLNetwork.CalcDist(const ip: TData): Index;
+function TPLNetwork.CalcDist(const ip: TData): Index;
 var
   i: integer;
   N: TPLNElem;
@@ -556,34 +508,34 @@ begin
   SetLength(Result, NumNeu);
   for i:= 0 to NumNeu-1 do begin
     N:= Neurons[i];
-    with Result[i], N do begin
+    with Result[i] do begin
       Com:= N;
-      Dist:= CentroidDist(ip);
+      Dist:= N.CentroidDist(ip);
     end;
   end;
 end;
 
-procedure TCustomPLNetwork.Learn(const ip, op: TData);
+procedure TPLNetwork.Learn(const ip, op: TData);
 var
   i: integer;
   Dst: Index;
   flg: boolean;
-  RoI, RoO: double;
+  tRoI, tRoO: double;
 begin
   if NumNeu = 0 then MakeNeuron(ip, op)
   else begin
     Dst:= CalcDist(ip);
     QuickSort(Dst, NumNeu);
     flg:= true;
-    RoI:= sqr(Parameters.RoI);
-    RoO:= sqr(Parameters.RoO);
+    tRoI:= sqr(Parameters.RoI);
+    tRoO:= sqr(Parameters.RoO);
     for i:= 0 to NumNeu-1 do begin
-      if Dst[i].Dist <= RoI then begin
+      if Dst[i].Dist <= tRoI then begin
         with Dst[i].Com do begin
-          if OutputDist(op) <= RoO then begin
-           CentroidUpdate(ip);
-           OutputUpdate(op);
-           AddSpread;
+          if OutputDist(op) <= tRoO then begin
+           CentroidUpdate(ip, Parameters.Eta);
+           OutputUpdate(op, Parameters.Eta);
+           AddSpread(Parameters.Spread+Parameters.Eta);
           end;
           flg:= false;
           break;
@@ -592,13 +544,13 @@ begin
       else break;
     end;
     if flg then MakeNeuron(ip, op);
-    if Parameters.eta > 0 then begin
+    if Parameters.Eta > 0 then begin
       UpdateAge;
     end;
   end;
 end;
 
-function TCustomPLNetwork.FindCluster(const ip: TData): integer;
+function TPLNetwork.FindCluster(const ip: TData): integer;
 var
   MaxDist: double;
   idist: double;
@@ -624,28 +576,28 @@ begin
   if Winner <> nil then Result:= Winner.Tag;
 end;
 
-procedure TCustomPLNetwork.Simul(const ip: TData; var op: TData);
+procedure TPLNetwork.Simul(const ip: TData; var op: TData);
 var
   Dst: Index;
-  win, i, j: integer;
+  tWin, i, j: integer;
   tmp: double;
   sum: double;
 begin
   Sum:= 0;
-  win:= Parameters.Win;
-  if (win>NumNeu) or (win<1) then win:= NumNeu;
+  tWin:= Parameters.Win;
+  if (tWin>NumNeu) or (tWin<1) then tWin:= NumNeu;
   Dst:= CalcDist(ip);
-  if win < 5 then BubbleSort(Dst, NumNeu, Win)
+  if tWin < 5 then BubbleSort(Dst, NumNeu, tWin)
   else QuickSort(Dst, NumNeu);
   if Dst[0].Dist <= sqr(Zero) then begin
-    Dst[0].Com.Output.GetWeights(op);
+    op:= Dst[0].Com.Output.GetWeights;
     Sum:= 1;
     i:= 1;
-    while (i < win) do begin
+    while (i < tWin) do begin
       if Dst[i].Dist > sqr(Zero) then break;
       with Dst[i].Com do begin
         for j:= 0 to DimOut-1 do begin
-          op[j]:= op[j] + Output.Weights[j];
+          op[j]:= op[j] + Output.Data[j];
         end;
       end;
       Sum:= Sum + 1;
@@ -656,11 +608,11 @@ begin
     for j:= 0 to DimOut-1 do begin
       op[j]:= 0;
     end;
-    for i:= 0 to win-1 do begin
+    for i:= 0 to tWin-1 do begin
       tmp:= 1/sqrt(Dst[i].Dist);
       with Dst[i].Com do begin
         for j:= 0 to DimOut-1 do begin
-          op[j]:= op[j] + Output.Weights[j] * tmp;
+          op[j]:= op[j] + Output.Data[j] * tmp;
         end;
       end;
       Sum:= Sum + tmp;
@@ -674,7 +626,7 @@ begin
   end;
 end;
 
-procedure TCustomPLNetwork.MergeStep(i, j: integer);
+procedure TPLNetwork.MergeStep(i, j: integer);
 var
   Dst: double;
   p: TData;
@@ -683,23 +635,23 @@ var
   z: integer;
 begin
   setLength(p, DimInp);
-  Neurons[j].Center.GetWeights(p);
+  p:= Neurons[j].Center.GetWeights;
   Dst:= Neurons[i].CentroidDist(p);
-  if Dst <= Parameters.lmd * sqr(Parameters.RoI) then begin
+  if Dst <= Parameters.Lamda * sqr(Parameters.RoI) then begin
     SetLength(p, DimOut);
-    Neurons[j].Output.GetWeights(p);
+    p:= Neurons[j].Output.GetWeights;
     Dst:= Neurons[i].OutputDist(p);
-    if Dst <= Parameters.lmd * sqr(Parameters.RoO) then begin
+    if Dst <= Parameters.Lamda * sqr(Parameters.RoO) then begin
       sj:= Neurons[i].Age;
       si:= Neurons[j].Age;
       ss:= 1/(si + sj);
-      ip:= Neurons[i].Center.Weights;
-      jp:= Neurons[j].Center.Weights;
+      ip:= Neurons[i].Center.Data;
+      jp:= Neurons[j].Center.Data;
       for z:= 0 to DimInp-1 do begin
         ip[z]:= (ip[z]*si + jp[z]*sj) * ss;
       end;
-      ip:= Neurons[i].Output.Weights;
-      jp:= Neurons[j].Output.Weights;
+      ip:= Neurons[i].Output.Data;
+      jp:= Neurons[j].Output.Data;
       for z:= 0 to DimOut-1 do begin
         ip[z]:= (ip[z]*si + jp[z]*sj) * ss;
       end;
@@ -709,14 +661,9 @@ begin
   end;
 end;
 
-destructor TCustomPLNetwork.Destroy;
-begin
-  FParameters.Free;
-  inherited Destroy;
-end;
-
+//--------------------------------------------------------------------------------------------------
 initialization
   RegisterClass(TPLNElem);
-  RegisterClass(TPLNetwork);
+  RegisterClasses([TPLParameters, TPLNetwork]);
 end.
 

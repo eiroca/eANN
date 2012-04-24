@@ -35,7 +35,9 @@ unit eANNMLP;
 interface
 
 uses
-  Classes, SysUtils, eANNCore, eDataPick;
+  System.Classes, System.SysUtils,
+  eANNCore,
+  eLibCore, eDataPick;
 
 type
   TLayer = class;
@@ -43,50 +45,69 @@ type
   TNeuronTypes = array of TNeuronClass;
 
   (* Definition of neuron *)
-  TNeuron = class(TComponent)
-    private
-     FState: double;
-     FError: double;
-     FBias : double;
-     FW    : TWeights;
-     FullSave: boolean;
+  TNeuron = class(TStorable)
     public
      (* Returns the name of the neuron *)
      class function Description: string; virtual;
     private
-     function  GetNeuronIndex: integer;
-     function  GetWeights: TData;
-     function  GetWeightCount: integer;
-     procedure SetWeightCount(vl: integer);
+     FState: double;
+     FError: double;
+     FBias : double;
+     FWeights: TWeights;
+     FDeltas : TWeights;
     protected
-     procedure   DefineProperties(Filer: TFiler); override;
-     procedure   Notification(AComponent: TComponent; Operation: TOperation); override;
+     function   GetHasDelta: boolean;
+     procedure  SetHasDelta(vl : boolean);
+     function   GetWeights: TWeights;
+     procedure  SetWeights(vl: TWeights);
+     function   GetDeltas: TWeights;
+     procedure  SetDeltas(vl: TWeights);
+     function   GetSize: integer;
+     procedure  SetSize(vl: integer);
     public
      (* Create a neuron structure with (wpn) weights per neuron *)
      constructor Create(AOwner: TComponent); override;
-     procedure   SaveToStream(S: TStream); virtual;
-     procedure   LoadFromStream(S: TStream); virtual;
-     procedure   Assign(Source: TPersistent); override;
      (* Free all memory that was assigned for the specified neuron structure *)
      destructor  Destroy; override;
     public
+     procedure   Assign(Source: TPersistent); override;
+    public
      (* Compute output-error of then neuron according to target y *)
      procedure   CalcError(const y: double); virtual;
-     (* funzione trasferimento sigmoidale *)
+     (* funzione trasferimento *)
      function    tf(v: double): double; virtual; abstract;
      function    dtf(v: double): double; virtual; abstract;
     public
-     (* The weights in this neuron *)
-     property Weights: TData read GetWeights;
      (* Number of weights *)
-     property NumWei: integer read GetWeightCount write SetWeightCount;
-     property NeuronIndex: integer read GetNeuronIndex;
+     property Size: integer
+       read GetSize
+       write SetSize;
+     (* Neuron has delta? *)
+     property HasDelta: boolean
+       read GetHasDelta
+       write SetHasDelta;
+    published
+      (* Weights of the neuron *)
+      property Weights: TWeights
+        read GetWeights
+        write SetWeights;
+      (* Deltas of the neuron *)
+      property Deltas : TWeights
+        read GetDeltas
+        write SetDeltas;
     published
      (* The output of this neuron *)
-     property State: double read FState write FState;
+     property State: double
+       read FState
+       write FState;
      (* The error of this neuron *)
-     property Error: double read FError write FError;
-     property Bias : double read FBias  write FBias;
+     property Error: double
+       read FError
+       write FError;
+     (* The bias of this neuron *)
+     property Bias : double
+       read FBias
+       write FBias;
   end;
 
   (* Logistic Neuron *)
@@ -123,29 +144,28 @@ type
   end;
 
   (* Definition of a layer (set of neurons) *)
-  TLayer = class(TComponent)
+  TLayer = class(TStorable)
     protected
-     LC  : double;
-     MC  : double;
-     Norm: boolean;
-     Delta: TWeights_List;
-     FullSave: boolean;
+     FMC  : double;
+     FNorm: boolean;
     public
      (* Returns the name of the layer *)
      class function Description: string; virtual;
     private
+     function    GetLC: double;
+     function    GetMC: double;
+     function    GetNormalize: boolean;
      function    GetNeuron(I: integer): TNeuron;
      function    GetNumNeu: integer;
      function    GetLayerIndex: integer;
-     procedure   NeuronWeightCountChange(I: integer);
     protected
-     procedure   DefineProperties(Filer: TFiler); override;
      procedure   Notification(AComponent: TComponent; Operation: TOperation); override;
      procedure   SetupConnections(NeuronInPrevLayer: integer);
     public
      constructor Create(AOwner: TComponent); override;
-     procedure   SaveToStream(S: TStream);
-     procedure   LoadFromStream(S: TStream);
+     (* Free all memory that was assigned for the specified layer structure *)
+     destructor  Destroy; override;
+    public
      procedure   Assign(Source: TPersistent); override;
      (* Create a layer structure and its neurons
      @param npl neurons per layer
@@ -166,38 +186,61 @@ type
      procedure   AdjustWeights(PL: TLayer); virtual;
      (* Calculate output error for this layer. Defualt sum of square of neuron errors. *)
      function    Error: double; virtual;
-     (* Free all memory that was assigned for the specified layer structure *)
-     destructor  Destroy; override;
     public
      property Neurons[i: integer]: TNeuron read GetNeuron;
      property NumNeu: integer read GetNumNeu;
      property LayerIndex: integer read GetLayerIndex;
+    public
+     property LC  : double
+       read GetLC;
+     property MC  : double
+       read GetMC;
+     property Normalize: boolean
+       read GetNormalize;
   end;
 
-  TMLPParameters = class(TANNParam)
+const
+  defLC = 0.1;
+  defMC = 0.0;
+  defTol = 0.01;
+  defNormalize = false;
+
+type
+  TMLPParameters = class(TStorable)
     private
      FLC  : double;
      FMC  : double;
      FTol : double;
      FNorm: boolean;
-    public
-     constructor Create(AOwner: TANN); override;
-    private
+    protected
      procedure SetLC(vl: double);
      procedure SetMC(vl: double);
      procedure SetTol(vl: double);
-     procedure SetNorm(vl: boolean);
+    public
+     constructor Create(AOwner: TComponent); override;
+    public
+     (* Deep copy of the network *)
+     procedure   Assign(Source: TPersistent); override;
     published
-     property LC : double read FLC  write SetLC;
-     property MC : double read FMC  write SetMC;
-     property Tol: double read FTol write SetTol;
-     property Normalize: boolean read FNorm write SetNorm;
+     // Network parameters
+     property LC : double
+       read FLC
+       write SetLC;
+     property MC : double
+       read FMC
+       write SetMC;
+     property Tol: double
+       read FTol
+       write SetTol;
+     property Normalize: boolean
+       read FNorm
+       write FNorm
+       default defNormalize;
   end;
 
-type
   (* Build a Multi Layer Network according to the layer description, in first
   layer neurons are only a input-buffer - no weights and transfer function - *)
-  TCustomMLPNetwork = class(TANN)
+  TMLPNetwork = class(TANN)
     protected
      (* Returns operation(s) supported by the network
      @param  Op  Supported Operation set *)
@@ -207,29 +250,28 @@ type
      class function Description: string; override;
      (* Returns the allowed class type for neurons *)
      class function GetNeuronTypes: TNeuronTypes;
+     (* Helper method to build a new network form scratch *)
+     class function BuildNetwork(const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean; Iterations: integer = 10000): TMLPNetwork;
     private
+     FEpochs: integer;
      FParameters: TMLPParameters;
-     FEpochs: longint;
-    private
-     procedure SetParameters(Prm: TMLPParameters);
-     procedure SaveLayers(S: TStream);
-     procedure LoadLayers(S: TStream);
     protected
+     procedure   SetParameters(vl: TMLPParameters);
      function    GetLayer(I: integer): TLayer;
      function    GetNumLay: integer;
-     procedure   UpdateParam;
      function    GetConnections(LayerIndex: integer): integer;
      procedure   SetupConnections(LayerIndex: integer);
-     procedure   DefineProperties(Filer: TFiler); override;
      procedure   Notification(AComponent: TComponent; Operation: TOperation); override;
      procedure   DataChange(What: TDataNotify); override;
     public
      (* Create a network structure and its layers *)
      constructor Create(AOwner: TComponent); override;
      procedure   Assign(Source: TPersistent); override;
+     procedure   DoChange; override;
+     function    Prepare(What: TNetOper): boolean; override;
      procedure   AssignInputs(const ip: TData); virtual;
      (* fast layers builder *)
-     procedure MakeLayers(NTW: array of TLayerDesc);
+     procedure   MakeLayers(NTW: array of TLayerDesc);
      (* Calculate and feedforward outputs from the first layer to the last *)
      procedure   FeedForward; virtual;
      procedure   CalcError(const op: TData); virtual;
@@ -244,35 +286,23 @@ type
      (* Free all memory that was assigned for the specified network structure *)
      destructor  Destroy; override;
     public
-     property Parameters: TMLPParameters read FParameters write SetParameters;
-     property Epochs: longint read FEpochs;
      (* Array storing the number of neurons for each layer *)
      property Layers[i: integer]: TLayer read GetLayer;
      (* Number of layers *)
-     property NumLay: integer read GetNumLay;
-  end;
-
-  TMLPNetwork = class(TCustomMLPNetwork)
-    public
-     (* Helper method to build a new network form scratch *)
-     class function BuildNetwork(const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean; Iterations: integer = 10000): TMLPNetwork;
+     property Epochs: integer
+       read FEpochs;
+     property NumLay: integer
+       read GetNumLay;
     published
-     property Options;
-     property DimInp;
-     property DimOut;
-     property DataIn;
-     property DataOut;
-     property OnChange;
-     property OnDataChange;
-     property OnProgress;
-     property OnPrepare;
-     property OnBeginOper;
-     property OnEndOper;
-     property Parameters;
+     property Parameters: TMLPParameters
+       read FParameters
+       write SetParameters
+       stored true;
   end;
 
 implementation
 
+//--------------------------------------------------------------------------------------------------
 class function TNeuron.Description: string;
 begin
   Result:= 'Generic neuron';
@@ -280,72 +310,76 @@ end;
 
 constructor TNeuron.Create(AOwner: TComponent);
 begin
-  FW:= TWeights.Create(0);
   if (AOwner <> nil) and not (AOwner is TLayer) then begin
-    TANN.DoError(EANNNeuron, errNeuronError1);
+    raise EANNNeuron.Create(errNeuronError1);
   end;
-  inherited Create(AOwner);
-  FullSave:= true;
+  FWeights:= TWeights(CheckCreate(FWeights, TWeights));
+  FDeltas:= TWeights(CheckCreate(FDeltas, TWeights));
   FState:= 0.0;
   FError:= 0.0;
   FBias:= random - 0.5;
+  inherited;
 end;
 
-function TNeuron.GetWeights: TData;
+destructor TNeuron.Destroy;
 begin
-  Result:= FW.Weights;
+  FreeAndNil(FWeights);
+  FreeAndNil(FDeltas);
+  inherited;
 end;
 
-function TNeuron.GetWeightCount: integer;
+function TNeuron.GetWeights: TWeights;
 begin
-  Result:= FW.Dim;
+  FWeights:= TWeights(CheckCreate(FWeights, TWeights));
+  Result:= FWeights;
 end;
 
-function TNeuron.GetNeuronIndex: integer;
+procedure TNeuron.SetWeights(vl: TWeights);
 begin
-  Result:= ComponentIndex;
+  Weights.Assign(vl);
 end;
 
-procedure TNeuron.SetWeightCount(vl: integer);
+function TNeuron.GetDeltas: TWeights;
 begin
-  if vl <> FW.Dim then begin
-    FW.Dim:= vl;
-    FW.Randomize(-0.5, +0.5);
-    if Owner <> nil then begin
-      TLayer(Owner).NeuronWeightCountChange(NeuronIndex);
+  FDeltas:= TWeights(CheckCreate(FDeltas, TWeights));
+  Result:= FDeltas;
+end;
+
+procedure TNeuron.SetDeltas(vl: TWeights);
+begin
+  Deltas.Assign(vl);
+end;
+
+function TNeuron.GetHasDelta: boolean;
+begin
+  Result:= Deltas.Size>0;
+end;
+
+procedure TNeuron.SetHasDelta(vl : boolean);
+begin
+  if vl then begin
+    Deltas.Size:= Size;
+  end
+  else begin
+    Deltas.Size:= 0;
+  end;
+end;
+
+function TNeuron.GetSize: integer;
+begin
+  Result:= Weights.Size;
+end;
+
+procedure TNeuron.SetSize(vl: integer);
+begin
+  if vl <> Weights.Size then begin
+    Weights.Size:= vl;
+    Weights.Randomize(-0.5, +0.5);
+    if (Deltas<>nil) then begin
+      Deltas.Size:= vl;
+      Deltas.Setup(0);
     end;
   end;
-end;
-
-procedure TNeuron.SaveToStream(S: TStream);
-begin
-  if FullSave then begin
-    S.Write(FState, SizeOf(FState));
-    S.Write(FError, SizeOf(FError));
-    S.Write(FBias,  SizeOf(FBias));
-  end;
-  FW.SaveToStream(S);
-end;
-
-procedure TNeuron.LoadFromStream(S: TStream);
-begin
-  if FullSave then begin
-    S.Read(FState, SizeOf(FState));
-    S.Read(FError, SizeOf(FError));
-    S.Read(FBias,  SizeOf(FBias));
-  end;
-  FW.LoadFromStream(S);
-end;
-
-procedure TNeuron.DefineProperties(Filer: TFiler);
-begin
-  FullSave:= false;
-  try
-    Filer.DefineBinaryProperty('Weights', LoadFromStream, SaveToStream, true);
-  finally
-    FullSave:= true;
-  end;
-  inherited DefineProperties(Filer);
 end;
 
 procedure TNeuron.Assign(Source: TPersistent);
@@ -357,16 +391,13 @@ begin
     State:= N.State;
     Error:= N.Error;
     Bias := N.Bias;
-    FW.Assign(N.FW);
+    Weights:= N.Weights;
+    HasDelta:= N.HasDelta;
+    if (HasDelta) then begin
+      Deltas.Assign(N.Deltas);
+    end;
   end
-  else inherited Assign(Source);
-end;
-
-procedure TNeuron.Notification(AComponent: TComponent; Operation: TOperation);
-begin
-  if AComponent.Owner = Self then begin
-    TANN.DoError(EANNNeuron, errNeuronError2);
-  end;
+  else inherited;
 end;
 
 procedure TNeuron.CalcError;
@@ -374,12 +405,7 @@ begin
   Error:= y - State;
 end;
 
-destructor TNeuron.Destroy;
-begin
-  FW.Free;
-  inherited Destroy;
-end;
-
+//--------------------------------------------------------------------------------------------------
 class function TLogisticNeuron.Description;
 begin
   Result:= 'Logistic Activation Neuron';
@@ -395,6 +421,7 @@ begin
   dtf:= State * (1.0 - State) * v;
 end;
 
+//--------------------------------------------------------------------------------------------------
 class function TLinearNeuron.Description: string;
 begin
   Result:= 'Linear Activation Neuron';
@@ -410,6 +437,7 @@ begin
   dtf:= v;
 end;
 
+//--------------------------------------------------------------------------------------------------
 class function TPerceptron.Description: string;
 begin
   Result:= 'Perceptron';
@@ -425,6 +453,7 @@ begin
   dtf:= v;
 end;
 
+//--------------------------------------------------------------------------------------------------
 class function  TLayer.Description;
 begin
   Result:= 'Normal Layer';
@@ -432,18 +461,41 @@ end;
 
 constructor TLayer.Create(AOwner: TComponent);
 begin
-  if (AOwner <> nil) and not (AOwner is TCustomMLPNetwork) then begin
-    TANN.DoError(EANNLayer, errLayerError1);
+  if (AOwner <> nil) and not (AOwner is TMLPNetwork) then begin
+    raise EANNLayer.Create(errLayerError1);
   end;
-  inherited Create(AOwner);
-  FullSave:= true;
-  if (aOwner=nil) then begin
-    LC:= 0.5;
-    MC:= 0;
-    Norm:= false;
-    Delta:= nil;
-  end;
+  inherited;
   UpdateParam;
+end;
+
+function TLayer.GetLC: double;
+begin
+  if (Owner<>nil) then begin
+    Result:= TMLPNetwork(Owner).Parameters.LC;
+  end
+  else begin
+    Result:= defLC;
+  end;
+end;
+
+function TLayer.GetMC: double;
+begin
+  if (Owner<>nil) then begin
+    Result:= TMLPNetwork(Owner).Parameters.MC;
+  end
+  else begin
+    Result:= defMC;
+  end;
+end;
+
+function TLayer.GetNormalize: boolean;
+begin
+  if (Owner<>nil) then begin
+    Result:= TMLPNetwork(Owner).Parameters.Normalize;
+  end
+  else begin
+    Result:= defNormalize;
+  end;
 end;
 
 procedure TLayer.SetupConnections(NeuronInPrevLayer: integer);
@@ -451,7 +503,7 @@ var
   i: integer;
 begin
   for i:= 0 to NumNeu-1 do begin
-    Neurons[i].NumWei:= NeuronInPrevLayer;
+    Neurons[i].Size:= NeuronInPrevLayer;
   end;
 end;
 
@@ -461,79 +513,15 @@ var
 begin
   if AComponent.Owner = Self then begin
     if not (AComponent is TNeuron) then begin
-      TANN.DoError(EANNLayer, errLayerError2);
+      raise EANNLayer.Create(errLayerError2);
     end;
     N:= TNeuron(AComponent);
     if Operation = opInsert then begin
-      if Delta <> nil then begin
-        Delta.Insert(N.NeuronIndex, TWeights.Create(N.NumWei));
-      end;
       if Owner <> nil then begin
-        N.NumWei:= TCustomMLPNetwork(Owner).GetConnections(LayerIndex);
-        TCustomMLPNetwork(Owner).SetupConnections(LayerIndex+1);
+        N.Size:= TMLPNetwork(Owner).GetConnections(LayerIndex);
+        TMLPNetwork(Owner).SetupConnections(LayerIndex+1);
+        N.HasDelta:= MC<>0;
       end;
-    end
-    else begin
-      if Delta <> nil then begin
-        Delta.Delete(N.NeuronIndex);
-      end;
-    end;
-  end;
-end;
-
-procedure TLayer.NeuronWeightCountChange(I: integer);
-begin
-  if Delta <> nil then begin
-    Delta[i].Dim:= Neurons[i].NumWei;
-  end;
-end;
-
-procedure TLayer.SaveToStream(S: TStream);
-var
-  i, tmp: integer;
-begin
-  if FullSave then begin
-    S.Write(LC, SizeOf(LC));
-    S.Write(MC, SizeOf(MC));
-    S.Write(Norm, SizeOf(Norm));
-  end;
-  tmp:= NumNeu;
-  S.Write(tmp, SizeOf(tmp));
-  for i:= 0 to tmp-1 do begin
-    S.WriteComponent(Neurons[i]);
-  end;
-  if Delta=nil then tmp:= 0;
-  S.Write(tmp, SizeOf(tmp));
-  for i:= 0 to tmp-1 do begin
-    Delta[i].SaveToStream(S);
-  end;
-end;
-
-procedure TLayer.LoadFromStream(S: TStream);
-var
-  i, tmp: integer;
-  N: TComponent;
-begin
-  if FullSave then begin
-    S.Read(LC, SizeOf(LC));
-    S.Read(MC, SizeOf(MC));
-    S.Read(Norm, SizeOf(Norm));
-  end;
-  if Delta <> nil then begin
-    Delta.Free;
-    Delta:= nil;
-  end;
-  S.Read(tmp, SizeOf(tmp));
-  for i:= 0 to tmp-1 do begin
-    N:= S.ReadComponent(nil);
-    InsertComponent(N);
-  end;
-  S.Read(tmp, SizeOf(tmp));
-  if tmp > 0 then begin
-    Delta:= TWeights_List.Create;
-    for i:= 0 to tmp-1 do begin
-      Delta.Insert(i, TWeights.Create(0));
-      Delta[i].LoadFromStream(S);
     end;
   end;
 end;
@@ -547,15 +535,6 @@ var
 begin
   if Source is TLayer then begin
     L:= TLayer(Source);
-    LC  := L.LC;
-    MC  := L.MC;
-    Norm:= L.Norm;
-    if Delta <> nil then begin
-      for i:= Delta.Count-1 downto 0 do begin
-        Delta[i].Free;
-        Delta.Delete(i);
-      end;
-    end;
     for i:= ComponentCount-1 downto 0 do begin
       Components[i].Free;
     end;
@@ -566,63 +545,23 @@ begin
     if Owner <> nil then begin
       for i:= 0 to NumNeu-1 do begin
         N:= Neurons[i];
-        N.NumWei:= TCustomMLPNetwork(Owner).GetConnections(ComponentIndex)
+        N.Size:= TMLPNetwork(Owner).GetConnections(ComponentIndex)
       end;
     end;
   end
   else begin
-    inherited Assign(Source);
+    inherited;
   end;
-end;
-
-procedure TLayer.DefineProperties(Filer: TFiler);
-begin
-  FullSave:= false;
-  try
-    Filer.DefineBinaryProperty('Neurons', LoadFromStream, SaveToStream, NumNeu>0);
-  finally
-    FullSave:= true;
-  end;
-  inherited DefineProperties(Filer);
 end;
 
 procedure TLayer.UpdateParam;
 var
-  Net: TCustomMLPNetwork;
   HasDelta : boolean;
-  NeedDelta: boolean;
   i: integer;
-  W: TWeights;
-  NuWe: integer;
 begin
-  if Owner <> nil then begin
-    Net:= TCustomMLPNetwork(Owner);
-    LC:= Net.Parameters.LC;
-    Norm:= Net.Parameters.Normalize;
-    HasDelta:= Delta<>nil;
-    NeedDelta:= Net.Parameters.MC<>0;
-    if HasDelta and not NeedDelta then begin
-      Delta.Free;
-      Delta:= nil;
-    end;
-    if NeedDelta then begin
-      if not HasDelta then begin
-        Delta:= TWeights_List.Create;
-      end;
-      if (Delta.Count <> NumNeu) then begin
-        Delta.Count:= NumNeu;
-      end;
-      for i:= 0 to NumNeu-1 do begin
-        W:= Delta[i];
-        NuWe:= Neurons[i].NumWei;
-        if (W = nil) then begin
-          W:= TWeights.Create(NuWe);
-          Delta[i]:= W;
-        end;
-        W.Dim:= NuWe;
-      end;
-    end;
-    MC:= Net.Parameters.MC;
+  HasDelta:= MC<>0;
+  for i:= 0 to NumNeu-1 do begin
+    Neurons[i].HasDelta:= HasDelta;
   end;
 end;
 
@@ -677,10 +616,10 @@ begin
     sum:= N.Bias;
     // the number of neurons in the previous layer is
     // the number of weights in the neurons of this layer
-    for i:= 0 to N.NumWei-1 do begin
+    for i:= 0 to N.Size-1 do begin
       sum:= sum + N.Weights[i] * PL.Neurons[i].State;
     end;
-    // transfer function 
+    // transfer function
     N.State:= N.tf(sum);
   end
 end;
@@ -707,11 +646,11 @@ end;
 procedure TLayer.AdjustWeights(PL: TLayer);
 var
   N: TNeuron;
-  W: TWeights;
-  i, j, k: integer;
+  D, W: TData;
+  i, j: integer;
   nrm: double;
 begin
-  if Norm then begin
+  if Normalize then begin
   (* Normalized Layer. It is stable to "outliers"
     Outlier e' un vettore con modulo che si discota molto dagli altri,
     questo rende difficoltosa la convergenza in quanto genere una oscillazione
@@ -727,27 +666,29 @@ begin
     Nrm:= 1;
   end;
   if MC = 0 then begin
-    for k:= 0 to NumNeu-1 do begin
-      N:= Neurons[k];
+    for j:= 0 to NumNeu-1 do begin
+      N:= Neurons[j];
+      W:= N.Weights.Data;
       N.Bias:= N.Bias + (LC * N.Error);
       // the number of neurons in the previous layer is
       // the number of weights in the neurons of this layer
-      for i:= 0 to N.NumWei-1 do begin
-        N.Weights[i]:= N.Weights[i] + (LC * PL.Neurons[i].State * nrm * N.Error) ;
+      for i:= 0 to N.Size-1 do begin
+        W[i]:= W[i] + (LC * PL.Neurons[i].State * nrm * N.Error) ;
       end;
     end;
   end
   else begin
     for j:= 0 to NumNeu-1 do begin
-      W:= Delta[j];
-      // Compute delta weights of then neurons 
-      for i:= 0 to W.Dim-1 do begin
-        W.Weights[i]:= MC * W.Weights[i] + (1-MC)*(LC * PL.Neurons[i].State * nrm * Error);
-      end;
       N:= Neurons[j];
+      D:= N.Deltas.Data;
+      W:= N.Weights.Data;
+      // Compute delta weights of then neurons
+      for i:= 0 to N.Size-1 do begin
+        D[i]:= MC * D[i] + (1-MC)*(LC * PL.Neurons[i].State * nrm * Error);
+      end;
       N.Bias:= N.Bias + (LC * Error);
-      for i:= 0 to N.NumWei-1 do begin
-        N.Weights[i]:= N.Weights[i] + Delta[j].Weights[i];
+      for i:= 0 to N.Size-1 do begin
+        W[i]:= W[i] + D[i];
       end;
     end;
   end;
@@ -780,72 +721,65 @@ end;
 
 destructor TLayer.Destroy;
 begin
-  Delta.Free;
-  inherited Destroy;
+  inherited;
 end;
 
-constructor TMLPParameters.Create(AOwner: TANN);
+//--------------------------------------------------------------------------------------------------
+constructor TMLPParameters.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FLC:= 0.1;
-  FMC:= 0;
-  FTol:= 0.01;
-  FNorm:= false;
+  inherited;
+  FLC:= defLC;
+  FMC:= defMC;
+  FTol:= defTol;
+  FNorm:= defNormalize;
+end;
+
+procedure TMLPParameters.Assign(Source: TPersistent);
+var
+  P: TMLPParameters;
+begin
+  if Source is TMLPParameters then begin
+    P:= TMLPParameters(Source);
+    LC:= P.LC;
+    MC:= P.MC;
+    Tol:= P.Tol;
+    Normalize:= P.Normalize;
+  end
+  else inherited;
 end;
 
 procedure TMLPParameters.SetLC (vl: double);
 begin
   if vl < 0 then vl:= 0.1;
-  if vl <> FLC then begin
-    FLC:= vl;
-    Owner.Change;
-  end;
+  FLC:= vl;
 end;
 
 procedure TMLPParameters.SetMC (vl: double);
 begin
   if (vl < 0) then vl:= 0
   else if (vl>1) then vl:= 1;
-  if vl <> FMC then begin
-    FMC:= vl;
-    TCustomMLPNetwork(Owner).UpdateParam;
-    Owner.Change;
-  end;
+  FMC:= vl;
 end;
 
 procedure TMLPParameters.SetTol(vl: double);
 begin
   if vl < 0 then vl:= 0.0001;
-  if vl <> FTol then begin
-    FTol:= vl;
-    TCustomMLPNetwork(Owner).UpdateParam;
-    Owner.Change;
-  end;
+  FTol:= vl;
 end;
 
-procedure TMLPParameters.SetNorm(vl: boolean);
+//--------------------------------------------------------------------------------------------------
+class procedure TMLPNetwork.Supply(var Op: TNetOpers);
 begin
-  if vl <> FNorm then begin
-    FNorm:= vl;
-    TCustomMLPNetwork(Owner).UpdateParam;
-    Owner.Change;
-  end;
+  Op:= Op + [noTrain, noSimul];
+  inherited;
 end;
 
-constructor TCustomMLPNetwork.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FParameters:= TMLPParameters.Create(Self);
-  SetNetInfos([niSuper]);
-  Options.Iterations:= 1000;
-end;
-
-class function TCustomMLPNetwork.Description;
+class function TMLPNetwork.Description;
 begin
   Result:= 'Multi Layer Neural Network';
 end;
 
-class function TCustomMLPNetwork.GetNeuronTypes: TNeuronTypes;
+class function TMLPNetwork.GetNeuronTypes: TNeuronTypes;
 var
   types: TNeuronTypes;
 begin
@@ -857,13 +791,34 @@ begin
   Result:= types;
 end;
 
-class procedure TCustomMLPNetwork.Supply(var Op: TNetOpers);
+class function TMLPNetwork.BuildNetwork(const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean; Iterations: integer = 10000): TMLPNetwork;
 begin
-  Op:= Op + [noTrain, noSimul];
-  inherited Supply(Op);
+  Result:= TMLPNetwork.Create(nil);
+  Result.DataIn := ip;
+  Result.DataOut := op;
+  Result.Options.Iterations := Iterations;
+  Result.Parameters.LC := LC;
+  Result.Parameters.MC := MC;
+  Result.Parameters.Tol := tol;
+  Result.Parameters.Normalize := Normalize;
+  Result.MakeLayers(NTW);
 end;
 
-procedure TCustomMLPNetwork.AssignInputs(const ip: TData);
+constructor TMLPNetwork.Create(AOwner: TComponent);
+begin
+  inherited;
+  FParameters:= TMLPParameters.Create(nil);
+  SetNetInfos([niSuper]);
+  Options.Iterations:= 1000;
+end;
+
+destructor TMLPNetwork.Destroy;
+begin
+  FParameters.Free;
+  inherited;
+end;
+
+procedure TMLPNetwork.AssignInputs(const ip: TData);
 // you can change this to assign inputs specific to the function
 // that you are implementing. By defualt it takes data from ip-pattern
 begin
@@ -872,7 +827,7 @@ begin
   Layers[0].SetState(ip);
 end;
 
-procedure TCustomMLPNetwork.MakeLayers(NTW: array of TLayerDesc);
+procedure TMLPNetwork.MakeLayers(NTW: array of TLayerDesc);
 var
   i: integer;
   l: TLayer;
@@ -885,7 +840,7 @@ begin
   end;
 end;
 
-procedure TCustomMLPNetwork.FeedForward;
+procedure TMLPNetwork.FeedForward;
 var
   i: integer;
 begin
@@ -894,7 +849,7 @@ begin
   end;
 end;
 
-procedure TCustomMLPNetwork.CalcError(const op: TData);
+procedure TMLPNetwork.CalcError(const op: TData);
 // you can change this to assign outputs specific to the function
 // that you are implementing. By defualt it takes data from op-pattern
 begin
@@ -903,7 +858,7 @@ begin
   Layers[-1].CalcError(op);
 end;
 
-procedure TCustomMLPNetwork.BackPropagate;
+procedure TMLPNetwork.BackPropagate;
 var
   i: integer;
   LL: TLayer;
@@ -922,7 +877,7 @@ begin
   end;
 end;
 
-procedure TCustomMLPNetwork.AdjustWeights;
+procedure TMLPNetwork.AdjustWeights;
 var
   i: integer;
 begin
@@ -931,20 +886,25 @@ begin
   end;
 end;
 
-procedure TCustomMLPNetwork.Train;
+function TMLPNetwork.Prepare(What: TNetOper): boolean;
+begin
+  Result:= inherited;
+  DoChange;
+end;
+
+procedure TMLPNetwork.Train;
 var
   mqe: double;
-  max_it: longint;
+  max_it: integer;
   maxerr, err: double;
   i: integer;
-  trained: boolean;
 begin
   if not Prepare(noTrain) then exit;
-  mqe:= Parameters.tol;
+  mqe:=  Parameters.Tol;
   max_it:= Options.Iterations;
   FEpochs:= 0;
   mqe:= sqr(mqe);
-  trained:= false;
+  Trained:= false;
   repeat
     inc(FEpochs);
     maxerr:= 0;
@@ -960,47 +920,42 @@ begin
       if err > maxerr then maxerr:= err;
     end;
     if maxerr <= mqe then begin
-      trained:= true;
+      Trained:= true;
       break;
     end
   until (FEpochs > Max_it);
-  SetNetInfos(NetInfos + [niTrained]);
-  if not trained then begin
+  if not Trained then begin
     raise EANNWarning.Create(wrnMaxIter);
   end
 end;
 
-procedure TCustomMLPNetwork.Simul(const ip: TData; var op: TData);
+procedure TMLPNetwork.Simul(const ip: TData; var op: TData);
 begin
   AssignInputs(ip);
   FeedForward;
   Layers[-1].GetState(op);
 end;
 
-procedure TCustomMLPNetwork.SetParameters(Prm: TMLPParameters);
-begin
-  FParameters.Assign(Prm);
-end;
-
-procedure TCustomMLPNetwork.UpdateParam;
+procedure TMLPNetwork.DoChange;
 var
   i: integer;
 begin
   for i:= 0 to NumLay-1 do begin
     Layers[i].UpdateParam;
   end;
+  inherited;
 end;
 
-procedure TCustomMLPNetwork.Assign(Source: TPersistent);
+procedure TMLPNetwork.Assign(Source: TPersistent);
 var
   i: integer;
-  N: TCustomMLPNetwork;
+  N: TMLPNetwork;
   L: TComponent;
 begin
-  if Source is TCustomMLPNetwork then begin
-    inherited Assign(Source);
-    N:= TCustomMLPNetwork(Source);
-    Parameters:= N.Parameters;
+  if Source is TMLPNetwork then begin
+    inherited;
+    N:= TMLPNetwork(Source);
+    Parameters.Assign(N.Parameters);
     FEpochs:= N.Epochs;
     for i:= NumLay-1 downto 0 do begin
       Layers[i].Free;
@@ -1010,48 +965,17 @@ begin
       L.Assign(N.Layers[i]);
     end;
   end
-  else inherited Assign(Source);
+  else inherited;
 end;
 
-procedure TCustomMLPNetwork.SaveLayers(S: TStream);
-var
-  i, tmp: integer;
-begin
-  tmp:= NumLay;
-  S.Write(tmp, SizeOf(tmp));
-  for i:= 0 to tmp-1 do begin
-    S.WriteComponent(Layers[i]);
-  end;
-end;
-
-procedure TCustomMLPNetwork.LoadLayers(S: TStream);
-var
-  i, tmp: integer;
-  L: TComponent;
-begin
-  S.Read(tmp, SizeOf(tmp));
-  if tmp > 0 then begin
-    for i:= 0 to tmp-1 do begin
-      L:= S.ReadComponent(nil);
-      InsertComponent(L);
-    end;
-  end;
-end;
-
-procedure TCustomMLPNetwork.DefineProperties(Filer: TFiler);
-begin
-  Filer.DefineBinaryProperty('Layers', LoadLayers, SaveLayers, NumLay>0);
-  inherited DefineProperties(Filer);
-end;
-
-procedure TCustomMLPNetwork.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TMLPNetwork.Notification(AComponent: TComponent; Operation: TOperation);
 var
   i: integer;
 begin
   if AComponent.Owner = Self then begin
     if not (csLoading in ComponentState) then begin
       if not (AComponent is TLayer) then begin
-        DoError(EANNStructure, errBadNetDef);
+        raise EANNStructure.Create(errBadNetDef);
       end;
       for i:= 0 to NumLay-1 do begin
         SetupConnections(i);
@@ -1063,15 +987,15 @@ begin
   end;
 end;
 
-procedure TCustomMLPNetwork.DataChange(What: TDataNotify);
+procedure TMLPNetwork.DataChange(What: TDataNotify);
 begin
-  inherited DataChange(What);
+  inherited;
   if What = dnDimInp then begin
     if NumLay > 0 then SetupConnections(0);
   end;
 end;
 
-procedure TCustomMLPNetwork.SetupConnections(LayerIndex: integer);
+procedure TMLPNetwork.SetupConnections(LayerIndex: integer);
 begin
   if (LayerIndex>=0) and (LayerIndex<NumLay) then begin
     Layers[LayerIndex].SetupConnections(GetConnections(LayerIndex));
@@ -1079,7 +1003,7 @@ begin
   end;
 end;
 
-function TCustomMLPNetwork.GetConnections(LayerIndex: integer): integer;
+function TMLPNetwork.GetConnections(LayerIndex: integer): integer;
 begin
   if (LayerIndex>0) and (LayerIndex < NumLay) then begin
     Result:= Layers[LayerIndex-1].NumNeu;
@@ -1089,42 +1013,26 @@ begin
   end;
 end;
 
-function TCustomMLPNetwork.GetLayer(I: integer): TLayer;
+procedure TMLPNetwork.SetParameters(vl: TMLPParameters);
+begin
+  FParameters.Assign(vl);
+end;
+
+function TMLPNetwork.GetLayer(I: integer): TLayer;
 begin
   if i < 0 then i:= ComponentCount + i;
   Result:= TLayer(Components[I]);
 end;
 
-function TCustomMLPNetwork.GetNumLay: integer;
+function TMLPNetwork.GetNumLay: integer;
 begin
   Result:= ComponentCount;
 end;
 
-destructor TCustomMLPNetwork.Destroy;
-begin
-  FParameters.Free;
-  inherited Destroy;
-end;
-
-class function TMLPNetwork.BuildNetwork(const NTW: array of TLayerDesc; ip: TDataList; op: TDataList; LC: Double; MC: Double; tol: Double; Normalize: Boolean; Iterations: integer = 10000): TMLPNetwork;
-begin
-  Result:= TMLPNetwork.Create(nil);
-  Result.DataIn := ip;
-  Result.DataOut := op;
-  Result.Options.Iterations := Iterations;
-  Result.Parameters.LC := LC;
-  Result.Parameters.MC := MC;
-  Result.Parameters.Tol := tol;
-  Result.Parameters.Normalize := Normalize;
-  Result.MakeLayers(NTW);
-end;
-
+//--------------------------------------------------------------------------------------------------
 initialization
-  RegisterClass(TNeuron);
-  RegisterClass(TLogisticNeuron);
-  RegisterClass(TLinearNeuron);
-  RegisterClass(TPerceptron);
-  RegisterClass(TLayer);
-  RegisterClass(TMLPNetwork);
+  RegisterClasses([TNeuron, TLogisticNeuron, TLinearNeuron, TPerceptron]);
+  RegisterClasses([TLayer]);
+  RegisterClasses([TMLPParameters, TMLPNetwork]);
 end.
 

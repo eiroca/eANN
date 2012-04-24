@@ -35,51 +35,49 @@ unit eANNCom;
 interface
 
 uses
-  SysUtils, Classes, eANNCore, eDataPick;
+  System.SysUtils, System.Classes,
+  eLibCore, eDataPick,
+  eANNCore;
 
 type
   TCompetitor = class;
-  TCustomCompetitiveNetwork = class;
+  TCompetitorClass = class of TCompetitor;
 
   (* Competitor neuron of a Competive network *)
-  TCompetitor = class(TComponent)
+  TCompetitor = class(TStorable)
     public
      (* Returns the name of the competitor *)
      class function Description: string; virtual;
     private
+     FHasCen: boolean;
      FCenter: TWeights;
-     FEta   : double;
-     FWinner: boolean;
     protected
-     HasInp: boolean;
-    protected
+     function  GetCenter: TWeights;
+     procedure SetCenter(vl: TWeights);
      procedure DataChange(What: TDataNotify); virtual;
-     (* Store a competitor structure in a stream *)
-     procedure SaveToStream(S: TStream); virtual;
-     (* Load a competitor structure from a stream *)
-     procedure LoadFromStream(S: TStream); virtual;
-     procedure DefineProperties(Filer: TFiler); override;
     public
      (* Competitive neuron *)
      constructor Create(AOwner: TComponent); override;
-     procedure   Assign(Source: TPersistent); override;
      (* Free memory that was assigned for the specified competitor structure *)
      destructor  Destroy; override;
     public
-     procedure   UpdateParam; virtual;
+     procedure   Assign(Source: TPersistent); override;
+    public
      (* Assign random values to input centroid *)
      procedure   Reset; virtual;
      (* Update state of the input centroid accordin to input and winning state *)
-     procedure   CentroidUpdate(const ip: TData); virtual;
+     procedure   CentroidUpdate(const ip: TData; eta: double); virtual;
      (* Compute distance between Input centroid and the given pattern *)
      function    CentroidDist(const ip: TData): double; virtual;
-    public
-     // center of the neuron
-     property Center: TWeights read FCenter;
-     // Eta of the neuron
-     property Eta   : double   read FEta write FEta;
-     // Is a winner?
-     property Winner: boolean  read FWinner write FWinner;
+    published
+     // Center is setted?
+     property HasCenter: boolean
+       read FHasCen
+       write FHasCen;
+     // Center of the neuron
+     property Center: TWeights
+       read GetCenter
+       write SetCenter;
   end;
 
   (* Competitor neuron of a Competive network with input and output *)
@@ -88,76 +86,92 @@ type
      (* Returns the name of the competitor *)
      class function Description: string; override;
     private
+     FHasOut: boolean;
      FOutput: TWeights;
     protected
-     HasOut: boolean;
-    protected
+     function  GetOutput: TWeights;
+     procedure SetOutput(vl: TWeights);
      procedure DataChange(What: TDataNotify); override;
-     procedure SaveToStream(S: TStream); override;
-     procedure LoadFromStream(S: TStream); override;
     public
      (* Competitive neuron *)
      constructor Create(AOwner: TComponent); override;
-     procedure   Assign(Source: TPersistent); override;
      (* Free memory that was assigned for the specified competitor structure *)
      destructor  Destroy; override;
+    public
+     procedure   Assign(Source: TPersistent); override;
     public
      (* Assign random values to output centroid *)
      procedure   Reset; override;
      (* Update state of the output centroid accordin to input and winning state *)
-     procedure   OutputUpdate(const op: TData); virtual;
+     procedure   OutputUpdate(const op: TData; eta: double); virtual;
      (* Compute distance between output centroid and the given pattern *)
      function    OutputDist(const op: TData): double; virtual;
-    public
-     property Output: TWeights read FOutput;
+    published
+     // Output is setted?
+     property HasOutput: boolean
+       read FHasOut
+       write FHasOut;
+     // Output of the neuron
+     property Output: TWeights
+       read GetOutput
+       write SetOutput;
+
   end;
 
-  TComParameters = class(TANNParam)
-    public
-     constructor Create(AOwner: TANN); override;
+const
+  defEta = 0.1;
+  defMaxNeu = 1;
+
+type
+  TCompetitiveParameters = class(TStorable)
     private
      FEta: double;
-     FNumNeu: integer;
-    private
+     FMaxNeu: integer;
+    protected
      procedure SetEta(vl: double);
-     procedure SetNumNeu(vl: integer);
+     procedure SetMaxNeu(vl: integer);
+    public
+     constructor Create(AOwner: TComponent); override;
+    public
+     (* Deep copy of the network *)
+     procedure   Assign(Source: TPersistent); override;
     published
      (* Learning constant *)
-     property Eta: double read FEta write SetEta;
+     property Eta: double
+       read FEta
+       write SetEta;
      (* Number of neuron(s) in the network *)
-     property NumNeu: integer read FNumNeu write SetNumNeu;
+     property MaxNeu: integer
+       read FMaxNeu
+       write SetMaxNeu;
   end;
 
   (* Build a Competitive Neural Network *)
-  TCustomCompetitiveNetwork = class(TANN)
+  TCompetitiveNetwork = class(TANN)
     protected
      class procedure Supply(var Op: TNetOpers); override;
     public
      (* Returns the name of the network *)
      class function Description: string; override;
     private
-     FParameters: TComParameters;
      (* Last winning neuron *)
-     OldWinner: TCompetitor;
+     FParameters: TCompetitiveParameters;
     private
-     procedure SetParameters(Prm: TComParameters);
      function  GetNeuron(i: integer): TCompetitor;
      function  GetNumNeu: integer;
-     procedure SaveNeurons(S: TStream);
-     procedure LoadNeurons(S: TStream);
+     procedure SetParameters(vl: TCompetitiveParameters);
     protected
-     procedure UpdateParam;
      procedure MakeNeurons(aNumNeu: integer);
      function  Prepare(What: TNetOper): boolean; override;
-     procedure DefineProperties(Filer: TFiler); override;
      procedure Notification(AComponent: TComponent; Operation: TOperation); override;
      procedure DataChange(What: TDataNotify); override;
     public
      (* Create a competitve network structure and its "competitors" *)
      constructor Create(AOwner: TComponent); override;
-     procedure   Assign(Source: TPersistent); override;
      (* Free all memory that was assigned for the specified network structure *)
      destructor  Destroy; override;
+    public
+     procedure   Assign(Source: TPersistent); override;
     public
      procedure   Reset; override;
      (* Search winner neuron *)
@@ -166,31 +180,19 @@ type
      function    BeginClusterization: boolean; override;
      function    FindCluster(const ip: TData): integer; override;
     public
-     property Parameters: TComParameters read FParameters write SetParameters;
      (* Neuron(s) in the network *)
      property Neurons[i: integer]: TCompetitor read GetNeuron;
      (* Number of neuron(s) in the network *)
      property NumNeu: integer read GetNumNeu;
-  end;
-
-  TCompetitiveNetwork = class(TCustomCompetitiveNetwork)
     published
-     property Options;
-     property DimInp;
-     property DimOut;
-     property DataIn;
-     property DataOut;
-     property OnChange;
-     property OnDataChange;
-     property OnProgress;
-     property OnPrepare;
-     property OnBeginOper;
-     property OnEndOper;
-     property Parameters;
+     property Parameters: TCompetitiveParameters
+       read FParameters
+       write SetParameters;
   end;
 
 implementation
 
+//--------------------------------------------------------------------------------------------------
 class function TCompetitor.Description;
 begin
   Result:= 'Competitive neuron';
@@ -199,43 +201,39 @@ end;
 constructor TCompetitor.Create(AOwner: TComponent);
 begin
   if (AOwner <> nil) and not (AOwner is TANN) then begin
-    TANN.DoError(EANNNeuron, errNeuronError1);
+    raise EANNNeuron.Create(errNeuronError1);
   end;
-  FCenter:= TWeights.Create(0);
-  if Center = nil then TANN.DoError(EANNMemory, errOutOfMemory);
-  inherited Create(AOwner);
-  Eta:= 0.1;
-  UpdateParam;
+  FCenter:= TWeights.Create(nil);
   Reset;
+  inherited;
+end;
+
+destructor TCompetitor.Destroy;
+begin
+  FreeAndNil(FCenter);
+  inherited;
+end;
+
+function TCompetitor.GetCenter: TWeights;
+begin
+  Result:= FCenter;
+end;
+
+procedure TCompetitor.SetCenter(vl: TWeights);
+begin
+  Center.Assign(vl);
 end;
 
 procedure TCompetitor.Reset;
 begin
-  HasInp:= false;
-  FWinner:= false;
+  HasCenter:= false;
 end;
 
 procedure TCompetitor.DataChange(What: TDataNotify);
 begin
   if (What=dnDimInp) and (Owner <> nil) then begin
-    Center.Dim:= TANN(Owner).DimInp;
+    Center.Size:= TANN(Owner).DimInp;
   end;
-end;
-
-procedure TCompetitor.SaveToStream(S: TStream);
-begin
-  S.Write(FEta, SizeOf(FEta));
-  S.Write(FWinner, SizeOf(FWinner));
-  S.Write(HasInp, SizeOf(HasInp));
-  Center.SaveToStream(S);
-end;
-
-procedure TCompetitor.LoadFromStream(S: TStream);
-begin
-  S.Read(FEta, SizeOf(FEta));
-  S.Read(FWinner, SizeOf(FWinner));
-  S.Read(HasInp, SizeOf(HasInp));
-  Center.LoadFromStream(S);
 end;
 
 procedure TCompetitor.Assign(Source: TPersistent);
@@ -244,47 +242,32 @@ var
 begin
   if Source is TCompetitor then begin
     C:= TCompetitor(Source);
-    Center.Assign(C.Center);
-    HasInp:= C.HasInp;
-    Eta:= C.Eta;
-    Winner:= C.Winner;
+    Center:= C.Center;
+    HasCenter:= C.HasCenter;
   end
-  else inherited Assign(Source);
+  else inherited;
 end;
 
-procedure TCompetitor.DefineProperties(Filer: TFiler);
-begin
-  Filer.DefineBinaryProperty('Data', LoadFromStream, SaveToStream, true);
-  inherited DefineProperties(Filer);
-end;
-
-procedure TCompetitor.UpdateParam;
-begin
-  if (Owner<>nil) and (Owner is TCustomCompetitiveNetwork) then begin
-    Eta:= TCustomCompetitiveNetwork(Owner).Parameters.Eta;
-  end;
-end;
-
-procedure TCompetitor.CentroidUpdate(const ip: TData);
+procedure TCompetitor.CentroidUpdate(const ip: TData; eta: double);
 var
   i: integer;
 begin
   with Center do begin
-    if HasInp then begin
-      for i:= 0 to Dim-1 do begin
-        Weights[i]:= Weights[i] * (1-eta) + ip[i]*eta;
+    if HasCenter then begin
+      for i:= 0 to Size-1 do begin
+        Data[i]:= Data[i] * (1-eta) + ip[i]*eta;
       end;
     end
     else begin
       SetWeights(ip);
-      HasInp:= true;
+      HasCenter:= true;
     end;
   end;
 end;
 
 function TCompetitor.CentroidDist(const ip: TData): double;
 begin
-  if HasInp then begin
+  if HasCenter then begin
     Result:= Center.SqrDist(ip);
   end
   else begin
@@ -292,12 +275,7 @@ begin
   end;
 end;
 
-destructor TCompetitor.Destroy;
-begin
-  FCenter.Free;
-  inherited Destroy;
-end;
-
+//--------------------------------------------------------------------------------------------------
 class function TFullCompetitor.Description;
 begin
   Result:= 'Competitive neuron with output';
@@ -305,37 +283,39 @@ end;
 
 constructor TFullCompetitor.Create(AOwner: TComponent);
 begin
-  FOutput:= TWeights.Create(0);
-  if Output = nil then TANN.DoError(EANNMemory, errOutOfMemory);
-  inherited Create(AOwner);
+  FOutput:= TWeights.Create(nil);
+  inherited;
+end;
+
+destructor TFullCompetitor.Destroy;
+begin
+  FreeAndNil(FOutput);
+  inherited;
+end;
+
+function TFullCompetitor.GetOutput: TWeights;
+begin
+  FOutput:= TWeights(CheckCreate(FOutput, TWeights));
+  Result:= FOutput;
+end;
+
+procedure TFullCompetitor.SetOutput(vl: TWeights);
+begin
+  Output.Assign(vl);
 end;
 
 procedure TFullCompetitor.Reset;
 begin
-  inherited Reset;
-  HasOut:= false;
+  inherited;
+  HasOutput:= false;
 end;
 
 procedure TFullCompetitor.DataChange(What: TDataNotify);
 begin
-  inherited DataChange(What);
+  inherited;
   if (What=dnDimOut) and (Owner <> nil) then begin
-    Output.Dim:= TANN(Owner).DimOut;
+    Output.Size:= TANN(Owner).DimOut;
   end;
-end;
-
-procedure TFullCompetitor.SaveToStream(S: TStream);
-begin
-  inherited SaveToStream(S);
-  S.Write(HasOut, SizeOf(HasOut));
-  Output.SaveToStream(S);
-end;
-
-procedure TFullCompetitor.LoadFromStream(S: TStream);
-begin
-  inherited LoadFromStream(S);
-  S.Read(HasOut, SizeOf(HasOut));
-  Output.LoadFromStream(S);
 end;
 
 procedure TFullCompetitor.Assign(Source: TPersistent);
@@ -343,34 +323,34 @@ var
   C: TFullCompetitor;
 begin
   if Source is TFullCompetitor then begin
-    inherited Assign(Source);
+    inherited;
     C:= TFullCompetitor(Source);
-    Output.Assign(C.Output);
-    HasOut:= C.HasOut;
+    Output:= C.Output;
+    HasOutput:= C.HasOutput;
   end
-  else inherited Assign(Source);
+  else inherited;
 end;
 
-procedure TFullCompetitor.OutputUpdate(const op: TData);
+procedure TFullCompetitor.OutputUpdate(const op: TData; eta: double);
 var
   i: integer;
 begin
   with Output do begin
-    if HasOut then begin
-      for i:= 0 to Dim-1 do begin
-        Weights[i]:= Weights[i] * (1-eta) + op[i]*eta;
+    if HasOutput then begin
+      for i:= 0 to Size-1 do begin
+        Data[i]:= Data[i] * (1-eta) + op[i]*eta;
       end;
     end
     else begin
       Output.SetWeights(op);
-      HasOut:= true;
+      HasOutput:= true;
     end;
   end;
 end;
 
 function TFullCompetitor.OutputDist(const op: TData): double;
 begin
-  if HasOut then begin
+  if HasOutput then begin
     Result:= Output.SqrDist(op);
   end
   else begin
@@ -378,98 +358,82 @@ begin
   end;
 end;
 
-destructor TFullCompetitor.Destroy;
+//--------------------------------------------------------------------------------------------------
+constructor TCompetitiveParameters.Create(AOwner: TComponent);
 begin
-  FOutput.Free;
-  inherited Destroy;
+  inherited;
+  FEta:= defEta;
+  FMaxNeu:= defMaxNeu;
 end;
 
-constructor TComParameters.Create(AOwner: TANN);
+procedure TCompetitiveParameters.Assign(Source: TPersistent);
+var
+  P: TCompetitiveParameters;
 begin
-  inherited Create(AOwner);
-  FEta:= 0.1;
-  FNumNeu:= 1;
-  Owner.Options.Iterations:= 30;
+  if Source is TCompetitiveParameters then begin
+    P:= TCompetitiveParameters(Source);
+    Eta:= P.Eta;
+    MaxNeu:= P.MaxNeu;
+  end
+  else inherited;
 end;
 
-procedure TComParameters.SetEta(vl: double);
+procedure TCompetitiveParameters.SetEta(vl: double);
 begin
-  if vl < 0.001 then vl:= 0.1;
-  if vl <> FEta then begin
-    FEta:= vl;
-    with TCompetitiveNetwork(Owner) do begin
-      BeginUpdate;
-      Options.Iterations:= round(3/Eta);
-      UpdateParam;
-      Change;
-      EndUpdate;
-    end;
-  end;
+  if vl < 0.001 then vl:= defEta;
+  FEta:= vl;
 end;
 
-procedure TComParameters.SetNumNeu(vl: integer);
+procedure TCompetitiveParameters.SetMaxNeu(vl: integer);
 begin
   if vl < 1 then vl:= 1;
-  if vl <> FNumNeu then begin
-    FNumNeu:= vl;
-    Owner.Change;
-  end;
+  FMaxNeu:= vl;
 end;
 
-constructor TCustomCompetitiveNetwork.Create;
+//--------------------------------------------------------------------------------------------------
+class function TCompetitiveNetwork.Description;
 begin
-  inherited Create(AOwner);
+  Result:= 'Competitive Neural Network';
+end;
+
+class procedure TCompetitiveNetwork.Supply(var Op: TNetOpers);
+begin
+  Op:= Op + [noAcquire, noFindCluster, noReset];
+  inherited;
+end;
+
+constructor TCompetitiveNetwork.Create;
+begin
+  inherited;
+  FParameters:= TCompetitiveParameters.Create(nil);
+  Options.Iterations:= 30;
   SetNetInfos([]);
-  FParameters:= TComParameters.Create(Self);
-  OldWinner:= nil;
 end;
 
-function TCustomCompetitiveNetwork.Prepare(What: TNetOper): boolean;
+destructor TCompetitiveNetwork.Destroy;
 begin
-  Result:= inherited Prepare(What);
+  FParameters.Free;
+  inherited;
+end;
+
+procedure TCompetitiveNetwork.SetParameters(vl: TCompetitiveParameters);
+begin
+  FParameters.Assign(vl);
+end;
+
+function TCompetitiveNetwork.Prepare(What: TNetOper): boolean;
+var
+  iter: integer;
+begin
+  Result:= inherited;
   if Result then begin
-    MakeNeurons(Parameters.NumNeu);
+    MakeNeurons(Parameters.MaxNeu);
   end;
+  iter:= round(3/Parameters.Eta);
+  if (Options.Iterations<iter) then Options.Iterations:= iter;
 end;
 
-procedure TCustomCompetitiveNetwork.SaveNeurons(S: TStream);
-var
-  i, tmp: integer;
-begin
-  tmp:= NumNeu;
-  S.Write(tmp, SizeOf(tmp));
-  for i:= 0 to tmp-1 do begin
-    S.WriteComponent(Neurons[i]);
-  end;
-  if OldWinner = nil then tmp:= -1
-  else tmp:= OldWinner.ComponentIndex;
-  S.Write(tmp, SizeOf(tmp));
-end;
-
-procedure TCustomCompetitiveNetwork.LoadNeurons(S: TStream);
-var
-  i, tmp: integer;
-  C: TComponent;
-begin
-  S.Read(tmp, SizeOf(tmp));
-  if tmp > 0 then begin
-    for i:= 0 to tmp-1 do begin
-      C:= S.ReadComponent(nil);
-      InsertComponent(C);
-    end;
-  end;
-  S.Read(tmp, SizeOf(tmp));
-  if tmp = -1 then OldWinner:= nil
-  else OldWinner:= Neurons[tmp];
-end;
-
-procedure TCustomCompetitiveNetwork.DefineProperties(Filer: TFiler);
-begin
-  Filer.DefineBinaryProperty('Neurons', LoadNeurons, SaveNeurons, NumNeu>0);
-  inherited DefineProperties(Filer);
-end;
-
-procedure TCustomCompetitiveNetwork.Notification(AComponent: TComponent; Operation: TOperation);
+procedure TCompetitiveNetwork.Notification(AComponent: TComponent; Operation: TOperation);
 var
   C: TCompetitor;
 begin
@@ -477,38 +441,36 @@ begin
     if not (csLoading in ComponentState) then begin
       if Operation = opInsert then begin
         if not (AComponent is TCompetitor) then begin
-          DoError(EANNStructure, errBadNetDef);
+          EANNStructure.Create(errBadNetDef);
         end;
         C:= TCompetitor(AComponent);
-        C.Center.Dim:= DimInp;
-        C.UpdateParam;
+        C.Center.Size:= DimInp;
         ResetTraining;
       end;
     end;
   end;
 end;
 
-procedure TCustomCompetitiveNetwork.DataChange(What: TDataNotify);
+procedure TCompetitiveNetwork.DataChange(What: TDataNotify);
 var
   i: integer;
 begin
-  inherited DataChange(What);
+  inherited;
   for i:= 0 to NumNeu-1 do begin
     Neurons[i].DataChange(What);
   end;
 end;
 
-procedure TCustomCompetitiveNetwork.Assign(Source: TPersistent);
+procedure TCompetitiveNetwork.Assign(Source: TPersistent);
 var
   i: integer;
-  N: TCustomCompetitiveNetwork;
+  N: TCompetitiveNetwork;
   C: TComponent;
 begin
-  if Source is TCustomCompetitiveNetwork then begin
-    inherited Assign(Source);
-    N:= TCustomCompetitiveNetwork(Source);
+  if Source is TCompetitiveNetwork then begin
+    inherited;
+    N:= TCompetitiveNetwork(Source);
     Parameters:= N.Parameters;
-    OldWinner:= N.OldWinner;
     for i:= NumNeu-1 downto 0 do begin
       Neurons[i].Free;
     end;
@@ -517,46 +479,37 @@ begin
       C.Assign(N.Neurons[i]);
     end;
   end
-  else inherited Assign(Source);
+  else inherited;
 end;
 
-procedure TCustomCompetitiveNetwork.Reset;
+procedure TCompetitiveNetwork.Reset;
 var
   i: integer;
 begin
-  inherited Reset;
+  inherited;
   for i:= NumNeu-1 downto 0 do begin
     Neurons[i].Free;
   end;
 end;
 
-function TCustomCompetitiveNetwork.GetNeuron(i: integer): TCompetitor;
+function TCompetitiveNetwork.GetNeuron(i: integer): TCompetitor;
 begin
   Result:= TCompetitor(Components[i]);
 end;
 
-function TCustomCompetitiveNetwork.GetNumNeu: integer;
+function TCompetitiveNetwork.GetNumNeu: integer;
 begin
   Result:= ComponentCount;
 end;
 
-procedure TCustomCompetitiveNetwork.UpdateParam;
-var
-  i: integer;
+function TCompetitiveNetwork.BeginClusterization: boolean;
 begin
-  for i:= 0 to NumNeu-1 do begin
-    Neurons[i].UpdateParam;
-  end;
+  if DimInp < 1 then raise EANNGeneric.Create(errBadNetDef);
+  if NumNeu < 1 then raise EANNGeneric.Create(errBadNetDef);
+  Result:= inherited;
 end;
 
-function TCustomCompetitiveNetwork.BeginClusterization: boolean;
-begin
-  if DimInp < 1 then DoError(EANNGeneric, errBadNetDef);
-  if NumNeu < 1 then DoError(EANNGeneric, errBadNetDef);
-  Result:= inherited BeginClusterization;
-end;
-
-procedure TCustomCompetitiveNetwork.MakeNeurons(aNumNeu: integer);
+procedure TCompetitiveNetwork.MakeNeurons(aNumNeu: integer);
 var
   i: integer;
 begin
@@ -574,24 +527,12 @@ begin
   end;
 end;
 
-class function TCustomCompetitiveNetwork.Description;
-begin
-  Result:= 'Competitive Neural Network';
-end;
-
-class procedure TCustomCompetitiveNetwork.Supply(var Op: TNetOpers);
-begin
-  Op:= Op + [noAcquire, noFindCluster, noReset];
-  inherited Supply(Op);
-end;
-
-function TCustomCompetitiveNetwork.FindWinner(const p: TData): TCompetitor;
+function TCompetitiveNetwork.FindWinner(const p: TData): TCompetitor;
 var
   MaxDist: double;
   idist: double;
   Cnt, i: integer;
 begin
-  if OldWinner <> nil then OldWinner.Winner:= false;
   Result:= nil;
   Cnt:= NumNeu;
   if Cnt > 0 then begin
@@ -606,35 +547,22 @@ begin
         end;
       end;
     end;
-    Result.Winner:= true;
   end;
-  OldWinner:= Result;
 end;
 
-function TCustomCompetitiveNetwork.FindCluster(const ip: TData): integer;
+function TCompetitiveNetwork.FindCluster(const ip: TData): integer;
 begin
   Result:= FindWinner(ip).ComponentIndex;
 end;
 
-procedure TCustomCompetitiveNetwork.Acquire(const ip: TData);
+procedure TCompetitiveNetwork.Acquire(const ip: TData);
 begin
-  FindWinner(ip).CentroidUpdate(ip);
+  FindWinner(ip).CentroidUpdate(ip, Parameters.Eta);
 end;
 
-procedure TCustomCompetitiveNetwork.SetParameters(Prm: TComParameters);
-begin
-  FParameters.Assign(Prm);
-end;
-
-destructor TCustomCompetitiveNetwork.Destroy;
-begin
-  FParameters.Free;
-  inherited Destroy;
-end;
-
+//--------------------------------------------------------------------------------------------------
 initialization
-  RegisterClass(TCompetitor);
-  RegisterClass(TFullCompetitor);
-  RegisterClass(TCompetitiveNetwork);
+  RegisterClasses([TCompetitor, TFullCompetitor]);
+  RegisterClasses([TCompetitiveParameters, TCompetitiveNetwork]);
 end.
 

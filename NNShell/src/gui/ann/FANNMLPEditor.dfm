@@ -1,6 +1,7 @@
 inherited fmANNMLPEditor: TfmANNMLPEditor
   Caption = 'fmANNMLPEditor'
   ClientHeight = 255
+  ExplicitWidth = 320
   ExplicitHeight = 289
   PixelsPerInch = 96
   TextHeight = 13

@@ -25,6 +25,7 @@ uses
   System.SysUtils, System.Classes, System.Types,
   FEditor,
   JvGrids, JvExGrids, JvSpin,
+  Winapi.Windows,
   Vcl.Dialogs, Vcl.Grids, Vcl.Mask, JvExMask, Vcl.StdCtrls, Vcl.Buttons, Vcl.Controls,
   Vcl.Forms, Vcl.ComCtrls, Vcl.ExtCtrls;
 
@@ -224,7 +225,7 @@ begin
   inherited;
   if not StrUtil.isLitteral(Key) then begin
     Key:= #0;
-    Beep;
+    System.SysUtils.Beep;
   end;
 end;
 

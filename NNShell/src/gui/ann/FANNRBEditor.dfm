@@ -14,6 +14,7 @@ inherited fmANNRBEditor: TfmANNRBEditor
     inherited pcEditor: TPageControl
       Width = 460
       Height = 316
+      ActivePage = tsTrain
       ExplicitWidth = 460
       ExplicitHeight = 316
       inherited tsProp: TTabSheet
@@ -161,6 +162,8 @@ inherited fmANNRBEditor: TfmANNRBEditor
         end
       end
       inherited tsTrain: TTabSheet
+        ExplicitLeft = 4
+        ExplicitTop = 24
         ExplicitWidth = 452
         ExplicitHeight = 288
         inherited sbTrain: TScrollBox

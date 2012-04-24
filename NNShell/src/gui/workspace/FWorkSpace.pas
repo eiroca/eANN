@@ -99,7 +99,7 @@ implementation
 {$R *.DFM}
 
 uses
-  FMain, eANNMLP, eANNCom, eANNPLN, eANNRB, eANNPRB, FANNEditor;
+  FMain, eANNMLP, eANNCom, eANNPLN, eANNRB, FANNEditor;
 
 const
   icHome   = 0;

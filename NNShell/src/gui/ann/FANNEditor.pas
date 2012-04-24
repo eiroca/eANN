@@ -24,6 +24,7 @@ interface
 uses
   System.SysUtils, System.Classes,
   eDataPick,
+  Winapi.Windows,
   FEditor, JvExMask, JvSpin, JvExStdCtrls, JvCheckBox,
   Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Mask, Vcl.Controls, Vcl.Forms;
 
@@ -156,7 +157,7 @@ begin
     Net:= Obj as TANN;
     sizIn:= Net.DimInp;
     sizOut:= Net.DimOut;
-    cbTrained.Checked:= niTrained in TANN(Obj).NetInfos;
+    cbTrained.Checked:= TANN(Obj).Trained;
     vis:= (niSuper in Net.NetInfos);
     btTrainOut.Visible:= vis;
     cbTrainOut.Visible:= vis;
@@ -507,7 +508,7 @@ begin
   inherited;
   if not StrUtil.isLitteral(Key) then begin
     Key:= #0;
-    Beep;
+    System.SysUtils.Beep;
   end;
 end;
 

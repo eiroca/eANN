@@ -118,7 +118,7 @@ begin
     L:= TMLPNetwork(Obj).Layers[i];
     with LayerDesc.Add as TLayerDesc do begin
       NumNeu:= L.NumNeu;
-      NumWei:= L.Neurons[0].NumWei;
+      NumWei:= L.Neurons[0].Size;
       NeuKnd:= TNeuronClass(L.Neurons[0].ClassType);
     end;
   end;
@@ -338,7 +338,7 @@ var
 begin
   inherited;
   N:= TMLPNetwork(Obj);
-  if niTrained in N.NetInfos then N.Reset;
+  if N.Trained then N.Reset;
   for i:= N.NumLay-1 downto 0 do begin
     N.Layers[i].Free;
   end;

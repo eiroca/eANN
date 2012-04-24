@@ -52,7 +52,7 @@ begin
   inherited;
   with Obj as TCompetitiveNetwork do begin
     iEta.Value   := Parameters.Eta;
-    iNumNeu.Value:= Parameters.NumNeu;
+    iNumNeu.Value:= Parameters.MaxNeu;
   end;
 end;
 
@@ -69,8 +69,8 @@ procedure TfmANNComEditor.iNumNeuChange(Sender: TObject);
 begin
   inherited;
   with TCompetitiveNetwork(Obj) do begin
-    Parameters.NumNeu:= trunc(iNumNeu.Value);
-    iNumNeu.Value:= Parameters.NumNeu;
+    Parameters.MaxNeu:= trunc(iNumNeu.Value);
+    iNumNeu.Value:= Parameters.MaxNeu;
   end;
 end;
 

@@ -113,7 +113,6 @@ type
     procedure iProgStepChange(Sender: TObject);
     procedure btRenameClick(Sender: TObject);
     procedure iNameChange(Sender: TObject);
-    procedure iNameKeyPress(Sender: TObject; var Key: Char);
     procedure pcEditorChange(Sender: TObject);
     procedure cbOvervriteDataListClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -353,6 +352,7 @@ begin
   Net.DataIn:= getDataPicker(cbApplyIn);
   if not cbOvervriteDataList.Checked then begin
     DP:= WorkSpace.MakeDataPicker(TDataList) as TDataList;
+    DP.RawMode:= false;
     with Net do begin
       if (niSuper in NetInfos) and (DataOut<>nil) then sz:= DataOut.Dim
       else sz:= 1;
@@ -481,6 +481,7 @@ end;
 procedure TfmANNEditor.FormCreate(Sender: TObject);
 begin
   inherited;
+  btRename.Enabled:= false;
   cbApplyOut.Enabled:= cbOvervriteDataList.Checked;
   btApplyOut.Enabled:= cbOvervriteDataList.Checked;
   with association[0] do begin sb:= btTrainIn;  cb:= cbTrainIn;  end;
@@ -500,16 +501,7 @@ end;
 procedure TfmANNEditor.iNameChange(Sender: TObject);
 begin
   inherited;
-  btRename.Enabled:= WorkSpace.ValidRename(Obj, Obj.Name, iName.Text);
-end;
-
-procedure TfmANNEditor.iNameKeyPress(Sender: TObject; var Key: Char);
-begin
-  inherited;
-  if not StrUtil.isLitteral(Key) then begin
-    Key:= #0;
-    System.SysUtils.Beep;
-  end;
+  btRename.Enabled:= WorkSpace.ValidRename(Obj, iName.Text);
 end;
 
 initialization

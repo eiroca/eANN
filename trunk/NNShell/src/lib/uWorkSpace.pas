@@ -42,17 +42,18 @@ type
      procedure   Loaded; override;
     public
      constructor Create(AOwner: TComponent); override;
+     destructor  Destroy; override;
+    public
+     procedure   Save(Path: string);
+     procedure   Load(Path: string);
      function    CreateObject(Kind: TObjectClass; const aName: string): TComponent; virtual;
      procedure   FreeObject(Obj: TComponent); virtual;
      function    RenameObject(Obj: TComponent; const NewName: string): boolean;
-     function    ValidRename(AComponent: TComponent; const OldName, NewName: string): boolean;
+     function    ValidRename(AComponent: TComponent; const NewName: string): boolean;
      function    GetUniqueName(aMask: string): string;
      function    GetDataPicker(aList: TStrings): string;
-     function    MakeDataPicker(DPClass: TDataPickerClass): TComponent;
+     function    MakeDataPicker(DPClass: TDataPickerClass): TDataPicker;
      function    MakeErrorSet: TErrorSet;
-     procedure   Save(Path: string);
-     procedure   Load(Path: string);
-     destructor  Destroy; override;
     public
      property Changed: boolean read FChanged;
      property CreateListener: TListenerList read FCreateListener;
@@ -69,6 +70,15 @@ begin
   FFreeListener:= TListenerList.Create;
   FNameChangeListener:= TListenerList.Create;
   FChanged:= false;
+end;
+
+destructor  TWorkSpace.Destroy;
+begin
+  FreeAllObjects;
+  FCreateListener.Free;
+  FNameChangeListener.Free;
+  FFreeListener.Free;
+  inherited Destroy;
 end;
 
 procedure TWorkSpace.Loaded;
@@ -100,14 +110,24 @@ begin
   FChanged:= true;
 end;
 
-function TWorkSpace.ValidRename(AComponent: TComponent; const OldName, NewName: string): boolean;
+function TWorkSpace.ValidRename(AComponent: TComponent; const NewName: string): boolean;
+var
+  i: integer;
 begin
-  try
-    ValidateRename(AComponent, OldName, NewName);
-    Result:= true;
-  except
-    on EComponentError do Result:= false;
+  Result:= false;
+  if (AComponent.Name = NewName) then exit;
+  for i:= 1 to Length(NewName) do begin
+    if not StrUtil.isLitteral(NewName[i]) then begin
+      exit;
+    end;
   end;
+  if FindComponent(NewName) <> nil then exit;
+  try
+    ValidateRename(Self, AComponent.Name, NewName);
+  except
+    on EComponentError do exit;
+  end;
+  Result:= true;
 end;
 
 function TWorkSpace.GetUniqueName(aMask: string): string;
@@ -125,7 +145,7 @@ end;
 function TWorkSpace.RenameObject(Obj: TComponent; const NewName: string): boolean;
 begin
   try
-    ValidateRename(Obj, Obj.Name, NewName);
+    ValidateRename(Self, Obj.Name, NewName);
     Obj.Name:= NewName;
     Result:= true;
     NameChangeListener.Notify(Obj);
@@ -152,22 +172,6 @@ begin
   finally
     aList.EndUpdate;
   end;
-end;
-
-function TWorkSpace.MakeDataPicker(DPClass: TDataPickerClass): TComponent;
-var
-  Name: string;
-begin
-  Name:= GetUniqueName('DataSource%d');
-  Result:= CreateObject(DPClass, Name);
-end;
-
-function TWorkSpace.MakeErrorSet: TErrorSet;
-var
-  Name: string;
-begin
-  Name:= GetUniqueName('ErrorSet%d');
-  Result:= CreateObject(TErrorSet, Name) as TErrorSet;
 end;
 
 procedure TWorkSpace.Save(Path: string);
@@ -223,13 +227,20 @@ begin
   end;
 end;
 
-destructor  TWorkSpace.Destroy;
+function TWorkSpace.MakeDataPicker(DPClass: TDataPickerClass): TDataPicker;
+var
+  Name: string;
 begin
-  FreeAllObjects;
-  FCreateListener.Free;
-  FNameChangeListener.Free;
-  FFreeListener.Free;
-  inherited Destroy;
+  Name:= GetUniqueName('DataSource%d');
+  Result:= CreateObject(DPClass, Name) as TDataPicker;
+end;
+
+function TWorkSpace.MakeErrorSet: TErrorSet;
+var
+  Name: string;
+begin
+  Name:= GetUniqueName('ErrorSet%d');
+  Result:= CreateObject(TErrorSet, Name) as TErrorSet;
 end;
 
 end.

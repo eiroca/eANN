@@ -69,6 +69,7 @@ begin
   cbAutoLoad.Checked:= TDataPattern(Obj).AutoLoad;
   OnLoadEvent(nil);
   TDataPattern(Obj).LoadListener.Add(OnLoadEvent);
+  btLoadPattern.Enabled:= false;
 end;
 
 procedure TfmDataPatternEditor.HideEditor;
@@ -82,6 +83,7 @@ end;
 procedure TfmDataPatternEditor.iFileNameChange(Sender: TObject);
 begin
   inherited;
+  btLoadPattern.Enabled:= iFileName.Text<>'';
   TDataPattern(Obj).FileName:= iFileName.Text;
 end;
 
@@ -99,10 +101,15 @@ begin
 end;
 
 procedure TfmDataPatternEditor.btLoadPatternClick(Sender: TObject);
+var
+  DP: TDataPattern;
 begin
   inherited;
-  TDataPattern(Obj).Load;
+  DP:= TDataPattern(Obj);
+  if (DP.FileName<>'') then DP.Load;
+  DP.RawMode:= false;
 end;
+
 procedure TfmDataPatternEditor.OnLoadEvent(Sender: TObject);
 begin
   lbDim.Caption:= Format('%d vectors of %d element(s).',[TDataPattern(Obj).Count, TDataPattern(Obj).Dim]);

@@ -1,7 +1,6 @@
 inherited fmANNMLPEditor: TfmANNMLPEditor
   Caption = 'fmANNMLPEditor'
   ClientHeight = 255
-  ExplicitWidth = 320
   ExplicitHeight = 289
   PixelsPerInch = 96
   TextHeight = 13
@@ -10,7 +9,6 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
     ExplicitHeight = 255
     inherited pcEditor: TPageControl
       Height = 255
-      ActivePage = tsTrain
       ExplicitHeight = 255
       inherited tsProp: TTabSheet
         ExplicitHeight = 227
@@ -25,10 +23,6 @@ inherited fmANNMLPEditor: TfmANNMLPEditor
       end
       object tsLayers: TTabSheet [1]
         Caption = 'Layers'
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object ScrollBox4: TScrollBox
           Left = 0
           Top = 0

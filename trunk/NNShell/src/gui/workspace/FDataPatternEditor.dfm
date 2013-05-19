@@ -4,7 +4,6 @@ inherited fmDataPatternEditor: TfmDataPatternEditor
   TextHeight = 13
   inherited pnMain: TPanel
     inherited pcEditor: TPageControl
-      ActivePage = tsData
       inherited tsProp: TTabSheet
         inherited ScrollBox1: TScrollBox
           object Label3: TLabel [2]
@@ -83,6 +82,12 @@ inherited fmDataPatternEditor: TfmDataPatternEditor
           end
           inherited btSave: TBitBtn
             TabOrder = 10
+          end
+          inherited btLoad: TBitBtn
+            Left = 3
+            Top = 67
+            ExplicitLeft = 3
+            ExplicitTop = 67
           end
         end
       end

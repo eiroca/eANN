@@ -79,7 +79,6 @@ type
     procedure iCountChange(Sender: TObject);
     procedure btSaveClick(Sender: TObject);
     procedure btLoadClick(Sender: TObject);
-    procedure iNameKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
     N, D: integer;
@@ -217,16 +216,7 @@ end;
 procedure TfmDataListEditor.iNameChange(Sender: TObject);
 begin
   inherited;
-  btRename.Enabled:= WorkSpace.ValidRename(Obj, Obj.Name, iName.Text);
-end;
-
-procedure TfmDataListEditor.iNameKeyPress(Sender: TObject; var Key: Char);
-begin
-  inherited;
-  if not StrUtil.isLitteral(Key) then begin
-    Key:= #0;
-    System.SysUtils.Beep;
-  end;
+  btRename.Enabled:= WorkSpace.ValidRename(Obj, iName.Text);
 end;
 
 procedure TfmDataListEditor.btRenameClick(Sender: TObject);
@@ -288,6 +278,7 @@ begin
     else begin
       TDataList(Obj).LoadFromFile(FileName);
     end;
+    TDataList(Obj).RawMode:= false;
     UpdateParam;
   end;
 end;

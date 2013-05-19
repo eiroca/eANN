@@ -26,7 +26,8 @@ uses
   eANNCore, eDataPick, uWorkSpace, uANNWorkspace,
   FEditor,
   Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ImgList, Vcl.Controls, Vcl.ExtCtrls, Vcl.ComCtrls,
-  JvExExtCtrls, JvSplitter;
+  JvExExtCtrls, JvSplitter, Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan,
+  Vcl.ToolWin, Vcl.ActnCtrls, Vcl.ActnMenus;
 
 type
   TfmWorkSpace = class(TForm)
@@ -36,41 +37,48 @@ type
     mnWorkSpace: TMainMenu;
     WorkSpace1: TMenuItem;
     NewNeuralNetwork1: TMenuItem;
-    MLP1: TMenuItem;
-    Competitive1: TMenuItem;
-    PLN1: TMenuItem;
-    RBChen1: TMenuItem;
-    PRB1: TMenuItem;
     NewData1: TMenuItem;
-    DataPattern1: TMenuItem;
     pmWorkSpace: TPopupMenu;
     miNewNet: TMenuItem;
-    PRB2: TMenuItem;
-    RBChen2: TMenuItem;
-    PLN2: TMenuItem;
-    Competitive2: TMenuItem;
-    MLP2: TMenuItem;
-    miNewData: TMenuItem;
-    DataPattern2: TMenuItem;
     miDelObj: TMenuItem;
-    DeleteObject1: TMenuItem;
     pnWorkSpace: TPanel;
-    DataList1: TMenuItem;
+    alWorkSpace: TActionList;
+    aNetMLP: TAction;
+    aNetCom: TAction;
+    aNetPL: TAction;
+    aNetPRB: TAction;
+    aNetRB: TAction;
+    MultiLayerPerceptrons1: TMenuItem;
+    Competitive1: TMenuItem;
+    ProgressiveLearning1: TMenuItem;
+    RadialBasis1: TMenuItem;
+    ProgressiveRadialBasis1: TMenuItem;
+    MultiLayerPerceptrons2: TMenuItem;
+    Competitive2: TMenuItem;
+    ProgressiveLearning2: TMenuItem;
+    RadialBasis2: TMenuItem;
+    ProgressiveRadialBasis2: TMenuItem;
+    aNewDataList: TAction;
+    aNewDataPattern: TAction;
     DataList2: TMenuItem;
+    DataList1: TMenuItem;
+    aWSDelete: TAction;
+    DeleteObject1: TMenuItem;
+    N1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure MLP1Click(Sender: TObject);
-    procedure Competitive1Click(Sender: TObject);
-    procedure PLN1Click(Sender: TObject);
-    procedure RBChen1Click(Sender: TObject);
-    procedure PRB1Click(Sender: TObject);
-    procedure DataPattern1Click(Sender: TObject);
     procedure pmWorkSpacePopup(Sender: TObject);
-    procedure miDelObjClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure DataList1Click(Sender: TObject);
     procedure tvWorkSpaceChange(Sender: TObject; Node: TTreeNode);
+    procedure aNetMLPExecute(Sender: TObject);
+    procedure aNetComExecute(Sender: TObject);
+    procedure aNetPLExecute(Sender: TObject);
+    procedure aNetRBExecute(Sender: TObject);
+    procedure aNetPRBExecute(Sender: TObject);
+    procedure aNewDataListExecute(Sender: TObject);
+    procedure aNewDataPatternExecute(Sender: TObject);
+    procedure aWSDeleteExecute(Sender: TObject);
   private
     { Private declarations }
     FPath: string;
@@ -241,36 +249,6 @@ begin
   Editors.DelWorkSpace(WorkSpace);
 end;
 
-procedure TfmWorkSpace.MLP1Click(Sender: TObject);
-begin
-  WorkSpace.MakeNetwork(TMLPNetwork);
-end;
-
-procedure TfmWorkSpace.Competitive1Click(Sender: TObject);
-begin
-  WorkSpace.MakeNetwork(TCompetitiveNetwork);
-end;
-
-procedure TfmWorkSpace.PLN1Click(Sender: TObject);
-begin
-  WorkSpace.MakeNetwork(TPLNetwork);
-end;
-
-procedure TfmWorkSpace.RBChen1Click(Sender: TObject);
-begin
-  WorkSpace.MakeNetwork(TRBNetwork);
-end;
-
-procedure TfmWorkSpace.PRB1Click(Sender: TObject);
-begin
-  WorkSpace.MakeNetwork(TPRBNetwork);
-end;
-
-procedure TfmWorkSpace.DataPattern1Click(Sender: TObject);
-begin
-  WorkSpace.MakeDataPicker(TDataPattern);
-end;
-
 procedure TfmWorkSpace.pmWorkSpacePopup(Sender: TObject);
 var
   TN: TTreeNode;
@@ -281,7 +259,48 @@ begin
   miDelObj.Enabled:= flg;
 end;
 
-procedure TfmWorkSpace.miDelObjClick(Sender: TObject);
+procedure TfmWorkSpace.aNetComExecute(Sender: TObject);
+begin
+  WorkSpace.MakeNetwork(TCompetitiveNetwork);
+end;
+
+procedure TfmWorkSpace.aNetMLPExecute(Sender: TObject);
+begin
+  WorkSpace.MakeNetwork(TMLPNetwork);
+end;
+
+procedure TfmWorkSpace.aNetPLExecute(Sender: TObject);
+begin
+  WorkSpace.MakeNetwork(TPLNetwork);
+end;
+
+procedure TfmWorkSpace.aNetPRBExecute(Sender: TObject);
+begin
+  WorkSpace.MakeNetwork(TPRBNetwork);
+end;
+
+procedure TfmWorkSpace.aNetRBExecute(Sender: TObject);
+begin
+  WorkSpace.MakeNetwork(TRBNetwork);
+end;
+
+procedure TfmWorkSpace.aNewDataListExecute(Sender: TObject);
+var
+  DL: TDataList;
+begin
+  DL:= WorkSpace.MakeDataPicker(TDataList) as TDataList;
+  DL.RawMode:= false;
+end;
+
+procedure TfmWorkSpace.aNewDataPatternExecute(Sender: TObject);
+var
+  DL: TDataPattern;
+begin
+  DL:= WorkSpace.MakeDataPicker(TDataPattern) as TDataPattern;
+  DL.RawMode:= false;
+end;
+
+procedure TfmWorkSpace.aWSDeleteExecute(Sender: TObject);
 begin
   DeleteSelectedObject;
 end;
@@ -305,11 +324,6 @@ procedure TfmWorkSpace.FormCloseQuery(Sender: TObject;
 begin
   CanClose:= not WorkSpace.Changed or
     (MessageDlg(sMsgAreYouSure,mtConfirmation,[mbYes,mbNo],0)=mrYes);
-end;
-
-procedure TfmWorkSpace.DataList1Click(Sender: TObject);
-begin
-  WorkSpace.MakeDataPicker(TDataList);
 end;
 
 end.

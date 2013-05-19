@@ -16,7 +16,6 @@ inherited fmANNComEditor: TfmANNComEditor
     inherited pcEditor: TPageControl
       Width = 464
       Height = 259
-      ActivePage = tsTrain
       ExplicitWidth = 464
       ExplicitHeight = 259
       inherited tsProp: TTabSheet

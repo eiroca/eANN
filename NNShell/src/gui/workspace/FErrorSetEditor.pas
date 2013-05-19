@@ -38,7 +38,6 @@ type
     procedure iNameChange(Sender: TObject);
     procedure btRenameClick(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
-    procedure iNameKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
   public
@@ -57,16 +56,7 @@ uses
 procedure TfmErrorSetEditor.iNameChange(Sender: TObject);
 begin
   inherited;
-  btRename.Enabled:= WorkSpace.ValidRename(Obj, Obj.Name, iName.Text);
-end;
-
-procedure TfmErrorSetEditor.iNameKeyPress(Sender: TObject; var Key: Char);
-begin
-  inherited;
-  if not StrUtil.isLitteral(Key) then begin
-    Key:= #0;
-    System.SysUtils.Beep;
-  end;
+  btRename.Enabled:= WorkSpace.ValidRename(Obj, iName.Text);
 end;
 
 procedure TfmErrorSetEditor.btRenameClick(Sender: TObject);

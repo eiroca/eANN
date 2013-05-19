@@ -2,7 +2,7 @@ object fmWorkSpace: TfmWorkSpace
   Left = 253
   Top = 135
   Caption = 'WorkSpace'
-  ClientHeight = 509
+  ClientHeight = 529
   ClientWidth = 664
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -25,7 +25,7 @@ object fmWorkSpace: TfmWorkSpace
     Left = 250
     Top = 0
     Width = 5
-    Height = 509
+    Height = 529
     ExplicitLeft = 176
     ExplicitHeight = 489
   end
@@ -33,7 +33,7 @@ object fmWorkSpace: TfmWorkSpace
     Left = 0
     Top = 0
     Width = 250
-    Height = 509
+    Height = 529
     Align = alLeft
     Images = ImageList1
     Indent = 35
@@ -47,16 +47,17 @@ object fmWorkSpace: TfmWorkSpace
       FF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFFFFFF
       FFFFFF000000000000000001001E0000000100000001000000FFFFFFFFFFFFFF
       FFFFFFFFFF00000000000000000100}
+    ExplicitHeight = 509
   end
   object pnWorkSpace: TPanel
     Left = 255
     Top = 0
     Width = 185
-    Height = 509
+    Height = 529
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 256
+    ExplicitHeight = 509
   end
   object ImageList1: TImageList
     Height = 32
@@ -1128,92 +1129,114 @@ object fmWorkSpace: TfmWorkSpace
   end
   object mnWorkSpace: TMainMenu
     AutoMerge = True
-    Left = 157
-    Top = 81
+    Left = 125
+    Top = 209
     object WorkSpace1: TMenuItem
       Caption = '&WorkSpace'
       GroupIndex = 100
       object NewNeuralNetwork1: TMenuItem
-        Caption = 'New Neural Network'
-        object MLP1: TMenuItem
-          Caption = 'Multi Layer Perceptrons'
-          OnClick = MLP1Click
+        Caption = '&Neural Network'
+        object MultiLayerPerceptrons1: TMenuItem
+          Action = aNetMLP
         end
         object Competitive1: TMenuItem
-          Caption = 'Competitive'
-          OnClick = Competitive1Click
+          Action = aNetCom
         end
-        object PLN1: TMenuItem
-          Caption = 'Progressive Learning'
-          OnClick = PLN1Click
+        object ProgressiveLearning1: TMenuItem
+          Action = aNetPL
         end
-        object RBChen1: TMenuItem
-          Caption = 'Radial Basis'
-          OnClick = RBChen1Click
+        object RadialBasis1: TMenuItem
+          Action = aNetRB
         end
-        object PRB1: TMenuItem
-          Caption = 'Progressive Radial Basis'
-          OnClick = PRB1Click
+        object ProgressiveRadialBasis1: TMenuItem
+          Action = aNetPRB
         end
       end
       object NewData1: TMenuItem
-        Caption = 'New Data'
+        Caption = '&Dataset'
         object DataList1: TMenuItem
-          Caption = 'Data List'
-          OnClick = DataList1Click
-        end
-        object DataPattern1: TMenuItem
-          Caption = 'Data Pattern'
-          OnClick = DataPattern1Click
+          Action = aNewDataList
         end
       end
       object DeleteObject1: TMenuItem
-        Caption = 'Delete Object'
-        OnClick = miDelObjClick
+        Action = aWSDelete
       end
     end
   end
   object pmWorkSpace: TPopupMenu
     OnPopup = pmWorkSpacePopup
-    Left = 157
-    Top = 148
+    Left = 125
+    Top = 156
     object miNewNet: TMenuItem
-      Caption = 'New Neural Network'
-      object MLP2: TMenuItem
-        Caption = 'Multi Layer Perceptrons'
-        OnClick = MLP1Click
+      Caption = '&New'
+      object MultiLayerPerceptrons2: TMenuItem
+        Action = aNetMLP
       end
       object Competitive2: TMenuItem
-        Caption = 'Competitive'
-        OnClick = Competitive1Click
+        Action = aNetCom
       end
-      object PLN2: TMenuItem
-        Caption = 'Progressive Learning'
-        OnClick = PLN1Click
+      object ProgressiveLearning2: TMenuItem
+        Action = aNetPL
       end
-      object RBChen2: TMenuItem
-        Caption = 'Radial Basis'
-        OnClick = RBChen1Click
+      object RadialBasis2: TMenuItem
+        Action = aNetRB
       end
-      object PRB2: TMenuItem
-        Caption = 'Progressive Radial Basis'
-        OnClick = PRB1Click
+      object ProgressiveRadialBasis2: TMenuItem
+        Action = aNetPRB
       end
-    end
-    object miNewData: TMenuItem
-      Caption = 'New Data'
+      object N1: TMenuItem
+        Caption = '-'
+      end
       object DataList2: TMenuItem
-        Caption = 'Data List'
-        OnClick = DataList1Click
-      end
-      object DataPattern2: TMenuItem
-        Caption = 'Data Pattern'
-        OnClick = DataPattern1Click
+        Action = aNewDataList
       end
     end
     object miDelObj: TMenuItem
-      Caption = 'Delete Object'
-      OnClick = miDelObjClick
+      Action = aWSDelete
+    end
+  end
+  object alWorkSpace: TActionList
+    Left = 536
+    Top = 120
+    object aNetMLP: TAction
+      Category = 'WorkSpace'
+      Caption = 'New &Multi Layer Perceptrons'
+      OnExecute = aNetMLPExecute
+    end
+    object aNetCom: TAction
+      Category = 'WorkSpace'
+      Caption = 'New &Competitive'
+      OnExecute = aNetComExecute
+    end
+    object aNetPL: TAction
+      Category = 'WorkSpace'
+      Caption = 'New Progressive &Learning'
+      OnExecute = aNetPLExecute
+    end
+    object aNetRB: TAction
+      Category = 'WorkSpace'
+      Caption = 'New &Radial Basis'
+      OnExecute = aNetRBExecute
+    end
+    object aNetPRB: TAction
+      Category = 'WorkSpace'
+      Caption = 'New &Progressive Radial Basis'
+      OnExecute = aNetPRBExecute
+    end
+    object aNewDataList: TAction
+      Category = 'WorkSpace'
+      Caption = 'New Data &List'
+      OnExecute = aNewDataListExecute
+    end
+    object aNewDataPattern: TAction
+      Category = 'WorkSpace'
+      Caption = 'New Data &Pattern'
+      OnExecute = aNewDataPatternExecute
+    end
+    object aWSDelete: TAction
+      Category = 'WorkSpace'
+      Caption = '&Delete Object'
+      OnExecute = aWSDeleteExecute
     end
   end
 end

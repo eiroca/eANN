@@ -44,7 +44,6 @@ inherited fmErrorSetEditor: TfmErrorSetEditor
         TabOrder = 0
         Text = 'iName'
         OnChange = iNameChange
-        OnKeyPress = iNameKeyPress
       end
       object btRename: TBitBtn
         Left = 175

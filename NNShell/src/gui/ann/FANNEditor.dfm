@@ -56,7 +56,6 @@ inherited fmANNEditor: TfmANNEditor
               TabOrder = 0
               Text = 'iName'
               OnChange = iNameChange
-              OnKeyPress = iNameKeyPress
             end
             object btRename: TBitBtn
               Left = 171
@@ -306,10 +305,6 @@ inherited fmANNEditor: TfmANNEditor
       object tsTrain: TTabSheet
         Caption = 'Train'
         ImageIndex = 3
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitWidth = 0
-        ExplicitHeight = 0
         object sbTrain: TScrollBox
           Left = 0
           Top = 0

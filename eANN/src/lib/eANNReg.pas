@@ -26,7 +26,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, eANNCom, eANNMLP, eANNPLN, eANNPRB, eANNRB;
+  Classes, eANNCom, eANNMLP, eANNPLN, eANNRB;
 
 const
   COMPONENT_PALETTE = 'eIrOcA';

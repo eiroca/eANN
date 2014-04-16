@@ -111,11 +111,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Supervised'
               TabOrder = 0
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbTrained: TJvCheckBox
@@ -126,11 +121,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Trained'
               TabOrder = 1
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbProgressive: TJvCheckBox
@@ -141,11 +131,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Progressive'
               TabOrder = 2
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
           end
@@ -164,11 +149,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Network can reset to default value'
               TabOrder = 0
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbTrain: TJvCheckBox
@@ -179,11 +159,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Network can be trained with a set of patterns'
               TabOrder = 1
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbApply: TJvCheckBox
@@ -194,11 +169,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Network can predict a set of output patterns'
               TabOrder = 2
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbError: TJvCheckBox
@@ -209,11 +179,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Network can be used to calculate prediction errors'
               TabOrder = 3
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
           end
@@ -232,11 +197,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Learn a single pattern'
               TabOrder = 0
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbAcquire: TJvCheckBox
@@ -247,11 +207,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Acquire a single pattern'
               TabOrder = 1
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbFindCluster: TJvCheckBox
@@ -262,11 +217,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Classify a pattern'
               TabOrder = 2
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
             object cbSimul: TJvCheckBox
@@ -277,11 +227,6 @@ inherited fmANNEditor: TfmANNEditor
               Caption = 'Predict a single pattern'
               TabOrder = 3
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
               ReadOnly = True
             end
           end
@@ -305,6 +250,10 @@ inherited fmANNEditor: TfmANNEditor
       object tsTrain: TTabSheet
         Caption = 'Train'
         ImageIndex = 3
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object sbTrain: TScrollBox
           Left = 0
           Top = 0
@@ -343,11 +292,6 @@ inherited fmANNEditor: TfmANNEditor
               TabOrder = 0
               OnClick = cbErrModeClick
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
             end
             object iErrParam: TJvSpinEdit
               Left = 142
@@ -600,11 +544,6 @@ inherited fmANNEditor: TfmANNEditor
               TabOrder = 2
               OnClick = cbOvervriteDataListClick
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
             end
           end
         end
@@ -637,11 +576,6 @@ inherited fmANNEditor: TfmANNEditor
               State = cbChecked
               TabOrder = 0
               LinkedControls = <>
-              HotTrackFont.Charset = DEFAULT_CHARSET
-              HotTrackFont.Color = clWindowText
-              HotTrackFont.Height = -11
-              HotTrackFont.Name = 'MS Sans Serif'
-              HotTrackFont.Style = []
             end
           end
           object btError: TBitBtn

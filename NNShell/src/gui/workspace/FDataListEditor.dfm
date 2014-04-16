@@ -5,8 +5,8 @@ inherited fmDataListEditor: TfmDataListEditor
   ClientHeight = 291
   ClientWidth = 447
   OnCreate = FormCreate
-  ExplicitWidth = 455
-  ExplicitHeight = 325
+  ExplicitWidth = 463
+  ExplicitHeight = 330
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnMain: TPanel
@@ -151,6 +151,10 @@ inherited fmDataListEditor: TfmDataListEditor
       end
       object tsData: TTabSheet
         Caption = 'Data'
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object Panel1: TPanel
           Left = 0
           Top = 0

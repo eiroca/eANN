@@ -4,8 +4,8 @@ inherited fmANNComEditor: TfmANNComEditor
   Caption = 'fmANNComEditor'
   ClientHeight = 259
   ClientWidth = 464
-  ExplicitWidth = 472
-  ExplicitHeight = 293
+  ExplicitWidth = 480
+  ExplicitHeight = 298
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnMain: TPanel

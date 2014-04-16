@@ -2,8 +2,8 @@ inherited fmANNRBEditor: TfmANNRBEditor
   Caption = 'fmANNRBEditor'
   ClientHeight = 316
   ClientWidth = 460
-  ExplicitWidth = 468
-  ExplicitHeight = 350
+  ExplicitWidth = 476
+  ExplicitHeight = 355
   PixelsPerInch = 96
   TextHeight = 13
   inherited pnMain: TPanel

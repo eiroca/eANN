@@ -100,6 +100,7 @@ type
     procedure appEvtHint(Sender: TObject);
   private
     { Private declarations }
+    function  GetWorkSpace: TfmWorkSpace;
     procedure UpdateMenuItems(Sender: TObject);
     function  CreateWorkSpace(const Name: string): TfmWorkSpace;
     function  OpenWorkSpace(const Path: string): boolean;
@@ -116,9 +117,10 @@ implementation
 {$R *.DFM}
 
 uses
-  uOpzioni, eLibCore, FOutput, FAboutGPL,
+  uOpzioni,
+  eLibCore, eLibVCL,
   eANNRB, eANNPLN, eANNMLP, eANNCom,
-  FErrorSetEditor,
+  FOutput, FErrorSetEditor,
   FDataPatternEditor, FDataListEditor,
   FANNEditor, FANNMLPEditor, FANNComEditor, FANNPLNEditor, FANNPRBEditor, FANNRBEditor;
 
@@ -272,17 +274,25 @@ begin
   end;
 end;
 
+function TfmMain.GetWorkSpace: TfmWorkSpace;
+begin
+  Result:= nil;
+  if ActiveMDIChild <> nil then begin
+    if ActiveMDIChild is TfmWorkSpace then begin
+      Result:= TfmWorkSpace(ActiveMDIChild);
+    end;
+  end;
+end;
+
 procedure TfmMain.miFileSaveClick(Sender: TObject);
 var
   Child: TfmWorkSpace;
 begin
-  if ActiveMDIChild <> nil then begin
-    if ActiveMDIChild is TfmWorkSpace then begin
-      Child:= TfmWorkSpace(ActiveMDIChild);
-      if Child.Path = '' then miFileSaveAsClick(Sender)
-      else begin
-        Child.WorkSpace.Save(Child.Path);
-      end;
+  Child:= GetWorkSpace;
+  if Child <> nil then begin
+    if Child.Path = '' then miFileSaveAsClick(Sender)
+    else begin
+      Child.WorkSpace.Save(Child.Path);
     end;
   end;
 end;
@@ -291,13 +301,12 @@ procedure TfmMain.miFileSaveAsClick(Sender: TObject);
 var
   Child: TfmWorkSpace;
 begin
-  if ActiveMDIChild <> nil then begin
-    if ActiveMDIChild is TfmWorkSpace then begin
-      if sdWorkSpace.Execute then begin
-        Child:= TfmWorkSpace(ActiveMDIChild);
-        Child.Path:= sdWorkSpace.FileName;
-        Child.WorkSpace.Save(sdWorkSpace.FileName);
-      end;
+  Child:= GetWorkSpace;
+  if Child <> nil then begin
+    if sdWorkSpace.Execute then begin
+      Child:= TfmWorkSpace(ActiveMDIChild);
+      Child.Path:= sdWorkSpace.FileName;
+      Child.WorkSpace.Save(sdWorkSpace.FileName);
     end;
   end;
 end;

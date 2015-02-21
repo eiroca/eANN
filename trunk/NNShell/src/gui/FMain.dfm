@@ -431,17 +431,19 @@ object fmMain: TfmMain
   end
   object sdWorkspace: TSaveDialog
     DefaultExt = 'nnw'
-    Filter = 'Workspace files|*.nnw|All files|*.*'
-    Options = [ofOverwritePrompt, ofExtensionDifferent, ofPathMustExist]
-    Left = 345
-    Top = 43
+    Filter = 
+      'Workspace files (binary)|*.nnw|Workspace files (textual)|*.def|A' +
+      'll files|*.*'
+    Options = [ofOverwritePrompt, ofPathMustExist]
+    Left = 393
+    Top = 83
   end
   object odWorkSpace: TOpenDialog
     DefaultExt = 'nnw'
-    Filter = 'Workspace files|*.nnw|All files|*.*'
-    Options = [ofExtensionDifferent, ofPathMustExist, ofFileMustExist]
-    Left = 273
-    Top = 41
+    Filter = 'Workspace files|*.nnw;*.def|All files|*.*'
+    Options = [ofPathMustExist, ofFileMustExist]
+    Left = 393
+    Top = 33
   end
   object ActionList1: TActionList
     Images = ilMenu
@@ -485,7 +487,7 @@ object fmMain: TfmMain
     Left = 152
     Top = 40
     Bitmap = {
-      494C010112001300080010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010112001300300010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000005000000001002000000000000050
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

@@ -43,19 +43,19 @@
     <mkdir dir="${dest}" />
     <delete file="${distname}" />
     <antcall target="delphi.add_bin">
-      <param name="inPath" value="${base}/bin" />
+      <param name="inPath" value="${bin_dir}" />
       <param name="prefix" value="" />
     </antcall>
     <antcall target="delphi.add_src">
-      <param name="inPath" value="${base}/src" />
+      <param name="inPath" value="${prj_dir}/src" />
       <param name="prefix" value="src" />
     </antcall>
     <antcall target="delphi.add_dir">
-      <param name="inPath" value="${base}/data" />
+      <param name="inPath" value="${prj_dir}/data" />
       <param name="prefix" value="data" />
     </antcall>
     <antcall target="delphi.add_dir">
-      <param name="inPath" value="${base}/desc" />
+      <param name="inPath" value="${prj_dir}/desc" />
       <param name="prefix" value="" />
     </antcall>
   </target>

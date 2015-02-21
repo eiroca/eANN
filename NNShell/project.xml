@@ -1,10 +1,11 @@
 <project name="NNShell" default="build" basedir=".">
   <target name="build" description="generate the distribution">
     <antcall target="delphi.build">
-      <param name="what" value="NNShell" />
-      <param name="ver" value="2.0.0" />
-      <param name="base" value="." />
-      <param name="dest" value="/Sviluppo/dist" />
+      <param name="what"    value="NNShell" />
+      <param name="ver"     value="2.0.1" />
+      <param name="prj_dir" value="." />
+      <param name="bin_dir" value="/0utput/bin/NNShell" />
+      <param name="dest"    value="/Sviluppo/dist" />
     </antcall>
   </target>
 </project>

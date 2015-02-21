@@ -29,7 +29,7 @@ package eANN;
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
@@ -55,10 +55,10 @@ package eANN;
 
 requires
   rtl,
-  bdertl,
   dbrtl,
   vcl,
-  eComp;
+  eCompPackage,
+  eLibPackage;
 
 contains
   eANNCore in 'lib\eANNCore.pas',

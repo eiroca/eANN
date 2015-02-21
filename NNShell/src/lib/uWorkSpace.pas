@@ -40,6 +40,11 @@ type
     protected
      procedure   FreeAllObjects;
      procedure   Loaded; override;
+     function    DecodeFormat(Path: string; defType: integer): integer;
+     procedure   ExportAsDEF(Path: string);
+     procedure   ImportAsDEF(Path: string);
+     procedure   ExportAsNNW(Path: string);
+     procedure   ImportAsNNW(Path: string);
     public
      constructor Create(AOwner: TComponent); override;
      destructor  Destroy; override;
@@ -174,7 +179,64 @@ begin
   end;
 end;
 
+function TWorkSpace.DecodeFormat(Path: string; defType: integer): integer;
+var
+  ext: string;
+begin
+  ext:= ExtractFileExt(Path);
+  Result:= defType;
+  if (ext='') then Result:= 0
+  else if (ext='.nnw') then Result:= 0
+  else if (ext='.def') then Result:= 1;
+  if (Result < 0) then begin
+    raise EInvalidOperation.Create('Invalid workspace format');
+  end;
+end;
+
 procedure TWorkSpace.Save(Path: string);
+begin
+  case DecodeFormat(Path, -1) of
+    0: ExportAsNNW(Path);
+    1: ExportAsDEF(Path);
+  end;
+end;
+
+procedure TWorkSpace.Load(Path: string);
+begin
+  case DecodeFormat(Path, -1) of
+    0: ImportAsNNW(Path);
+    1: ImportAsDEF(Path);
+  end;
+end;
+
+procedure TWorkSpace.ExportAsNNW(Path: string);
+var
+  S: TFileStream;
+begin
+  S:= TFileStream.Create(Path, fmCreate);
+  try
+    S.WriteComponent(Self);
+  finally
+    S.Free;
+  end;
+  FChanged:= false;
+end;
+
+procedure TWorkSpace.ImportAsNNW(Path: string);
+var
+  S: TFileStream;
+begin
+  FreeAllObjects;
+  S:= TFileStream.Create(Path, fmOpenRead);
+  try
+    S.ReadComponent(Self);
+  finally
+    S.Free;
+  end;
+  FChanged:= false;
+end;
+
+procedure TWorkSpace.ExportAsDEF(Path: string);
 var
   S: TFileStream;
   M: TMemoryStream;
@@ -195,7 +257,7 @@ begin
   FChanged:= false;
 end;
 
-procedure TWorkSpace.Load(Path: string);
+procedure TWorkSpace.ImportAsDEF(Path: string);
 var
   S: TFileStream;
   M: TMemoryStream;

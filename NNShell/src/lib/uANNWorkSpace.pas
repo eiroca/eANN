@@ -36,7 +36,6 @@ type
 
 implementation
 
-
 procedure TANNWorkSpace.Loaded;
 var
   i: integer;

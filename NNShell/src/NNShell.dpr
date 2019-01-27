@@ -44,7 +44,6 @@ uses
 
 begin
   Application.Initialize;
-  TStyleManager.TrySetStyle('Aqua Light Slate');
   Application.Title := 'Neural Network Shell';
   Application.CreateForm(TfmMain, fmMain);
   Application.Run;

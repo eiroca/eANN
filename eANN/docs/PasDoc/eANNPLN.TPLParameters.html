@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>eANNPLN: Class TPLParameters</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<a name="TPLParameters"></a><h1 class="cio">Class TPLParameters</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td><a class="section"  href="#%40Hierarchy">Hierarchy</a></td><td>Fields</td><td><a class="section"  href="#%40Methods">Methods</a></td><td><a class="section"  href="#%40Properties">Properties</a></td></tr></table>
+<a name="%40Description"></a><h2 class="unit">Unit</h2>
+<p class="unitlink">
+<a   href="eANNPLN.html">eANNPLN</a></p>
+<h2 class="declaration">Declaration</h2>
+<p class="declaration">
+<code>type TPLParameters = class(<a class="normal"  href="eANN.TANNParam.html">TANNParam</a>)</code></p>
+<h2 class="description">Description</h2>
+<div class="nodescription">no description available, TANNParam description follows</div><a name="%40Hierarchy"></a><h2 class="hierarchy">Hierarchy</h2>
+<ul class="hierarchy"><li class="ancestor">TPersistent</li>
+<li class="ancestor"><a class="normal"  href="eANN.TANNParam.html">TANNParam</a></li>
+<li class="thisitem">TPLParameters</li></ul><h2 class="overview">Overview</h2>
+<a name="%40Methods"></a><h3 class="summary">Methods</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><code>constructor <b><a   href="eANNPLN.TPLParameters.html#Create">Create</a></b>(AOwner: <a   href="eANN.TANN.html">TANN</a>); override;</code></td>
+</tr>
+</table>
+<a name="%40Properties"></a><h3 class="summary">Properties</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="eANNPLN.TPLParameters.html#RoI">RoI</a></b>: double  read FRoI write SetRoI;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="eANNPLN.TPLParameters.html#RoO">RoO</a></b>: double  read FRoO write SetRoO;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="eANNPLN.TPLParameters.html#lmd">lmd</a></b>: double  read FLmd write SetLmd;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="eANNPLN.TPLParameters.html#win">win</a></b>: integer read FWin write SetWin;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="eANNPLN.TPLParameters.html#eta">eta</a></b>: double  read FEta write SetEta;</code></td>
+</tr>
+<tr class="list2">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="eANNPLN.TPLParameters.html#spr">spr</a></b>: double  read FSpr write SetSpr;</code></td>
+</tr>
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><code>property <b><a   href="eANNPLN.TPLParameters.html#eps">eps</a></b>: double  read FEps write SetEps;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Methods</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="public.gif" alt="Public" title="Public"></a></td>
+<td class="itemcode"><a name="Create"></a><code>constructor <b>Create</b>(AOwner: <a   href="eANN.TANN.html">TANN</a>); override;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<h3 class="detail">Properties</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="RoI"></a><code>property <b>RoI</b>: double  read FRoI write SetRoI;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+input space vigilance threshold</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="RoO"></a><code>property <b>RoO</b>: double  read FRoO write SetRoO;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+output space vigilance threshold</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="lmd"></a><code>property <b>lmd</b>: double  read FLmd write SetLmd;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+merging factor</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="win"></a><code>property <b>win</b>: integer read FWin write SetWin;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+number of neuron taken in output</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="eta"></a><code>property <b>eta</b>: double  read FEta write SetEta;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+decay constant</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="spr"></a><code>property <b>spr</b>: double  read FSpr write SetSpr;</code></td>
+</tr>
+<tr><td colspan="2">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="visibility"><a   href="legend.html"><img  src="published.gif" alt="Published" title="Published"></a></td>
+<td class="itemcode"><a name="eps"></a><code>property <b>eps</b>: double  read FEps write SetEps;</code></td>
+</tr>
+<tr><td colspan="2">
+<p>
+extinction threshold</p>
+</td></tr>
+</table>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2008-09-28 23:03:41</em>
+</span>
+</body></html>

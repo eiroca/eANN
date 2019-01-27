@@ -1,0 +1,187 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>eANNMsg</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit eANNMsg</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>uses</td><td>Classes, Interfaces, Objects and Records</td><td>Functions and Procedures</td><td>Types</td><td><a class="section"  href="#%40Constants">Constants</a></td><td>Variables</td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+<p>
+  </p>
+<a name="%40Uses"></a><h2 class="overview">Overview</h2>
+<a name="%40Constants"></a><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#wrnAborted">wrnAborted</a></b>     = 'operation aborted';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#wrnMaxIter">wrnMaxIter</a></b>     = 'maximum iterations reached';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#wrnNoConv">wrnNoConv</a></b>      = 'convergence not reached';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errBadInput">errBadInput</a></b>    = 'problem(s) with input data';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errBadOutput">errBadOutput</a></b>   = 'problem(s) with output data';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errBadIOCount">errBadIOCount</a></b>  = 'fewer output patterns than input ones';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errNotTrained">errNotTrained</a></b>  = 'network is not be trained';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errAbstract">errAbstract</a></b>    = 'call to an abstract function';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errOutOfMemory">errOutOfMemory</a></b> = 'memory or object allocation failed';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errNeuronError1">errNeuronError1</a></b>= 'neuron can be inserted only in layers';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errNeuronError2">errNeuronError2</a></b>= 'neuron cannot accept other components';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errNeuronError3">errNeuronError3</a></b>= 'TPLElem can be inserted only in TPLNetwork';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errLayerError1">errLayerError1</a></b> = 'layer can be inserted only in MLP networks';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errLayerError2">errLayerError2</a></b> = 'layer cannot accept nothing other neurons';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANNMsg.html#errBadNetDef">errBadNetDef</a></b>   = 'bad network definition';</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="wrnAborted"></a><code><b>wrnAborted</b>     = 'operation aborted';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="wrnMaxIter"></a><code><b>wrnMaxIter</b>     = 'maximum iterations reached';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="wrnNoConv"></a><code><b>wrnNoConv</b>      = 'convergence not reached';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errBadInput"></a><code><b>errBadInput</b>    = 'problem(s) with input data';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errBadOutput"></a><code><b>errBadOutput</b>   = 'problem(s) with output data';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errBadIOCount"></a><code><b>errBadIOCount</b>  = 'fewer output patterns than input ones';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errNotTrained"></a><code><b>errNotTrained</b>  = 'network is not be trained';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errAbstract"></a><code><b>errAbstract</b>    = 'call to an abstract function';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errOutOfMemory"></a><code><b>errOutOfMemory</b> = 'memory or object allocation failed';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errNeuronError1"></a><code><b>errNeuronError1</b>= 'neuron can be inserted only in layers';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errNeuronError2"></a><code><b>errNeuronError2</b>= 'neuron cannot accept other components';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errNeuronError3"></a><code><b>errNeuronError3</b>= 'TPLElem can be inserted only in TPLNetwork';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errLayerError1"></a><code><b>errLayerError1</b> = 'layer can be inserted only in MLP networks';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errLayerError2"></a><code><b>errLayerError2</b> = 'layer cannot accept nothing other neurons';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="errBadNetDef"></a><code><b>errBadNetDef</b>   = 'bad network definition';</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h2 class="authors">Author</h2>
+<ul class="authors">
+<li>Enrico Croce</li>
+</ul>
+<h2 class="created">Created</h2>
+<p>
+04/11/1996
+</p>
+<h2 class="modified">Last Modified</h2>
+<p>
+05/05/1999
+</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2008-09-28 23:03:41</em>
+</span>
+</body></html>

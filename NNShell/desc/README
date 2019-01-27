@@ -1,7 +1,0 @@
-Name       : NNShell
-Description: NNShell is a GUI for eANN.
-OS         : Win32
-Type       : GUI
-Language   : Delphi XE2
-Dependency : eLib, eComp, eANN, JCL, JVCL
-

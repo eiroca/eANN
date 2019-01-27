@@ -1,0 +1,278 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+<meta name="GENERATOR" content="PasDoc 0.11.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>eANN</title>
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#800080" alink="#FF0000">
+<h1 class="unit">Unit eANN</h1>
+<table class="sections wide_list">
+<tr>
+<td><a class="section"  href="#%40Description">Description</a></td><td>uses</td><td><a class="section"  href="#%40Classes">Classes, Interfaces, Objects and Records</a></td><td>Functions and Procedures</td><td><a class="section"  href="#%40Types">Types</a></td><td>Constants</td><td>Variables</td></tr></table>
+<a name="%40Description"></a><h2 class="description">Description</h2>
+<p>
+  
+
+<p>Artificial Neural Network Library <br> <br> This implementation of several kind of neural networks was written with the intention of providing a (hopefully) easy to use, and easy to modify, OOP source code. <br> You can also have several different sized networks running simultaneously, each functioning independently of the others, or acting as inputs to other networks. It should also be very easy to modify the source so that neurons (or even whole layers) can be created/pruned during operation of the network, thus allowing dynamic expansion/contraction. <br> History: <br> 1.00 First version <br> 1.10 Starting History's Log <br> 1.11 Adding Status Property <br> 1.12 Class reengineering (added or modified): Info, Query, SupportedOper <br> 2.00 Major class reengineering now with full Delphi support <br> 2.01 Added FindCluster, ResetTraining, ANNMsg and other minor changes <br></p>
+<a name="%40Uses"></a><h2 class="overview">Overview</h2>
+<a name="%40Classes"></a><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNError.html"><code>EANNError</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNWarning.html"><code>EANNWarning</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNStopped.html"><code>EANNStopped</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNAbstract.html"><code>EANNAbstract</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNDataError.html"><code>EANNDataError</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNGeneric.html"><code>EANNGeneric</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNMemory.html"><code>EANNMemory</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNNotTrained.html"><code>EANNNotTrained</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNStructure.html"><code>EANNStructure</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNLayer.html"><code>EANNLayer</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNNeuron.html"><code>EANNNeuron</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.EANNParam.html"><code>EANNParam</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.TANNParam.html"><code>TANNParam</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.TANNOptions.html"><code>TANNOptions</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold"  href="eANN.TANN.html"><code>TANN</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<a name="%40Types"></a><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANN.html#ANNExceptionClass">ANNExceptionClass</a></b> = class of <a   href="eANN.EANNError.html">EANNError</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANN.html#TANNClass">TANNClass</a></b> = class of <a   href="eANN.TANN.html">TANN</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANN.html#TNetInfo">TNetInfo</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANN.html#TNetInfos">TNetInfos</a></b> = set of <a   href="eANN.html#TNetInfo">TNetInfo</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANN.html#TNetOper">TNetOper</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANN.html#TNetOpers">TNetOpers</a></b> = set of <a   href="eANN.html#TNetOper">TNetOper</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANN.html#TProgressKind">TProgressKind</a></b> = (...);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANN.html#TDataNotify">TDataNotify</a></b> = (...);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANN.html#TProgressEvent">TProgressEvent</a></b> = procedure(Sender: <a   href="eANN.TANN.html">TANN</a>; ProgKind: <a   href="eANN.html#TProgressKind">TProgressKind</a>; Info: longint) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANN.html#TNetOperEvent">TNetOperEvent</a></b> = function(Sender: <a   href="eANN.TANN.html">TANN</a>; What: <a   href="eANN.html#TNetOper">TNetOper</a>): boolean of object;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a   href="eANN.html#TDataChange">TDataChange</a></b> = procedure(Sender: <a   href="eANN.TANN.html">TANN</a>; What: <a   href="eANN.html#TDataNotify">TDataNotify</a>) of object;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a   href="eANN.html#TNetworkChange">TNetworkChange</a></b> = procedure(Sender: <a   href="eANN.TANN.html">TANN</a>) of object;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="ANNExceptionClass"></a><code><b>ANNExceptionClass</b> = class of <a   href="eANN.EANNError.html">EANNError</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TANNClass"></a><code><b>TANNClass</b> = class of <a   href="eANN.TANN.html">TANN</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TNetInfo"></a><code><b>TNetInfo</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;<h6 class="description_section">Values</h6>
+<ul>
+<li>
+niSuper: &nbsp;</li>
+<li>
+niTrained: &nbsp;</li>
+<li>
+niStopTrain: &nbsp;</li>
+<li>
+niProgressive: &nbsp;</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TNetInfos"></a><code><b>TNetInfos</b> = set of <a   href="eANN.html#TNetInfo">TNetInfo</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TNetOper"></a><code><b>TNetOper</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;<h6 class="description_section">Values</h6>
+<ul>
+<li>
+noReset: &nbsp;</li>
+<li>
+noTrain: &nbsp;</li>
+<li>
+noApply: &nbsp;</li>
+<li>
+noError: &nbsp;</li>
+<li>
+noAcquire: &nbsp;</li>
+<li>
+noLearn: &nbsp;</li>
+<li>
+noSimul: &nbsp;</li>
+<li>
+noFindCluster: &nbsp;</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TNetOpers"></a><code><b>TNetOpers</b> = set of <a   href="eANN.html#TNetOper">TNetOper</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TProgressKind"></a><code><b>TProgressKind</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;<h6 class="description_section">Values</h6>
+<ul>
+<li>
+pkInit: &nbsp;</li>
+<li>
+pkIteration: &nbsp;</li>
+<li>
+pkStep: &nbsp;</li>
+<li>
+pkDone: &nbsp;</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TDataNotify"></a><code><b>TDataNotify</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;<h6 class="description_section">Values</h6>
+<ul>
+<li>
+dnDataIn: &nbsp;</li>
+<li>
+dnDataOut: &nbsp;</li>
+<li>
+dnDimInp: &nbsp;</li>
+<li>
+dnDimOut: &nbsp;</li>
+</ul>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TProgressEvent"></a><code><b>TProgressEvent</b> = procedure(Sender: <a   href="eANN.TANN.html">TANN</a>; ProgKind: <a   href="eANN.html#TProgressKind">TProgressKind</a>; Info: longint) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TNetOperEvent"></a><code><b>TNetOperEvent</b> = function(Sender: <a   href="eANN.TANN.html">TANN</a>; What: <a   href="eANN.html#TNetOper">TNetOper</a>): boolean of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TDataChange"></a><code><b>TDataChange</b> = procedure(Sender: <a   href="eANN.TANN.html">TANN</a>; What: <a   href="eANN.html#TDataNotify">TDataNotify</a>) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><a name="TNetworkChange"></a><code><b>TNetworkChange</b> = procedure(Sender: <a   href="eANN.TANN.html">TANN</a>) of object;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<h2 class="authors">Author</h2>
+<ul class="authors">
+<li>Enrico Croce</li>
+</ul>
+<h2 class="created">Created</h2>
+<p>
+04/11/1996
+</p>
+<h2 class="modified">Last Modified</h2>
+<p>
+05/05/1999
+</p>
+<hr noshade size="1"><span class="appinfo"><em>Generated by <a  target="_parent" href="http://pasdoc.sourceforge.net/">PasDoc 0.11.0</a> on 2008-09-28 23:03:40</em>
+</span>
+</body></html>

@@ -28,7 +28,8 @@ uses
   JvFormPlacement, JvComponentBase, JvAppStorage, JvAppIniStorage, JvCalc,
   JvSpeedbar, JvExExtCtrls, JvExtComponent,
   Vcl.Forms, Vcl.ImgList, Vcl.Controls, Vcl.StdActns, Vcl.ActnList, Vcl.Dialogs, JvBaseDlg,
-  Vcl.Menus, Vcl.Samples.Gauges, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.AppEvnts;
+  Vcl.Menus, Vcl.Samples.Gauges, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.AppEvnts,
+  System.ImageList, System.Actions;
 
 type
   TfmMain = class(TForm)
@@ -118,7 +119,7 @@ implementation
 
 uses
   uOpzioni,
-  eLibCore, eLibVCL,
+  eLibCore, eLibVCL, FAboutGPL,
   eANNRB, eANNPLN, eANNMLP, eANNCom,
   FOutput, FErrorSetEditor,
   FDataPatternEditor, FDataListEditor,
